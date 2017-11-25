@@ -8,6 +8,8 @@ use App\Http\Requests\principal\UpdateclienteRequest;
 use App\Models\principal\cliente;
 use App\Models\principal\negocio;
 use App\Models\principal\prestamo;
+use App\Models\catalogos\asesor;
+use App\Models\catalogos\cobrador;
 use App\Models\catalogos\profesion;
 use App\Models\catalogos\zona;
 use App\Models\catalogos\estado_civil;
@@ -191,6 +193,8 @@ class clienteController extends Controller
         $data['cliente'] = cliente::findOrFail($id);
         $data['clientes'] =cliente::where('id','!=', $id)->get();
         $data['lineas'] = linea::all();
+        $data['asesores'] = Asesor::all();
+        $data['cobradores'] = Cobrador::all();
         $data['prestamos'] = prestamo::where('cliente_id', $id)->where('estado_prestamo_id','!=',4)->get();
         $data['prestamos_activos'] = prestamo::where('cliente_id', $id)->where('estado_prestamo_id',1)->get();
         return view('principal.cliente.prestamo')->with($data);

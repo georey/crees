@@ -14,9 +14,10 @@
 Route::get('auth/login', 'Auth\AuthController@getLogin');
 Route::post('auth/login', 'Auth\AuthController@postLogin');
 Route::get('auth/logout', 'Auth\AuthController@getLogout');
+Route::get('testconnection', 'WelcomeController@testConnection');
 
 Route::group(['middleware' => 'auth'], function() {
-	Route::get('/', 'homeController@index');
+	Route::get('/', 'HomeController@index');
 
 	Route::controller('reportes', 'reportes\prestamosController');
 
@@ -128,4 +129,6 @@ Route::group(['middleware' => 'auth'], function() {
 	    'as' => 'tipo_gasto.delete',
 	    'uses' => 'catalogos\tipo_gastoController@destroy',
 	]);
+
+	Route::get('configuracion/prestamos', 'configuracion\prestamosController@getIndex');
 });

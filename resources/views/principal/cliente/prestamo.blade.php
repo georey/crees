@@ -69,8 +69,6 @@
 												'validations' => array(['type' => 'minlength', 'parameter' => 3])
 												))
 		</div>
-	</div>
-	<div class="col-md-6">
 		<div class="form-group col-md-10">
 			@include("layouts.form.input_text", array(
 												'label' => 'Fecha',
@@ -89,6 +87,26 @@
 													'option_value' => null,
 													'selected_options' => null
 													))
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="form-group col-md-10">
+			@include("layouts.form.select", array(
+										'label' => 'Asesor',
+										'name' => 'asesor_id',
+										'value' => null,
+										'options' => $asesores,
+										'option_value' => array('nombre', 'apellido')
+										))
+		</div>
+		<div class="form-group col-md-10">
+			@include("layouts.form.select", array(
+										'label' => 'Cobrador',
+										'name' => 'cobrador_id',
+										'value' => null,
+										'options' => $cobradores,
+										'option_value' => array('nombre', 'apellido')
+										))
 		</div>
 		<div class="form-group col-md-10">
 			<label for="prestamos">

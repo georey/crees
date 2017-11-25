@@ -127,7 +127,13 @@ HOJA DE LIQUIDACION<br>
 		<td style="text-align:center!important">_________________________________</td>
 	</tr>
 	<tr>
-		<td style="text-align:center!important">{{strtoupper(Auth::user()->nombre . ' ' . Auth::user()->apellido)}}</td>
+		<td style="text-align:center!important">
+			@if (empty($prestamo->asesor_id))
+		      	{{strtoupper(Auth::user()->nombre . ' ' . Auth::user()->apellido)}}
+		    @else
+				{{strtoupper($prestamo->asesor->nombre . ' ' . $prestamo->asesor->apellido)}}
+		    @endif
+		</td>
 		<td style="text-align:center!important">{{$prestamo->cliente->nombreCompleto()}}</td>
 	</tr>
 	<tr>

@@ -51,6 +51,9 @@
         <!-- /.col -->
       </div>
     </form>
+    @if ($errors->any())
+        {{ implode('', $errors->all('<div>:message</div>')) }}
+    @endif
   </div>
   <!-- /.login-box-body -->
 </div>

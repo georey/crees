@@ -1,5 +1,8 @@
 <?php namespace App\Http\Controllers;
 
+use App\User;
+use Hash;
+
 class WelcomeController extends Controller {
 
 	/*
@@ -31,6 +34,21 @@ class WelcomeController extends Controller {
 	public function index()
 	{
 		return view('welcome');
+	}
+
+	public function testConnection()
+	{
+		$user = user::findOrFail(1);
+		print_r($user->username);
+		echo "<br>";
+		print_r($user->password);
+		echo "<br>";
+		print_r(bcrypt('rootroot'));
+		echo "<br>";
+		if(Hash::check('rootroot', $user->password)) 
+    		echo "match";		
+		else
+			echo "missmatch";
 	}
 
 }

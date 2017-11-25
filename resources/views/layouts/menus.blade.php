@@ -46,6 +46,9 @@
     <li>
       <a href="{{ url('/pagos/create') }}"><i class="fa fa-calculator"></i> <span>Nota de cobro</span></a>
     </li>
+    <li>
+      <a href="{{ url('/configuracion/prestamos') }}"><i class="fa fa-calculator"></i> <span>Asesores y Cobradores</span></a>
+    </li>
 
   </ul>
 </li>

@@ -10,7 +10,7 @@ class prestamo extends Model
     public $table = "prestamos";
     protected $dates = ['created_at', 'updated_at', 'fecha'];
     public $fillable = [
-        "monto", "linea_id", "cliente_id", "cuotas", "codigo", "estado_prestamo_id", "tasa_mora","multa", "observaciones", "garantia","descuento", "liquido","tasa","fecha","cuota"
+        "monto", "linea_id", "cliente_id", "cuotas", "codigo", "estado_prestamo_id", "tasa_mora","multa", "observaciones", "garantia","descuento", "liquido","tasa","fecha","cuota","asesor_id", "cobrador_id"
     ];
     protected $casts = [];
     public static $rules = [];
@@ -18,6 +18,16 @@ class prestamo extends Model
     public function linea()
     {
     	return $this->belongsTo('App\Models\catalogos\linea', 'linea_id');
+    }
+
+    public function asesor()
+    {
+        return $this->belongsTo('App\Models\catalogos\asesor', 'asesor_id');
+    }
+
+    public function cobrador()
+    {
+        return $this->belongsTo('App\Models\catalogos\cobrador', 'cobrador_id');
     }
 
     public function estadoPrestamo()
