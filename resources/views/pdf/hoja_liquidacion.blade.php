@@ -73,7 +73,13 @@ HOJA DE LIQUIDACION<br>
 	<tr><td colspan="3"></td></tr>
 	<tr><td colspan="3"></td></tr>
 	<tr>
-		<td colspan="3"><label>Ejecutivo:<b>&nbsp;&nbsp;&nbsp;{{strtoupper(Auth::user()->nombre . ' ' . Auth::user()->apellido)}}</b></label></td>
+		<td colspan="3"><label>Ejecutivo:<b>&nbsp;&nbsp;&nbsp;
+				@if (empty($prestamo->asesor_id))
+			      	{{strtoupper(Auth::user()->nombre . ' ' . Auth::user()->apellido)}}
+			    @else
+					{{strtoupper($prestamo->asesor->nombre . ' ' . $prestamo->asesor->apellido)}}
+			    @endif
+		</b></label></td>
 	</tr>
 </table>
 <br><br>
@@ -128,16 +134,12 @@ HOJA DE LIQUIDACION<br>
 	</tr>
 	<tr>
 		<td style="text-align:center!important">
-			@if (empty($prestamo->asesor_id))
-		      	{{strtoupper(Auth::user()->nombre . ' ' . Auth::user()->apellido)}}
-		    @else
-				{{strtoupper($prestamo->asesor->nombre . ' ' . $prestamo->asesor->apellido)}}
-		    @endif
+			{{strtoupper(Auth::user()->nombre . ' ' . Auth::user()->apellido)}}			
 		</td>
 		<td style="text-align:center!important">{{$prestamo->cliente->nombreCompleto()}}</td>
 	</tr>
 	<tr>
-		<td style="text-align:center!important">Ejecutivo</td>
+		<td style="text-align:center!important">Autorizado por</td>
 		<td style="text-align:center!important">Cliente</td>
 	</tr>
 </table>
