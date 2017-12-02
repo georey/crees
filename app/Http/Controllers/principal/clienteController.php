@@ -170,7 +170,7 @@ class clienteController extends Controller
                 "prestamo_id" => $pl->id,
                 "saldo" => 0,
                 "fecha" => $input['fecha'],
-                "cobrador_id" => $pl->cobrador_id,
+                "cobrador_id" => array_key_exists('cobrador_id', $input) ? $input['cobrador_id']: null,
                 "capital_pendiente" => 0,
                 "interes_pendiente" => 0,
                 "interes_mora_pendiente" => 0,
