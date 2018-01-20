@@ -96,7 +96,7 @@ class prestamo extends Model
     {
         $capitalPagos = $this->pagos->sum('capital');
         $interesPagos = $this->pagos->sum('interes');
-        return $this->monto - $capitalPagos;
+        return round($this->monto - $capitalPagos, 2);
     }
 
     public function getMora()
@@ -295,7 +295,7 @@ class prestamo extends Model
         return $this->belongsToMany('App\Models\principal\prestamo', 'prestamos_liquidados', 'prestamo_id', 'prestamo_liquidado_id')->withPivot('monto');
     }
 
-    public static function getReporteColocacion($fecha_ini, $fecha_fin)
+    public static function getReporteColocacion($fecha_ini, $fecha_fin, $asesor_id = 0)
     {
         $rpt = prestamo::select(DB::raw(
                                     'prestamos.codigo AS Codigo,
@@ -327,9 +327,9 @@ class prestamo extends Model
                     // ->groupBy('prestamos.codigo')
                     // ->groupBy('clientes.nombre')
                     // ->groupBy('clientes.apellido')
-                    ->orderBy('prestamos.codigo')
-                    ->get();
-        return $rpt;
+                    ->orderBy('prestamos.codigo');
+        $rpt = $asesor_id > 0 ? $rpt->where('prestamos.asesor_id',$asesor_id) : $rpt;                    
+        return $rpt->get();
     }
 
     public static function getColecta($fecha = null)

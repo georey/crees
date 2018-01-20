@@ -30,7 +30,8 @@ class prestamosController extends Controller {
                 "fecha_ini" => $fecha->now()->startOfMonth()->format('d-m-Y'), 
                 "fecha_fin" => $fecha->now()->endOfMonth()->format('d-m-Y'),
                 "estado_id" => 0,
-                "reporte_id" =>0
+                "reporte_id" => 0,
+                "asesor_id" => 0
                 ];
         $data['tabla'] = 'reportes.prestamos_tabla';
         $data['prestamos'] = prestamo::getReportePrestamos();
@@ -52,11 +53,12 @@ class prestamosController extends Controller {
                 "fecha_ini" => $request->fecha_ini, 
                 "fecha_fin" => $request->fecha_fin,
                 "estado_id" => 0,
-                "reporte_id" =>$tipo
+                "reporte_id" =>$tipo,
+                "asesor_id" => $request->asesor_id
                 ];
         switch ($tipo) {
             case 1:
-                $data = pago::getReporteInteres($fecha_ini, $fecha_fin);
+                $data = pago::getReporteInteres($fecha_ini, $fecha_fin, $request->asesor_id);
                 $info['prestamos'] = $data;
                 $info['tabla'] = 'reportes.prestamos_tabla_interes';
                 if ($filtro == 'filtrar') {
@@ -72,7 +74,7 @@ class prestamosController extends Controller {
                 }
                 break;
             case 2:
-                $data = prestamo::getReporteColocacion($fecha_ini, $fecha_fin);
+                $data = prestamo::getReporteColocacion($fecha_ini, $fecha_fin, $request->asesor_id);
                 $info['prestamos'] = $data;
                 $info['tabla'] = 'reportes.prestamos_tabla_colocacion_prestamo';
                 if ($filtro == 'filtrar') {

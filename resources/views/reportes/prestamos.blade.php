@@ -37,6 +37,11 @@
 				<label for="estado_id">Asesor</label>
 				<select style="width: 100%;" id="asesor_id" name="asesor_id" class="form-control select2">
 				    <option value="0">-- Seleccione una opcion --</option>
+				    @foreach($asesores as $asesor)
+				         <option value = "{{ $asesor->id }}" {{$asesor->id == $reporte['asesor_id'] ?  'selected': ''}}>
+				                {{$asesor->nombre}} {{$asesor->apellido}}
+				         </option>
+				    @endforeach
 				</select>
 	        </div>
 	        <div class="form-group col-md-3">

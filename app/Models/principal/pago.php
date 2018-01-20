@@ -19,7 +19,7 @@ class pago extends Model
     	return round($this->capital + $this->interes + $this->mora + $this->multa, 2);
     }
 
-    public static function getReporteInteres($fecha_ini, $fecha_fin)
+    public static function getReporteInteres($fecha_ini, $fecha_fin, $asesor_id = 0)
     {
         $rpt = pago::select(DB::raw("
             prestamos.codigo AS Codigo,
@@ -44,8 +44,8 @@ class pago extends Model
                     ->groupBy('prestamos.codigo')
                     ->groupBy('clientes.nombre')
                     ->groupBy('clientes.apellido')
-                    ->orderBy('prestamos.codigo')
-                    ->get();
-        return $rpt;
+                    ->orderBy('prestamos.codigo');
+        $rpt = $asesor_id > 0 ? $rpt->where('prestamos.asesor_id',$asesor_id) : $rpt;                    
+        return $rpt->get();
     }
 }
