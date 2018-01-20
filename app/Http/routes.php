@@ -44,7 +44,8 @@ Route::group(['middleware' => 'auth'], function() {
 
 
 	Route::get('caja/corte_caja', 'principal\variosController@corteCaja');
-	Route::get('cobros/colectas_saldos', 'principal\variosController@colectasSaldos');
+	Route::get('cobros/colectas_saldos', 'principal\variosController@getColectasSaldos');
+	Route::post('cobros/colectas_saldos', 'principal\variosController@postColectasSaldos');
 
 
 	Route::get('pagos/datatable', 'principal\pagoController@getDataTable');
