@@ -11,6 +11,7 @@ Linea
     	<td>Tasa moratoria</td>
     	<td>Multa</td>
     	<td>Indice conversion</td>
+    	<td>Porcentaje</td>
     	<th width="50px">Acciones</th>
     </tr>
 </thead>

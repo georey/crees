@@ -38,6 +38,9 @@
       <a href="{{ url('/cobros/colectas_saldos') }}"><i class="fa fa-calculator"></i> <span>Colectas y saldos</span></a>
     </li>    
     <li>
+      <a href="{{ url('/cobros/cartera_asesor') }}"><i class="fa fa-calculator"></i> <span>Cartera por asesor</span></a>
+    </li>    
+    <li>
       <a href="{{ url('/pagos/create') }}"><i class="fa fa-calculator"></i> <span>Creditos por vencer</span></a>
     </li>
     <li>

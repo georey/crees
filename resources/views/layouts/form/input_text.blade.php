@@ -9,6 +9,7 @@
 		@if (isset($mask))
 				data-inputmask='"mask": "{{$mask}}"' data-mask
 			@endif
+		data-value="{{ $value[$name] or ''}}"
 		@if (isset($validations))
 			@foreach ($validations as $validation)
 				@if (isset($validation['parameter']))

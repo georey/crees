@@ -31,7 +31,7 @@
 										'value' => null,
 										'options' => $lineas,
 										'option_value' => array('nombre', 'periodo'),
-										'option_aditional_data' => array('tasa_anual', 'indice_conversion', 'tasa_mora', 'multa')
+										'option_aditional_data' => array('tasa_anual', 'indice_conversion', 'tasa_mora', 'multa', 'cobro_porcentaje')
 										))
 		</div>
 		<div class="form-group col-md-10">
@@ -73,12 +73,15 @@
 			@include("layouts.form.input_text", array(
 												'label' => 'Fecha',
 												'name' => 'fecha',
-												'value' => null,
+												'value' => array("fecha" => $fecha->format('d-m-Y')),
 												'mask' => '99-99-9999',
 												'validations' => array(['type' => 'minlength', 'parameter' => 3])
 												))
 		</div>
 		<div class="form-group col-md-10">
+			<input type="checkbox" name="opcion_gasto" id="opcion_gasto" value="1"> Gasto por porcentaje
+		</div>
+		<div class="form-group col-md-10 opcion_gasto" id="div_gasto_lista">
 			@include("layouts.form.multiselect", array(
 													'label' => 'Gastos',
 													'name' => 'gastos',
@@ -87,6 +90,14 @@
 													'option_value' => null,
 													'selected_options' => null
 													))
+
+		</div>
+		<div class="form-group col-md-10 opcion_gasto" id="div_gasto_porcentaje">
+			@include("layouts.form.input_text", array(
+												'label' => 'Gastos',
+												'name' => 'gastos_porcentaje',
+												'value' => null
+												))
 		</div>
 	</div>
 	<div class="col-md-6">
@@ -150,7 +161,7 @@
 </div>
 <div class="box-footer">
 	<a href="{!! route('clientes.index') !!}" class="btn btn-default pull-right">Cancelar</a>
-	<button type="submit" class="btn btn-info pull-right">Guardar</button>
+	<button id="btn_guardar" type="button" class="btn btn-info pull-right">Guardar</button>
 </div>
 </form>
 <div class="clearfix"></div>

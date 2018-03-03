@@ -23,10 +23,10 @@
 					<td>Monto:</td><td>${{$prestamo->monto}}</td>
 				</tr>
 				<tr>
-					<td>Cuota:</td><td>{{$prestamo->cuota}}</td>
+					<td>Cuota:</td><td>${{$prestamo->cuota}}</td>
 				</tr>
 				<tr>
-					<td>No:</td><td>{{$prestamo->cuotas}}</td>
+					<td>No:</td><td>{{$prestamo->cuotas}} {{$prestamo->linea->periodo}}</td>
 				</tr>
 				<tr>
 					<td>Apertura:</td><td>{{$prestamo->fecha->format('d-m-Y')}}</td>

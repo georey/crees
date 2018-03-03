@@ -46,6 +46,14 @@
 												'validations' => array(['type' => 'required'])
 												))
 		</div>
+		<div class="form-group col-md-10">
+			@include("layouts.form.input_text", array(
+												'label' => 'Porcentaje',
+												'name' => 'cobro_porcentaje',
+												'value' => isset($linea) ? $linea : null,
+												'validations' => array(['type' => 'required'])
+												))
+		</div>
 	</div>
 </div>
 <div class="clearfix"></div>

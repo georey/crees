@@ -195,8 +195,9 @@ class clienteController extends Controller
         $data['lineas'] = linea::all();
         $data['asesores'] = Asesor::all();
         $data['cobradores'] = Cobrador::all();
-        $data['prestamos'] = prestamo::where('cliente_id', $id)->where('estado_prestamo_id','!=',4)->get();
+        $data['prestamos'] = prestamo::where('cliente_id', $id)->where('estado_prestamo_id','!=',4)->orderBy("id","desc")->get();
         $data['prestamos_activos'] = prestamo::where('cliente_id', $id)->where('estado_prestamo_id',1)->get();
+        $data['fecha'] = $carbon = new Carbon();
         return view('principal.cliente.prestamo')->with($data);
     }
 
@@ -277,7 +278,7 @@ class clienteController extends Controller
     public function getHistorial($id)
     {
         $data['cliente'] = cliente::findOrFail($id);
-        $data["prestamos"] = prestamo::where("cliente_id",$id)->whereNotIn("estado_prestamo_id",[4])->get();
+        $data["prestamos"] = prestamo::where("cliente_id",$id)->whereNotIn("estado_prestamo_id",[4])->orderBy("id","desc")->get();
         return view('principal.cliente.historial')->with($data);
     }
 

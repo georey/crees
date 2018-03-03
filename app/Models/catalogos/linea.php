@@ -8,12 +8,8 @@ class linea extends Model
     public $table = "lineas";
     public $timestamps = false;
     public $fillable = [
-        "nombre", "tasa_anual", "indice_conversion", "tasa_mora", "multa", "periodo"
+        "nombre", "tasa_anual", "indice_conversion", "tasa_mora", "multa", "periodo", "cobro_porcentaje"
     ];
     protected $casts = [];
-    public static $rules = [];
-
-    public function prueba(){
-    	return "algo";
-    }
+    public static $rules = [];    
 }

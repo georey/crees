@@ -1,0 +1,50 @@
+<table class="table table-bordered table-striped table-mini-text">
+	<thead>
+		<tr>
+			<th>Codigo</th>
+			<th>Cliente</th>			
+			<th>Otorgamiento</th>
+			<th>Vencimiento</th>
+			<th>Plazo</th>
+			<th>Monto</th>
+			<th>Saldo</th>
+		</tr>
+	</thead>
+	<tbody>
+	{{--*/ $total_saldo = 0 /*--}}
+	{{--*/ $total_interes = 0 /*--}}
+	{{--*/ $total_deuda = 0 /*--}}
+	{{--*/ $total_monto = 0 /*--}}
+
+		@foreach($prestamos as $prestamo)
+			{{--*/ $saldo = $prestamo->saldoAnterior() /*--}}
+			{{--*/ $interes = $prestamo->getInteres() /*--}}
+			{{--*/ $monto = $prestamo->monto /*--}}
+			{{--*/ $deuda = $prestamo->saldoAnterior() + $prestamo->getInteres() + $prestamo->getMulta() + $prestamo->getMora() /*--}}
+			<tr>
+				<td>{{$prestamo->codigo}}</td>
+				<td>{{$prestamo->cliente->nombreCompleto()}}</td>
+				<td>{{$prestamo->fecha->format('d-m-Y')}}</td>
+				<td>{{$prestamo->getFechaVencimiento()->format('d-m-Y')}}</td>
+				<td>{{$prestamo->cuotas}} {{str_limit($prestamo->linea->periodo,1,"")}}</td>
+				<td>{{$prestamo->monto}}</td>
+				<td class="text-right" align="right">{{number_format($saldo + $interes,2)}}</td>
+			</tr>
+			{{--*/ $total_saldo += $saldo /*--}}
+	        {{--*/ $total_interes += $interes /*--}}
+	        {{--*/ $total_deuda += $deuda /*--}}
+	        {{--*/ $total_monto += $monto /*--}}
+		@endforeach
+	</tbody>
+	<tfoot>
+		<tr>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th>TOTAL</th>
+			<th class="text-right" align="right">{{number_format($total_monto,2)}}</th>
+			<th class="text-right" align="right">{{number_format($total_saldo + $total_interes,2)}}</th>
+		</tr>
+	</tfoot>
+</table>

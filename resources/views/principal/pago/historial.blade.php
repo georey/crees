@@ -3,7 +3,12 @@
 	Historial de pagos
 @stop
 @section('titleBreadcrumb')
-    {{$prestamo->codigo}} - {{$prestamo->cliente->nombreCompleto()}} - {{$prestamo->monto}}
+    {{$prestamo->codigo}} - {{$prestamo->cliente->nombreCompleto()}}
+    <br>Monto: ${{$prestamo->monto}}
+    <br>Cuota: ${{$prestamo->cuota}}
+    <br>Plazo: {{$prestamo->cuotas}} Cuotas {{$prestamo->linea->periodo}}
+    <br>Periodo: {{$prestamo->fecha->format('d-m-Y')}} al {{$prestamo->getFechaVencimiento()->format('d-m-Y')}}
+
 @stop
 
 @section('content')

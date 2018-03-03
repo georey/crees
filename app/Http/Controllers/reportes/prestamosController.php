@@ -27,8 +27,8 @@ class prestamosController extends Controller {
     	$data['asesores'] = asesor::all();
         $fecha = new Carbon();
         $data['reporte'] = [
-                "fecha_ini" => $fecha->now()->startOfMonth()->format('d-m-Y'), 
-                "fecha_fin" => $fecha->now()->endOfMonth()->format('d-m-Y'),
+                "fecha_ini" => $fecha->now()->format('d-m-Y'), 
+                "fecha_fin" => $fecha->now()->format('d-m-Y'),
                 "estado_id" => 0,
                 "reporte_id" => 0,
                 "asesor_id" => 0

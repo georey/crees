@@ -1,5 +1,5 @@
 <label for="{{$name}}">
-    <strong> {{ isset($label) ? strtolower($label). ': ' : ''}} </strong>
+    <strong> {{ isset($label) ? $label. ': ' : ''}} </strong>
 </label>
     <select id="{{$name}}" name="{{$name}}[]" class="form-control select2
         @if (isset($validations))

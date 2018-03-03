@@ -124,9 +124,7 @@ var TableDatatablesButtons = function () {
             ],
             responsive: true,
 
-            "order": [
-                [0, 'asc']
-            ],
+            //"order": [[1, 'asc']],
 
             "lengthMenu": [
                 [10, 50, 100, 500],

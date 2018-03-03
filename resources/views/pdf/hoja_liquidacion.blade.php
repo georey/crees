@@ -8,11 +8,7 @@ HOJA DE LIQUIDACION<br>
 <div style="width:50%; display: inline-block; text-align:right">
 	<img src="{{ asset('img/logo_mini.jpg') }}" style="width:75px">
 </div>
-
-<h3 class="text-center">SERVICIOS CREDITICIOS DE ELSALVADOR S.A. DE C.V.</h3>
-
-<div class="line-separator"></div>
-<br><br>
+@include('pdf.encabezado')
 <table border="0" width="100%">
 	<tr>
 		<td colspan="3"><label>Cliente:<b>&nbsp;&nbsp;&nbsp;{{$prestamo->codigo}} {{$prestamo->cliente->nombreCompleto()}}</b></label></td>

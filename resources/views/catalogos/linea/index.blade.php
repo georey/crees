@@ -25,6 +25,7 @@
             { data: 'tasa_mora', name: 'tasa_mora' },
             { data: 'multa', name: 'multa' },
             { data: 'indice_conversion', name: 'indice_conversion' },
+            { data: 'cobro_porcentaje', name: 'cobro_porcentaje' },
             { data: 'id', name: 'id' },
             //Array of columns to add in the datatable
             ];

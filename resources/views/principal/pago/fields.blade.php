@@ -99,12 +99,12 @@
 		<div class="form-group col-md-12">
 			<input class="form-control" placeholder="Capital pendiente" id="hdn_capital" name="hdn_capital" type="hidden">
 		</div>
+		<div class="clearfix"></div>
+		<div class="box-footer">
+			<a href="{!! route('pagos.index') !!}" class="btn btn-default pull-right">Regresar</a>
+			<button type="submit" class="btn btn-info pull-right">Guardar</button>
+		</div>
 	</div>
-</div>
-<div class="clearfix"></div>
-<div class="box-footer">
-	<a href="{!! route('pagos.index') !!}" class="btn btn-default pull-right">Regresar</a>
-	<button type="submit" class="btn btn-info pull-right">Guardar</button>
 </div>
 @section('scripts')
 	<script type="text/javascript" src="{{ asset('scripts/pagos/calculadora.js') }}"></script>

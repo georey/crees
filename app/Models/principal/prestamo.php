@@ -256,7 +256,7 @@ class prestamo extends Model
                         ->join('clientes', 'prestamos.cliente_id', '=', 'clientes.id')
                         ->join('estados_prestamo', 'estados_prestamo.id', '=', 'prestamos.estado_prestamo_id')
                         ->where("estado_prestamo_id","!=", 4)
-                        ->orderBy('clientes.apellido')
+                        //->orderBy('clientes.apellido')
                         ->orderBy('prestamos.codigo');
                         //->get();
         return $prestamo;
