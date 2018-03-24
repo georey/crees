@@ -3,20 +3,59 @@
 	Historial de pagos
 @stop
 @section('titleBreadcrumb')
-    {{$prestamo->codigo}} - {{$prestamo->cliente->nombreCompleto()}}
-    <br>Monto: ${{$prestamo->monto}}
-    <br>Cuota: ${{$prestamo->cuota}}
-    <br>Plazo: {{$prestamo->cuotas}} Cuotas {{$prestamo->linea->periodo}}
-    <br>Periodo: {{$prestamo->fecha->format('d-m-Y')}} al {{$prestamo->getFechaVencimiento()->format('d-m-Y')}}
-
+	{{$prestamo->cliente->nombreCompleto()}}
 @stop
 
 @section('content')
+<style>
+	@media print {
+        .no-border-print {
+            color: #000;    
+	        background-color: #fff;
+	        
+        }
+
+        .no-border-print > th, td {
+            color: #000;    
+	        background-color: #fff;
+	        
+        }
+    }
+</style>
 <input type="hidden" id="fecha_otorgamiento" value="{{$prestamo->fecha->format('d-m-Y')}}">
 <div class="box">
     <div class="box-body">
       <table class="table table-bordered table-striped" id="tbl_historial">
         <thead>
+    		<tr>
+				<th colspan="11">
+					<h4>
+						<table class="no-border-print" style="width:100%;margin-left: 0;margin-right: 0;">
+							<tr>
+								<td>Cliente:</td><td>{{$prestamo->cliente->nombreCompleto()}}</td>
+							</tr>
+							<tr>
+								<td>Codigo:</td><td>{{$prestamo->codigo}}</td>
+							</tr>
+							<tr>
+								<td>Monto:</td><td>${{$prestamo->monto}}</td>
+							</tr>
+							<tr>
+								<td>Cuota:</td><td>${{$prestamo->cuota}}</td>
+							</tr>
+							<tr>
+								<td>No:</td><td>{{$prestamo->cuotas}} {{$prestamo->linea->periodo}}</td>
+							</tr>
+							<tr>
+								<td>Apertura:</td><td>{{$prestamo->fecha->format('d-m-Y')}}</td>
+							</tr>
+							<tr>
+								<td>Vencimiento:</td><td>{{$prestamo->getFechaVencimiento()->format('d-m-Y')}}</td>
+							</tr>
+						</table>
+					</h4>
+				</th>
+			</tr>
 		    <tr>
 		    	<th>Numero</th>
 		    	<th>Fecha</th>

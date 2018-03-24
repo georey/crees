@@ -42,6 +42,8 @@ Route::group(['middleware' => 'auth'], function() {
 	    'uses' => 'principal\clienteController@destroy',
 	]);
 
+	Route::get('cumpleaneros/{mes?}', 'principal\clienteController@cumpleaneros');
+
 
 	Route::get('caja/corte_caja', 'principal\variosController@corteCaja');
 	Route::get('cobros/colectas_saldos', 'principal\variosController@getColectasSaldos');

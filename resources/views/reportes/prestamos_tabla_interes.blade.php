@@ -32,7 +32,7 @@
 	        	<th>{{number_format($prestamos->sum('Interes'), 2)}}</th>
 	        	<th>{{number_format($prestamos->sum('Mora'), 2)}}</th>
 	        	<th>{{number_format($prestamos->sum('Multa'), 2)}}</th>
-	        	<th>{{number_format($prestamos->sum('Capital')+$prestamos->sum('Interes')+$prestamos->sum('Mora')+$prestamos->sum('Multa')+$prestamos->sum('Tramites'), 2)}}</th>
+	        	<th>{{number_format($prestamos->sum('Capital')+$prestamos->sum('Interes')+$prestamos->sum('Mora')+$prestamos->sum('Multa'), 2)}}</th>
 	        </tfoot>
 	      </table>
 	    </div>

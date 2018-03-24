@@ -1,8 +1,8 @@
 $(document).ready(function(){
 	var dateFormat = "D-M-YYYY";
-	var fecha1 = moment($("#fecha_otorgamiento").val(), dateFormat);
+	var fecha1 = moment($("#fecha_otorgamiento").val(), dateFormat);	
 	var fecha2;
-	$("#tbl_historial tbody tr").each(function(element) {
+	$("#tbl_historial > tbody > tr").each(function(index, element) {		
 		fecha2 = moment($(this).find('td.td_fecha').html(), dateFormat);
 		$(this).find('td.td_dias').html(fecha2.diff(fecha1, 'days'));
 		fecha1 = fecha2;

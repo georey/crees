@@ -1,7 +1,15 @@
-<li>
-  <a href="{{ url('/clientes') }}">
-    <i class="fa fa-users"></i> <span>Clientes</span>
+<li class="treeview">
+  <a href="#">
+    <i class="fa fa-users"></i> <span>Clientes</span> <i class="fa fa-angle-left pull-right"></i>
   </a>
+  <ul class="treeview-menu">
+    <li>
+      <a href="{{ url('/clientes') }}"><i class="fa fa-users"></i> <span>Lista</span></a>
+    </li>    
+    <li>
+      <a href="{{ url('/cumpleaneros') }}"><i class="fa fa-users"></i> <span>Cumpleañeros</span></a>
+    </li>
+  </ul>
 </li>
 <li class="treeview">
   <a href="#">

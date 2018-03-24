@@ -282,4 +282,15 @@ class clienteController extends Controller
         return view('principal.cliente.historial')->with($data);
     }
 
+    public function cumpleaneros($mes = 0){
+        if($mes == 0)
+            return redirect("cumpleaneros/". Date("n"));
+        $data['clientes'] =  cliente::whereRaw("MONTH(fecha_nacimiento) = {$mes}")
+                                ->whereRaw("id in (SELECT cliente_id FROM prestamos WHERE estado_prestamo_id = 1)")
+                                ->orderByRaw("DAYOFMONTH(fecha_nacimiento)")
+                                ->get();
+        $data["mes"] = $mes;
+        return view('principal.cliente.cumpleaneros')->with($data);
+    }
+
 }

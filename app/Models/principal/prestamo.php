@@ -327,7 +327,7 @@ class prestamo extends Model
                     // ->groupBy('prestamos.codigo')
                     // ->groupBy('clientes.nombre')
                     // ->groupBy('clientes.apellido')
-                    ->orderBy('prestamos.codigo');
+                    ->orderBy('prestamos.fecha');
         $rpt = $asesor_id > 0 ? $rpt->where('prestamos.asesor_id',$asesor_id) : $rpt;                    
         return $rpt->get();
     }
