@@ -19,9 +19,10 @@ use PDF;
 
 class variosController extends Controller
 {	
-	public function corteCaja()
+	public function corteCaja(Request $request)
     {
-    	$data=[];
+        $params = $request->all();
+    	$data["pagos"] = pago::getIngresosByDate($params);
         return view('principal.caja.corte_caja')->with($data);
     }
 

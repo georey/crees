@@ -48,4 +48,16 @@ class pago extends Model
         $rpt = $asesor_id > 0 ? $rpt->where('prestamos.asesor_id',$asesor_id) : $rpt;                    
         return $rpt->get();
     }
+
+    public static function getIngresosByDate($params)
+    {
+        $fecha_ini = array_key_exists("fecha_ini", $params) ? $params["fecha_ini"] : date("Y-m-d");
+        $fecha_fin = array_key_exists("fecha_fin", $params) ? $params["fecha_fin"] : date("Y-m-d");
+        $rpt =pago::join('prestamos', 'prestamos.id', '=', 'pagos.prestamo_id')
+                    ->join('clientes', 'clientes.id', '=', 'prestamos.cliente_id')
+                    ->whereRaw("date(pagos.fecha) >= {$fecha_ini}")
+                    ->whereRaw("date(pagos.fecha) <= {$fecha_fin}")
+                    ->whereRaw("(pagos.saldo is null OR pagos.saldo > 0)");
+        return $rpt->get();
+    }
 }

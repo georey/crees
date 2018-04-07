@@ -10,7 +10,7 @@
 			<th>Cliente</th>			
 			<th title="Dias desde el ultimo pago">DUP</th>
 			<th title="Plazo/Linea">P/L</th>
-			<th>Saldo</th>
+			<th>Capital</th>
 			<th>Interes</th>
 			<th>Cuota</th>
 			<th title="Ponerse al dia">P/Dia</th>
