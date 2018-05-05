@@ -11,7 +11,7 @@
 			<th title="Dias desde el ultimo pago">DUP</th>
 			<th title="Plazo/Linea">P/L</th>
 			<th>Capital</th>
-			<th>Interes</th>
+			<th>Interes Total</th>
 			<th>Cuota</th>
 			<th title="Ponerse al dia">P/Dia</th>
 			<th>Deuda Total</th>
@@ -24,7 +24,7 @@
 
 		@foreach($prestamos as $prestamo)
 			{{--*/ $saldo = $prestamo->saldoAnterior() /*--}}
-			{{--*/ $interes = $prestamo->getInteres() /*--}}
+			{{--*/ $interes = $prestamo->getInteres() + $prestamo->getMulta() + $prestamo->getMora() /*--}}
 			{{--*/ $deuda = $prestamo->saldoAnterior() + $prestamo->getInteres() + $prestamo->getMulta() + $prestamo->getMora() /*--}}
 			<tr>
 				<td>{{$prestamo->codigo}}</td>

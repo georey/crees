@@ -48,6 +48,7 @@ class prestamosController extends Controller {
         $filtro = $request->btn_submit;
         $fecha_ini = Carbon::createFromFormat('d-m-Y H:i:s', $request->fecha_ini . " 00:00:00");
         $fecha_fin = Carbon::createFromFormat('d-m-Y H:i:s', $request->fecha_fin . " 23:59:59");
+        $mes = $fecha_ini->month;
         $data['prestamos'] = null;
         $info['reporte'] = [
                 "fecha_ini" => $request->fecha_ini, 
@@ -82,6 +83,22 @@ class prestamosController extends Controller {
                 } else {
                     Excel::create('Reporte de prestamos colocados', function($excel) use($data){
                         $excel->setTitle('Reporte de prestamos colocados');
+                        $excel->sheet('Prestamos', function($sheet) use($data){
+                            $sheet->setOrientation('landscape');
+                            $sheet->fromArray($data->toArray());
+                        });
+                    })->export('xls');
+                }
+                break;
+            case 3:
+                $data = prestamo::getPrestamosMes($mes);
+                $info['prestamos'] = $data;
+                $info['tabla'] = 'reportes.infored';
+                if ($filtro == 'filtrar') {
+                    return view('reportes.prestamos')->with($info);
+                } else {
+                    Excel::create('Reporte de Infored', function($excel) use($data){
+                        $excel->setTitle('Reporte de Infored');
                         $excel->sheet('Prestamos', function($sheet) use($data){
                             $sheet->setOrientation('landscape');
                             $sheet->fromArray($data->toArray());

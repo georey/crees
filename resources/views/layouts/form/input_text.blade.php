@@ -17,5 +17,5 @@
 				@endif
 			@endforeach
 		@endif
-		 value="{{ $value[$name] or ''}}">
+		 value="{{ $value[$name] or ''}}" {{$required or ""}}  >
 </input>

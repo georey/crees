@@ -305,7 +305,7 @@ class prestamo extends Model
                                     lineas.nombre AS Linea,
                                     prestamos.monto AS Monto,
                                     prestamos.liquido As Liquido,
-                                    prestamos_liquidados.monto as total_liquidacion,
+                                    SUM(prestamos_liquidados.monto) as total_liquidacion,
                                     SUM(tipo_gastos.monto) as total_gastos
                                     '))
                     ->join('clientes', 'clientes.id', '=', 'prestamos.cliente_id')
@@ -323,13 +323,14 @@ class prestamo extends Model
                     ->groupBy('lineas.nombre')
                     ->groupBy('prestamos.monto')
                     ->groupBy('prestamos.liquido')
-                    ->groupBy('prestamos_liquidados.monto')
+                    // ->groupBy('prestamos_liquidados.monto')
                     // ->groupBy('prestamos.codigo')
                     // ->groupBy('clientes.nombre')
                     // ->groupBy('clientes.apellido')
-                    ->orderBy('prestamos.fecha');
+                    ->orderBy('prestamos.fecha')
+                    ->orderBy('prestamos.codigo');
         $rpt = $asesor_id > 0 ? $rpt->where('prestamos.asesor_id',$asesor_id) : $rpt;                    
-        return $rpt->get();
+        return $rpt->distinct()->get();
     }
 
     public static function getColecta($fecha = null)
@@ -343,6 +344,35 @@ class prestamo extends Model
                     ->where('prestamos.estado_prestamo_id', 1)
                     ->orderBy('prestamos.codigo')
                     ->get();
+        return $rpt;
+    }
+
+    public static function getPrestamosMes($mes){
+        $rpt = prestamo::select(DB::raw(
+                                    'prestamos.codigo AS codigo,
+                                    clientes.nombre AS nombre,
+                                    clientes.apellido AS apellido,
+                                    prestamos.fecha As fecha,
+                                    lineas.nombre AS linea,
+                                    lineas.id_infored AS id_infored,
+                                    prestamos.monto AS monto,
+                                    prestamos.liquido As liquido,
+                                    max(pagos.fecha) as fecha_ultimo_pago,
+                                    max(pagos.id) as ultimo_pago
+                                    '))
+                        ->join('clientes', 'clientes.id', '=', 'prestamos.cliente_id')
+                        ->join('lineas', 'lineas.id', '=', 'prestamos.linea_id')
+                        ->join('pagos', 'pagos.prestamo_id', '=', 'prestamos.id')
+                        ->whereRaw("Month(pagos.fecha)  = {$mes}")
+                        ->groupBy('prestamos.codigo')
+                        ->groupBy('clientes.nombre')
+                        ->groupBy('clientes.apellido')
+                        ->groupBy('prestamos.fecha')
+                        ->groupBy('lineas.nombre')
+                        ->groupBy('prestamos.monto')
+                        ->groupBy('prestamos.liquido')
+                        ->groupBy('lineas.id_infored')
+                        ->get();
         return $rpt;
     }
 }

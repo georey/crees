@@ -15,7 +15,7 @@ function Calculadora() {
 			dias = parseInt($("#prestamo_id option:selected").attr('data-dias-transcurridos'));
 			fecha = $("#prestamo_id option:selected").attr('data-fecha');
 			cuotaTotal = parseFloat(cuota) + parseFloat(multa) + parseFloat(mora) + parseFloat(capital_pendiente)  + parseFloat(interes);
-			$("#cuota").val(cuotaTotal.toFixed(2));
+			//$("#cuota").val(cuotaTotal.toFixed(2));
 			$("#h3_cuota_acordada").html(cuota_acordada.toFixed(2));
 			$("#mora").val(mora.toFixed(2));
 			$("#multa").val(multa.toFixed(2));

@@ -67,7 +67,8 @@
 												'label' => 'Cuota',
 												'name' => 'cuota',
 												'value' => null,
-												'validations' => array(['type' => 'required'])
+												'validations' => array(['type' => 'required']),
+												'required' => 'required'
 												))
 		</div>
 		<div class="form-group col-md-12">
@@ -75,7 +76,8 @@
 												'label' => 'Mora',
 												'name' => 'mora',
 												'value' => null,
-												'validations' => array(['type' => 'required'])
+												'validations' => array(['type' => 'required']),
+												'required' => 'required'
 												))
 		</div>
 		<div class="form-group col-md-12">
@@ -83,7 +85,8 @@
 												'label' => 'Multa',
 												'name' => 'multa',
 												'value' => null,
-												'validations' => array(['type' => 'required'])
+												'validations' => array(['type' => 'required']),
+												'required' => 'required'
 												))
 		</div>
 		<div class="form-group col-md-12">

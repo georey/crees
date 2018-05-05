@@ -2,6 +2,9 @@
 @section('title')
     Corte Caja
 @stop
+@section('titleBreadcrumb')
+	Corte Caja
+@stop
 @section('content')
 <table class="table table-bordered table-striped table-mini-text">
 	<thead>
@@ -18,9 +21,9 @@
 			{{--*/ $abono = $pago->capital+ $pago->interes+ $pago->mora+ $pago->multa  /*--}}
 			<tr>
 				<td>{{$pago->id}}</td>
-				<td>{{$pago->codigo}}</td>
+				<td>{{$pago->prestamo->codigo}}</td>
 				<td>{{$pago->prestamo->cliente->nombreCompleto()}}</td>				
-				<td class="text-right" align="right">{{$abono}}</td>				
+				<td class="text-right" align="right">$ {{number_format($abono, 2)}}</td>				
 			</tr>
 			{{--*/ $total_abono += $abono /*--}}	        
 		@endforeach
@@ -30,7 +33,7 @@
 			<th></th>
 			<th></th>			
 			<th>TOTAL</th>
-			<th class="text-right" align="right">{{number_format($total_abono,2)}}</th>			
+			<th class="text-right" align="right">$ {{number_format($total_abono,2)}}</th>			
 		</tr>
 	</tfoot>
 </table>

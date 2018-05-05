@@ -50,6 +50,7 @@
 				    <option value="0">-- Seleccione una opcion --</option>
 					<option value = "1" {{$reporte['reporte_id'] == 1 ?  'selected': ''}}>Intereses cobrados</option>
 					<option value = "2" {{$reporte['reporte_id'] == 2?  'selected': ''}}>Colocacion de creditos</option>
+					<option value = "3" {{$reporte['reporte_id'] == 3?  'selected': ''}}>INFORED</option>
 				</select>
 	        </div>
 	        <div id="div_buttons" class="form-group col-md-12">

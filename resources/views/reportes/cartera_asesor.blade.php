@@ -14,7 +14,7 @@
 			<th>Vencimiento</th>
 			<th>Plazo</th>
 			<th>Monto</th>
-			<th>Saldo</th>
+			<th>Saldo Capital</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -35,7 +35,7 @@
 				<td>{{$prestamo->getFechaVencimiento()->format('d-m-Y')}}</td>
 				<td>{{$prestamo->cuotas}} {{str_limit($prestamo->linea->periodo,1,"")}}</td>
 				<td>{{$prestamo->monto}}</td>
-				<td class="text-right" align="right">{{number_format($saldo + $interes,2)}}</td>
+				<td class="text-right" align="right">{{number_format($saldo,2)}}</td>
 			</tr>
 			{{--*/ $total_saldo += $saldo /*--}}
 	        {{--*/ $total_interes += $interes /*--}}
@@ -51,7 +51,7 @@
 			<th></th>
 			<th>TOTAL</th>
 			<th class="text-right" align="right">{{number_format($total_monto,2)}}</th>
-			<th class="text-right" align="right">{{number_format($total_saldo + $total_interes,2)}}</th>
+			<th class="text-right" align="right">{{number_format($total_saldo,2)}}</th>
 		</tr>
 	</tfoot>
 </table>
