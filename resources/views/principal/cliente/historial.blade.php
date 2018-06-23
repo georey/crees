@@ -13,7 +13,7 @@
 		<tbody>
 		@foreach($prestamos as $prestamo)
 		<tr>
-		<th colspan="11">
+		<th colspan="12">
 		<h3>
 			<table style="width:50%; margin-left: auto; margin-right: auto;">
 				<tr>
@@ -87,8 +87,7 @@
 				{{-- */$i++;/* --}}
 			@endforeach
 			<tr>
-				<th>Total:</th>
-		    	<th></th>
+				<th colspan="3">Total:</th>
 		    	<th>{{number_format($cuota, 2)}}</th>
 		    	<th>{{number_format($capital, 2)}}</th>
 		    	<th>{{number_format($interes, 2)}}</th>

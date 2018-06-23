@@ -96,7 +96,8 @@ class prestamo extends Model
     {
         $capitalPagos = $this->pagos->sum('capital');
         $interesPagos = $this->pagos->sum('interes');
-        return round($this->monto - $capitalPagos, 2);
+        $saldo = round($this->monto - $capitalPagos, 2);
+        return $saldo < 1 ? 0 : $saldo;
     }
 
     public function getMora()
@@ -117,6 +118,50 @@ class prestamo extends Model
             $dias = $proximaFecha->diffInDays($carbon);
             return $cuota * $tasa * $dias;
         }
+    }
+
+    public function getClasificacion(){
+        /*A1 Atrasos hasta de 7 días
+        A2 Atrasos hasta 30 días
+        B  Atrasos hasta 90 días
+        C1 Atrasos hasta 120 días
+        C2 Atrasos hasta 180 días
+        D1 Atrasos hasta 270 días
+        D2 Atrasos hasta 360 días
+        E  Atrasos de más de 360 días*/
+        $carbon = $this->getFechaActualSinHora();
+        $dias = $carbon->diffInDays($this->getProximaFecha());
+        $calificacion ="";
+        switch (true) {
+            case ($dias <= 7):
+                $calificacion = "A1";
+                break;            
+            case ($dias > 7 && $dias <= 30):
+                $calificacion = "A2";
+                break;            
+            case ($dias > 30 && $dias <= 90):
+                $calificacion = "B";
+                break;
+            case ($dias > 90 && $dias <= 120):
+                $calificacion = "C1";
+                break;            
+            case ($dias > 120 && $dias <= 180):
+                $calificacion = "C2";
+                break;            
+            case ($dias > 180 && $dias <= 270):
+                $calificacion = "D1";
+                break;            
+            case ($dias > 270 && $dias <= 360):
+                $calificacion = "D2";
+                break;            
+            case ($dias > 360):
+                $calificacion = "E";
+                break;            
+            default:
+                $calificacion ="Indeterminada";
+                break;
+        }
+        return $calificacion;
     }
 
     public function getMulta()
@@ -348,8 +393,11 @@ class prestamo extends Model
     }
 
     public static function getPrestamosMes($mes){
-        $rpt = prestamo::select(DB::raw(
-                                    'prestamos.codigo AS codigo,
+        $rpt = prestamo::select('prestamos.*')
+                        ->addSelect(DB::raw("CONCAT(clientes.nombre, ' ', clientes.apellido) as nombre_completo"))
+                        ->addSelect(DB::raw("(((365/lineas.indice_conversion) * prestamos.cuotas)/30) AS meses"))
+                        ->addSelect(DB::raw("max(pagos.id) as ultimo_pago"))
+                                    /*"
                                     clientes.nombre AS nombre,
                                     clientes.apellido AS apellido,
                                     prestamos.fecha As fecha,
@@ -358,20 +406,21 @@ class prestamo extends Model
                                     prestamos.monto AS monto,
                                     prestamos.liquido As liquido,
                                     max(pagos.fecha) as fecha_ultimo_pago,
-                                    max(pagos.id) as ultimo_pago
-                                    '))
+                                    max(pagos.id) as ultimo_pago,
+                                    (((365/lineas.indice_conversion) * prestamos.cuotas)/30) AS meses,
+                                    prestamos.monto - sum(pagos.capital) AS saldo_capital,
+                                    prestamos.cuota,
+                                    prestamos.cuotas,
+                                    clientes.fecha_nacimiento,
+                                    clientes.dui,
+                                    clientes.nit,
+                                    CASE WHEN clientes.sexo = 1 THEN 'Masculino' ELSE 'Femenino' END AS sexo,
+                                    "))*/
                         ->join('clientes', 'clientes.id', '=', 'prestamos.cliente_id')
                         ->join('lineas', 'lineas.id', '=', 'prestamos.linea_id')
                         ->join('pagos', 'pagos.prestamo_id', '=', 'prestamos.id')
+                        ->groupBy('prestamos.id')
                         ->whereRaw("Month(pagos.fecha)  = {$mes}")
-                        ->groupBy('prestamos.codigo')
-                        ->groupBy('clientes.nombre')
-                        ->groupBy('clientes.apellido')
-                        ->groupBy('prestamos.fecha')
-                        ->groupBy('lineas.nombre')
-                        ->groupBy('prestamos.monto')
-                        ->groupBy('prestamos.liquido')
-                        ->groupBy('lineas.id_infored')
                         ->get();
         return $rpt;
     }

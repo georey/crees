@@ -47,6 +47,11 @@ class cliente extends Model
         return $this->hasMany('App\Models\principal\negocio');
     }
 
+    public function getSexo()
+    {
+        return $this->sexo ==1 ? "Masculino" : "Femenino";
+    }
+
     public static function ListaClientes() {
         $clientes = cliente::select('clientes.*', 'zonas.nombre as zona', 'profesiones.nombre as profesion', 'estados.nombre as estado')
                         ->addSelect(DB::raw("CONCAT(clientes.nombre, ' ', clientes.apellido) as nombre_completo"))

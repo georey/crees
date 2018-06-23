@@ -22,6 +22,9 @@
     <li>
       <a href="{{ url('/pagos/calculadora') }}"><i class="fa fa-calculator"></i> <span>Calculadora</span></a>
     </li>
+    <li>
+      <a href="{{ url('/acuerdos_pagos') }}"><i class="fa fa-calculator"></i> <span>Acuerdos</span></a>
+    </li>  
   </ul>
 </li>
 <li class="treeview">

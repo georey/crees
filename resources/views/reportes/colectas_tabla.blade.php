@@ -20,7 +20,7 @@
 
 		@foreach($prestamos as $prestamo)
 			{{--*/ $saldo = $prestamo->saldoAnterior() /*--}}
-			{{--*/ $interes = $prestamo->getInteres() /*--}}
+			{{--*/ $interes = $prestamo->getInteres() + $prestamo->getMulta() + $prestamo->getMora() /*--}}
 			{{--*/ $deuda = $prestamo->saldoAnterior() + $prestamo->getInteres() + $prestamo->getMulta() + $prestamo->getMora() /*--}}
 			<tr>
 				<td>{{$prestamo->codigo}}</td>

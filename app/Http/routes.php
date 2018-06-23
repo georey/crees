@@ -53,7 +53,7 @@ Route::group(['middleware' => 'auth'], function() {
 
 
 
-	Route::get('pagos/datatable', 'principal\pagoController@getDataTable');
+	Route::get('pagos/datatable', 'principal\pagoController@getDataTable');	
 	Route::get('pagos/calculadora', [
 	    'as' => 'pagos.calculadora',
 	    'uses' => 'principal\pagoController@getCalculadora',
@@ -70,6 +70,14 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::get('pagos/delete/{id}', [
 	    'as' => 'pagos.delete',
 	    'uses' => 'principal\pagoController@destroy',
+	]);
+
+	Route::get('acuerdos_pago/datatable', 'principal\acuerdoController@getDataTable');
+    Route::get('acuerdos_pago/restore/{id}', 'principal\acuerdoController@restore');
+    Route::resource('acuerdos_pago', 'principal\acuerdoController');
+	Route::get('acuerdos_pago/delete/{id}', [
+	    'as' => 'acuerdos_pagos.delete',
+	    'uses' => 'principal\acuerdoController@destroy',
 	]);
 
 	Route::get('asesores/datatable', 'catalogos\asesorController@getDataTable');
