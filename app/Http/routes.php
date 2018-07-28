@@ -72,10 +72,10 @@ Route::group(['middleware' => 'auth'], function() {
 	    'uses' => 'principal\pagoController@destroy',
 	]);
 
-	Route::get('acuerdos_pago/datatable', 'principal\acuerdoController@getDataTable');
-    Route::get('acuerdos_pago/restore/{id}', 'principal\acuerdoController@restore');
-    Route::resource('acuerdos_pago', 'principal\acuerdoController');
-	Route::get('acuerdos_pago/delete/{id}', [
+	Route::get('acuerdos_pagos/datatable', 'principal\acuerdoController@getDataTable');
+    Route::get('acuerdos_pagos/restore/{id}', 'principal\acuerdoController@restore');
+    Route::resource('acuerdos_pagos', 'principal\acuerdoController');
+	Route::get('acuerdos_pagos/delete/{id}', [
 	    'as' => 'acuerdos_pagos.delete',
 	    'uses' => 'principal\acuerdoController@destroy',
 	]);

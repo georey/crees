@@ -269,6 +269,18 @@ class prestamo extends Model
         return $carbon;
     }
 
+    public function getEstadoInfored()
+    {
+        $estado = $this->estado_prestamo_id;
+        if($estado == 1 && $this->getVencimiento() > $this->getFechaActualSinHora())
+            $estado = 2; //Vencido
+        if($estado == 1 && $this->getVencimiento() <= $this->getFechaActualSinHora())
+            $estado = 1; //activo
+        if($this->saldoAnterior() < 0.99) 
+            $estado = 3; //cancelado
+        return $estado;
+    }
+
     public function getVencimiento()
     {
         $dias = round($this->cuotas * (365 / $this->linea->indice_conversion));

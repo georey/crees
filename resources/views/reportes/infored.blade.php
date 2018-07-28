@@ -50,7 +50,7 @@
     			<td>{{$prestamo->monto}}</td>
     			<td>{{number_format($prestamo->meses,0)}}</td>
     			<td>{{$prestamo->saldoAnterior()}}</td>
-    			<td>MORA PENDIENTE</td>
+    			<td>{{number_format($prestamo->montoCuotas() + $prestamo->getMora() + $prestamo->getMulta() + $prestamo->getInteres() + $prestamo->getCapitalPendiente(),2)}}</td>
     			<td>{{$prestamo->linea->id_infored}}</td>    			
     			<td>1</td>
     			<td>COM</td>
@@ -71,9 +71,9 @@
     			<td>{{$prestamo->getFechaVencimiento()->format('d/m/Y')}}</td>
     			<td>{{$prestamo->cuotas}}</td>
     			<td>{{$prestamo->getClasificacion()}}</td>
-    			<td></td>
-    			<td>{{$prestamo->cliente->getSexo()}}</td>
-    			<td></td>
+    			<td>COMERCIANTE</td>
+    			<td>{{str_limit($prestamo->cliente->getSexo(), 1, '')}}</td>
+    			<td>{{$prestamo->getEstadoInfored()}}</td>
     		</tr>
     	@endforeach
 	</tbody>

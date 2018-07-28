@@ -6,10 +6,12 @@ use App\Http\Requests;
 use App\Http\Requests\principal\CreateacuerdoRequest;
 use App\Http\Requests\principal\UpdateacuerdoRequest;
 use App\Models\principal\acuerdo;
+use App\Models\principal\prestamo;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Response;
 use Datatables;
+use Auth;
 
 class acuerdoController extends Controller
 {
@@ -21,19 +23,46 @@ class acuerdoController extends Controller
 
     public function index(Request $request)
     {
-        return view('principal.pago.acuerdos');
+        return view('principal.acuerdos.index');
     }
 
     public function create()
     {
-        return view('catalogos.cobrador.create');
+        $data['prestamos'] = prestamo::getPrestamoActivosCliente();
+        return view('principal.acuerdos.create', $data);
     }
 
     public function store(CreateacuerdoRequest $request)
     {
         $input = array_except($request->all(), ['_method', '_token']);
-        $emptyRemoved = array_filter($input);
-        $cobrador = acuerdo::create($emptyRemoved);
+        $prestamo = prestamo::findOrFail($input["prestamo_id"]);
+        $prestamo->update(["tasa" => $input["interes"]]);
+        $pago = [
+            "capital" => 0,
+            "interes" => $prestamo->getInteres(),
+            "multa" => $prestamo->getMulta(),
+            "mora" => $prestamo->getMora(),
+            "prestamo_id" => $input["prestamo_id"],
+            "interes_pendiente" => $input["interes_pendiente"]
+        ];
+
+        if(isset($input["chk_interes"]))
+            $pago["interes"] = 0;
+        if(isset($input["chk_multa"]))
+            $pago["multa"] = 0;
+        if(isset($input["chk_mora"]))
+            $pago["mora"] = 0;
+
+        $prestamo->pagos()->create($pago);
+
+        $arrAcuerdo = [
+                "prestamo_id" => $input["prestamo_id"],
+                "user" => Auth::user()->username,
+                "justificacion" => $input["justificacion"],
+                "monto_anterior" => $input["monto_pendiente"],
+                "monto_posterior" => $input["monto_actual"]
+            ];
+        $acuerdo = acuerdo::create($arrAcuerdo);
         return redirect(route('cobradores.index'));
     }
 
@@ -45,8 +74,8 @@ class acuerdoController extends Controller
 
     public function edit($id)
     {
-        $data['cobrador'] = acuerdo::findOrFail($id);
-        return view('catalogos.cobrador.edit')->with($data);
+        $data['acuerdo'] = acuerdo::findOrFail($id);
+        return view('principal.acuerdos.edit')->with($data);
     }
 
     public function update($id, UpdateacuerdoRequest $request)
@@ -74,7 +103,14 @@ class acuerdoController extends Controller
 
     public function getDataTable()
     {
-        return Datatables::of(acuerdo::all())->make(true);
+        return Datatables::of(acuerdo::getAcuerdos())
+            ->filterColumn('nombre_completo', function($query, $keyword) {
+                                $query->whereRaw("LOWER(clientes.nombre) like LOWER(?) or LOWER(clientes.apellido) like LOWER(?)", ["%{$keyword}%", "%{$keyword}%"]);
+                            })
+            ->filterColumn('codigo_prestamo', function($query, $keyword) {
+                                $query->whereRaw("LOWER(prestamos.codigo) like LOWER(?)", ["%{$keyword}%"]);
+                            })
+            ->make(true);
     }
 
 }
