@@ -172,4 +172,7 @@ Route::group(['middleware' => 'auth'], function() {
 
 	Route::get('configuracion/prestamos', 'configuracion\prestamosController@getIndex');
 	Route::post('configuracion/prestamos', 'configuracion\prestamosController@postIndex');
+
+	Route::get('configuracion/perfil', 'configuracion\perfilController@getIndex');
+	Route::post('configuracion/perfil', 'configuracion\perfilController@postIndex');
 });

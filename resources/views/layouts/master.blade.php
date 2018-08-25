@@ -43,13 +43,13 @@
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="{{asset('img/profile.jpg')}}" class="user-image" alt="User Image">
+              <img src="{{isset(Auth::user()->imagen) ? asset(Auth::user()->imagen) : asset('img/profile.jpg')}}" class="user-image" alt="User Image">
               <span class="hidden-xs">{{ Auth::user()->nombre . ' ' . Auth::user()->apellido }}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
-                <img src="{{asset('img/profile.jpg')}}" class="img-circle" alt="User Image">
+                <img src="{{isset(Auth::user()->imagen) ? asset(Auth::user()->imagen) : asset('img/profile.jpg')}}" class="img-circle" alt="User Image">
                 <p>
                   {{ Auth::user()->nombre . ' ' . Auth::user()->apellido }} - Admin
                 </p>
@@ -58,7 +58,7 @@
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="#" class="btn btn-default btn-flat">Perfil</a>
+                  <a href="{{ url('configuracion/perfil') }}" class="btn btn-default btn-flat">Perfil</a>
                 </div>
                 <div class="pull-right">
                   <a href="{{ url('auth/logout') }}" class="btn btn-default btn-flat">Salir</a>
