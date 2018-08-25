@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\Controller;
 use App\Models\sistema\rol;
+use App\Models\sistema\permiso;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Datatables;
 
 class rolesController extends Controller {
 
@@ -69,4 +71,20 @@ class rolesController extends Controller {
     {
         return Datatables::of(rol::all())->make(true);
     }    
+
+    public function permisosxrol($id)
+    {
+        $data['rol'] = rol::findOrFail($id);
+        $data['permisos'] = permiso::getPermisosRol($id);
+        return view('sistema.roles.permisosxrol')->with($data);
+    }
+
+    public function setPermisosRol(Request $request)
+    {        
+        $input = array_except($request->all(), ['_method', '_token']);
+        $rol = rol::findOrFail($input["id"]);
+        $rol->permisos()->sync($input["permiso"]);
+        
+        return redirect('roles/permisosxrol/'.$input["id"]);
+    }
 }

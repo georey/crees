@@ -4,6 +4,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\sistema\permiso;
 use Carbon\Carbon;
+use Datatables;
 
 class permisosController extends Controller {
 
@@ -19,7 +20,8 @@ class permisosController extends Controller {
 
     public function create()
     {
-        return view('sistema.permisos.create');
+        $data["parents"] = permiso::whereNull('parent_id')->get();
+        return view('sistema.permisos.create')->with($data);
     }
 
     public function store(Request $request)
@@ -39,6 +41,7 @@ class permisosController extends Controller {
     public function edit($id)
     {
         $data['permiso'] = permiso::findOrFail($id);
+        $data["parents"] = permiso::whereNull('parent_id')->get();
         return view('sistema.permisos.edit')->with($data);
     }
 

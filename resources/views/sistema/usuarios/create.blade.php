@@ -1,11 +1,11 @@
 @extends('layouts.master')
 @section('title')
-Cliente
+Agregar Usuario
 @stop
 @section('content')
 	@include("layouts.form.create", array(
-										'title' => 'Agregar cliente',
-										'action' => 'principal\clienteController@store',
-										'include' => 'principal.cliente.fields'
+										'title' => 'Agregar usuario',
+										'action' => 'sistema\usuariosController@store',
+										'include' => 'sistema.usuarios.fields'
 										))
 @endsection

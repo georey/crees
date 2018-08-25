@@ -144,6 +144,32 @@ Route::group(['middleware' => 'auth'], function() {
 	    'uses' => 'catalogos\tipo_gastoController@destroy',
 	]);
 
+	Route::get('usuarios/datatable', 'sistema\usuariosController@getDataTable');
+    Route::get('usuarios/restore/{id}', 'sistema\usuariosController@restore');
+    Route::resource('usuarios', 'sistema\usuariosController');
+	Route::get('usuarios/delete/{id}', [
+	    'as' => 'usuarios.delete',
+	    'uses' => 'sistema\usuariosController@destroy',
+	]);
+
+	Route::get('roles/datatable', 'sistema\rolesController@getDataTable');
+    Route::get('roles/restore/{id}', 'sistema\rolesController@restore');
+    Route::resource('roles', 'sistema\rolesController');
+	Route::get('roles/delete/{id}', [
+	    'as' => 'roles.delete',
+	    'uses' => 'sistema\rolesController@destroy',
+	]);
+	Route::get('roles/permisosxrol/{id}', 'sistema\rolesController@permisosxrol');
+	Route::post('roles/setPermisosRol', 'sistema\rolesController@setPermisosRol');	
+
+	Route::get('permisos/datatable', 'sistema\permisosController@getDataTable');
+    Route::get('permisos/restore/{id}', 'sistema\permisosController@restore');
+    Route::resource('permisos', 'sistema\permisosController');
+	Route::get('permisos/delete/{id}', [
+	    'as' => 'permisos.delete',
+	    'uses' => 'sistema\permisosController@destroy',
+	]);	
+
 	Route::get('configuracion/prestamos', 'configuracion\prestamosController@getIndex');
 	Route::post('configuracion/prestamos', 'configuracion\prestamosController@postIndex');
 });

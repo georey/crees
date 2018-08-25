@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use DB;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract {
 
@@ -22,7 +23,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['nombre', 'apellido', 'username', 'password'];
+	protected $fillable = ['nombre', 'apellido', 'username', 'password', 'rol_id'];
 
 	/**
 	 * The attributes excluded from the model's JSON form.
@@ -30,5 +31,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 * @var array
 	 */
 	protected $hidden = ['password', 'remember_token'];
+
+	public static function ListaUsuarios(){
+		$usuarios = User::select('users.*')
+					->addSelect(DB::raw("CONCAT(nombre, ' ', apellido) as nombre_completo"));
+        return $usuarios;
+	}
 
 }

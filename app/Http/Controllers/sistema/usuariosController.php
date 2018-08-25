@@ -2,14 +2,17 @@
 
 use App\Http\Controllers\Controller;
 use App\user;
+use App\models\sistema\rol;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Datatables;
+use Illuminate\Support\Facades\Hash;
 
 class usuariosController extends Controller {
 
 	function __construct()
     {
-        // $this->middleware('menu');
+        $this->middleware('menu');
     }
 
     public function index(Request $request)
@@ -19,13 +22,15 @@ class usuariosController extends Controller {
 
     public function create()
     {
-        return view('sistema.usuarios.create');
+        $data['roles'] = rol::all();
+        return view('sistema.usuarios.create')->with($data);
     }
 
     public function store(Request $request)
     {
         $input = array_except($request->all(), ['_method', '_token']);
         $emptyRemoved = array_filter($input);
+        $emptyRemoved["password"] = Hash::make($emptyRemoved["password"]);
         $usuario = user::create($emptyRemoved);
         return redirect(route('usuarios.index'));
     }
@@ -39,6 +44,7 @@ class usuariosController extends Controller {
     public function edit($id)
     {
         $data['usuario'] = user::findOrFail($id);
+        $data['roles'] = rol::all();
         return view('sistema.usuarios.edit')->with($data);
     }
 
@@ -47,6 +53,8 @@ class usuariosController extends Controller {
         $usuario = user::findOrFail($id);
         $input = array_except($request->all(), ['_method', '_token']);
         $output = array_map(function($item) { return empty($item) ? '': $item; }, $input);
+        if(array_key_exists("password", $output))
+            $output["password"] = Hash::make($output["password"]);
         $usuario = user::where('id', $id)->update($output);
         return redirect(route('usuarios.index'));
     }

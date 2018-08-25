@@ -1,12 +1,12 @@
 @extends('layouts.master')
 @section('title')
-Cliente
+Editar Usuario
 @stop
 @section('content')
  	@include("layouts.form.edit", array(
-									'title' => 'Editar',
-									'action' => 'principal\clienteController@update', 
-									'id' => array('id' => $cliente->id),
-									'include' => 'principal.cliente.fields'
+									'title' => 'Editar Usuario',
+									'action' => 'sistema\usuariosController@update', 
+									'id' => array('id' => $usuario->id),
+									'include' => 'sistema.usuarios.fields'
 									))
 @endsection

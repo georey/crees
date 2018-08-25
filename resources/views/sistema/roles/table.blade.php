@@ -1,13 +1,12 @@
 @extends('layouts.table.header')
 @section('title')
-Clientes
+Zonas
 @stop
 @section('structure')
 <thead>
     <tr>
-        <td>Nombre</td>
-    	<td>Usuario</td>
-    	<th width="15%">Acciones</th>
+    	<td>Rol</td>
+    	<th width="50px">Acciones</th>
     </tr>
 </thead>
 @stop
