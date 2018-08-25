@@ -17,7 +17,7 @@ class prestamosController extends Controller
 
     function __construct()
     {
-        // $this->middleware('menu');
+        $this->middleware('menu');
     }
 
     public function getIndex(Request $request)

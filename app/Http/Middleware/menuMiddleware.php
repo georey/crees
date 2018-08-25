@@ -35,6 +35,7 @@ class menuMiddleware
                             'icono' => $icon,
                             'access' => $permiso->access,
                             'childs' => $permiso->childs,
+                            'parent_id' => $permiso->parent_id,
                                 );
             foreach ($breadcrumb as $bc_item) {
                 if($menu[$key]['ruta'] == $bc_item->ruta) {

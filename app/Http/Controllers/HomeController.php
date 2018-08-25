@@ -20,6 +20,7 @@ class HomeController extends Controller {
 	 */
 	public function __construct()
 	{
+		$this->middleware('menu');
 		$this->middleware('auth');
 	}
 

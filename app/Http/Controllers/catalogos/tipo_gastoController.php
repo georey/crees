@@ -15,7 +15,7 @@ class tipo_gastoController extends Controller
 
     function __construct()
     {
-        // $this->middleware('menu');
+        $this->middleware('menu');
     }
 
     public function index(Request $request)

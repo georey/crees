@@ -19,6 +19,11 @@ use PDF;
 
 class variosController extends Controller
 {	
+     function __construct()
+    {
+        $this->middleware('menu');
+    }
+    
 	public function corteCaja(Request $request)
     {
         $params = $request->all();
