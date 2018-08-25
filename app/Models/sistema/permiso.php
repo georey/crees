@@ -70,6 +70,7 @@ class permiso extends Model
                              $join->on('permisosxrol.permiso_id', '=', 'permisos.id');
                              $join->where('permisosxrol.rol_id','=', $rol_id);
                          })
+                    ->orderBy("order_by")
                     ->get();
         return $permisos;
     }

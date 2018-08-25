@@ -49,8 +49,8 @@ class permisosController extends Controller {
     {
         $permiso = permiso::findOrFail($id);
         $input = array_except($request->all(), ['_method', '_token']);
-        $output = array_map(function($item) { return empty($item) ? '': $item; }, $input);
-        $permiso = permiso::where('id', $id)->update($output);
+        $emptyRemoved = array_filter($input);
+        $permiso = permiso::where('id', $id)->update($emptyRemoved);
         return redirect(route('permisos.index'));
     }
 

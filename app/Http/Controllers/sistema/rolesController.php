@@ -48,8 +48,8 @@ class rolesController extends Controller {
     {
         $rol = rol::findOrFail($id);
         $input = array_except($request->all(), ['_method', '_token']);
-        $output = array_map(function($item) { return empty($item) ? '': $item; }, $input);
-        $rol = rol::where('id', $id)->update($output);
+        $emptyRemoved = array_filter($input);
+        $rol = rol::where('id', $id)->update($emptyRemoved);
         return redirect(route('roles.index'));
     }
 

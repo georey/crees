@@ -52,10 +52,10 @@ class usuariosController extends Controller {
     {
         $usuario = user::findOrFail($id);
         $input = array_except($request->all(), ['_method', '_token']);
-        $output = array_map(function($item) { return empty($item) ? '': $item; }, $input);
-        if(array_key_exists("password", $output))
-            $output["password"] = Hash::make($output["password"]);
-        $usuario = user::where('id', $id)->update($output);
+        $emptyRemoved = array_filter($input);
+        if(array_key_exists("password", $emptyRemoved))
+            $emptyRemoved["password"] = Hash::make($emptyRemoved["password"]);
+        $usuario = user::where('id', $id)->update($emptyRemoved);
         return redirect(route('usuarios.index'));
     }
 

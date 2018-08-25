@@ -18,6 +18,9 @@ Permisos para {{$rol->nombre}}
                 <input type="hidden" name="id" value="{{ $rol->id }}">
                     <div class="box-body">
 					@foreach ($permisos as $permiso)
+                        @if($permiso->parent_id > 0)
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        @endif
 						<input type="checkbox" name="permiso[]" value="{{$permiso->id}}" title="{{$permiso->descripcion}}" {{ isset($permiso->rol_id) ? "checked" : ""}}> {{$permiso->nombre}}
 						<br>
 					@endforeach
