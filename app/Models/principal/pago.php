@@ -54,6 +54,31 @@ class pago extends Model
         return $rpt->get();
     }
 
+    public static function getReporteInteresSumarizado($fecha_ini, $fecha_fin, $asesor_id = 0)
+    {
+        $rpt = pago::select(DB::raw("
+            DATE(pagos.fecha) AS fecha,
+            SUM(pagos.capital) AS Capital,
+            SUM(pagos.interes) AS Interes,
+            SUM(pagos.mora) AS Mora, SUM(pagos.multa) AS Multa,
+            (SELECT
+                SUM(tg.monto)
+            FROM gastos g
+            INNER JOIN tipo_gastos tg ON tg.id = g.tipo_gasto_id
+            INNER JOIN prestamos p ON p.id = g.prestamo_id
+            WHERE
+                g.prestamo_id = prestamos.id AND
+                p.fecha BETWEEN '{$fecha_ini}' AND '{$fecha_fin}'
+            ) AS Tramites"))
+                    ->join('prestamos', 'prestamos.id', '=', 'pagos.prestamo_id')
+                    ->join('clientes', 'clientes.id', '=', 'prestamos.cliente_id')
+                    ->where('pagos.fecha','>=',$fecha_ini)
+                    ->where('pagos.fecha','<=',$fecha_fin)
+                    ->groupBy(DB::raw('DATE(pagos.fecha)'));
+        $rpt = $asesor_id > 0 ? $rpt->where('prestamos.asesor_id',$asesor_id) : $rpt;                    
+        return $rpt->get();
+    }
+
     public static function getIngresosByDate($params)
     {
         $fecha_ini = array_key_exists("fecha_ini", $params) ? $params["fecha_ini"] : date("Y-m-d");

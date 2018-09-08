@@ -169,9 +169,10 @@ class prestamo extends Model
         $carbon = $this->getFechaActualSinHora();
         $proximaFecha = $this->getProximaFecha();
         if ($this->linea_id != 1) {
-            $proximaFecha->day = $proximaFecha->day + 1;
+            $proximaFecha->addDay();
         }
-        if ($carbon <= $proximaFecha) {
+        $diffInDays = $proximaFecha->diffInDays($carbon);        
+        if ($carbon <= $proximaFecha || $diffInDays == 0) {
             return 0;
         } else {
             if ($this->linea_id != 1) {
@@ -386,6 +387,39 @@ class prestamo extends Model
                     // ->groupBy('clientes.apellido')
                     ->orderBy('prestamos.fecha')
                     ->orderBy('prestamos.codigo');
+        $rpt = $asesor_id > 0 ? $rpt->where('prestamos.asesor_id',$asesor_id) : $rpt;                    
+        return $rpt->distinct()->get();
+    }
+
+    public static function getReporteColocacionSumarizado($fecha_ini, $fecha_fin, $asesor_id = 0)
+    {
+        $rpt = prestamo::select(DB::raw(
+                                    '
+                                    prestamos.fecha As Fecha,
+                                    lineas.nombre AS Linea,
+                                    prestamos.monto AS Monto,
+                                    prestamos.liquido As Liquido,
+                                    SUM(prestamos_liquidados.monto) as total_liquidacion,
+                                    SUM(tipo_gastos.monto) as total_gastos
+                                    '))
+                    ->join('clientes', 'clientes.id', '=', 'prestamos.cliente_id')
+                    ->join('lineas', 'lineas.id', '=', 'prestamos.linea_id')
+                    ->leftJoin('gastos', 'gastos.prestamo_id', '=', 'prestamos.id')
+                    ->leftJoin('tipo_gastos', 'tipo_gastos.id', '=', 'gastos.tipo_gasto_id')
+                    ->leftJoin('prestamos_liquidados', 'prestamos_liquidados.prestamo_id', '=', 'prestamos.id')
+                    ->where('prestamos.fecha','>=',$fecha_ini)
+                    ->where('prestamos.fecha','<=',$fecha_fin)
+                    ->whereNotIn('estado_prestamo_id', [4])
+                    ->groupBy('prestamos.fecha')
+                    ->groupBy('lineas.nombre')
+                    ->groupBy('prestamos.monto')
+                    ->groupBy('prestamos.liquido')
+                    // ->groupBy('prestamos_liquidados.monto')
+                    // ->groupBy('prestamos.codigo')
+                    // ->groupBy('clientes.nombre')
+                    // ->groupBy('clientes.apellido')
+                    ->orderBy('prestamos.fecha')
+                    ->orderBy('lineas.nombre');
         $rpt = $asesor_id > 0 ? $rpt->where('prestamos.asesor_id',$asesor_id) : $rpt;                    
         return $rpt->distinct()->get();
     }

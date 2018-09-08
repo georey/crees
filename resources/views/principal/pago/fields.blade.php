@@ -56,7 +56,8 @@
 			         data-interes="{{$prestamo->getInteres()}}" 
 			         data-fecha="{{$prestamo->getFechaVencimiento()->format('d/m/Y')}}" 
 			         data-dias-transcurridos="{{$prestamo->getDias()}}" 
-			         data-capital-pendiente="{{$prestamo->getCapitalPendiente()}}">
+			         data-capital-pendiente="{{$prestamo->getCapitalPendiente()}}"
+			         data-proxima-fecha="{{$prestamo->getProximaFecha()}} {{$prestamo->getFechaActualSinHora()}}" >
 			         	{{$prestamo->codigo . " - " . $prestamo->nombre_completo}}
 			         </option>
 			    @endforeach

@@ -106,6 +106,38 @@ class prestamosController extends Controller {
                     })->export('xls');
                 }
                 break;
+            case 4:
+                $data = pago::getReporteInteresSumarizado($fecha_ini, $fecha_fin, $request->asesor_id);
+                $info['prestamos'] = $data;
+                $info['tabla'] = 'reportes.prestamos_tabla_interes_sumarizado';
+                if ($filtro == 'filtrar') {
+                    return view('reportes.prestamos')->with($info);
+                } else {
+                    Excel::create('Reporte de interes cobrados', function($excel) use($data){
+                        $excel->setTitle('Reporte de interes cobrados');
+                        $excel->sheet('Intereses', function($sheet) use($data){
+                            $sheet->setOrientation('landscape');
+                            $sheet->fromArray($data->toArray());
+                        });
+                    })->export('xls');
+                }
+                break;
+            case 5:
+                $data = prestamo::getReporteColocacionSumarizado($fecha_ini, $fecha_fin, $request->asesor_id);
+                $info['prestamos'] = $data;
+                $info['tabla'] = 'reportes.prestamos_tabla_colocacion_prestamo_sumarizado';
+                if ($filtro == 'filtrar') {
+                    return view('reportes.prestamos')->with($info);
+                } else {
+                    Excel::create('Reporte de prestamos colocados', function($excel) use($data){
+                        $excel->setTitle('Reporte de prestamos colocados');
+                        $excel->sheet('Prestamos', function($sheet) use($data){
+                            $sheet->setOrientation('landscape');
+                            $sheet->fromArray($data->toArray());
+                        });
+                    })->export('xls');
+                }
+                break;
             default:
                 $data['prestamos'] = null;
                 break;
