@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Response;
 use Datatables;
 use Carbon\Carbon;
+use PDF;
 
 class pagoController extends Controller
 {
@@ -148,5 +149,14 @@ class pagoController extends Controller
         $pago->delete();
         $prestamo = prestamo::where('id', $prestamo_id)->update(["estado_prestamo_id"=>1]);
         return redirect('pagos/historial/'. $prestamo_id);
+    }
+
+    public function pdfNotaCobro($id)
+    {
+        $carbon = new Carbon();
+        $data['fecha'] = $carbon;
+        $data['prestamo'] = prestamo::findOrFail($id);
+        $pdf = PDF::loadView('pdf.nota_cobro', $data);
+        return $pdf->download($carbon->format('dmYHis').'nota_cobro.pdf');
     }
 }

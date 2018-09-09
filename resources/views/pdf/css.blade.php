@@ -17,4 +17,8 @@
 
 tr {border-spacing:5px}
 
+.fecha_apertura {
+	text-align: right;
+}
+
 </style>
