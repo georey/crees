@@ -17,7 +17,7 @@ Señora:<br>
 {{$prestamo->cliente->nombreCompleto()}}<br>
 Presente:<br><br>
 <p class="text-justify">
-Por este medio se le  comunica que el crédito No.CREDITO concedido en fecha {{$prestamo->fecha->format('d/m/Y')}}, otorgado por Servicios Crediticios de El Salvador Sociedad Anónima de Capital Variable (CREES) con un monto de {{$prestamo->monto}} dólares, se encuentra actualmente EN MORA
+Por este medio se le  comunica que el crédito No.{{$prestamo->codigo}} concedido en fecha {{$prestamo->fecha->format('d/m/Y')}}, otorgado por Servicios Crediticios de El Salvador Sociedad Anónima de Capital Variable (CREES) con un monto de {{$prestamo->monto}} dólares, se encuentra actualmente EN MORA
 @if($fecha > $prestamo->getVencimiento())
  y VENCIDO el día {{$prestamo->getVencimiento()->format('d/m/Y')}}
 @endif
