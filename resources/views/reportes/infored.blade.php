@@ -56,7 +56,7 @@
     			<td>COM</td>
     			<td>{{$fecha->diffInDays($fecha_ultimo_pago)}}</td>
     			<td>{{$fecha_ultimo_pago->format("d/m/Y")}}</td>
-    			<td>TIPO GARANTIA PENDIENTE</td>
+    			<td>-</td>
     			<td>02</td>
     			<td>{{$prestamo->cuota}}</td>
     			<td>{{$fecha->endOfMonth()->day}}</td>

@@ -91,7 +91,7 @@ class prestamosController extends Controller {
                 }
                 break;
             case 3:
-                $data = prestamo::getPrestamosMes($mes);
+                $data = prestamo::getPrestamosMes($fecha_ini, $fecha_fin);
                 $info['prestamos'] = $data;
                 $info['tabla'] = 'reportes.infored';
                 if ($filtro == 'filtrar') {

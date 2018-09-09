@@ -438,7 +438,7 @@ class prestamo extends Model
         return $rpt;
     }
 
-    public static function getPrestamosMes($mes){
+    public static function getPrestamosMes($fecha_ini, $fecha_fin){
         $rpt = prestamo::select('prestamos.*')
                         ->addSelect(DB::raw("CONCAT(clientes.nombre, ' ', clientes.apellido) as nombre_completo"))
                         ->addSelect(DB::raw("(((365/lineas.indice_conversion) * prestamos.cuotas)/30) AS meses"))
@@ -466,7 +466,8 @@ class prestamo extends Model
                         ->join('lineas', 'lineas.id', '=', 'prestamos.linea_id')
                         ->join('pagos', 'pagos.prestamo_id', '=', 'prestamos.id')
                         ->groupBy('prestamos.id')
-                        ->whereRaw("Month(pagos.fecha)  = {$mes}")
+                        ->whereBetween("pagos.fecha",[$fecha_ini, $fecha_fin])
+                        ->orWhere("estado_prestamo_id", 1)
                         ->get();
         return $rpt;
     }
