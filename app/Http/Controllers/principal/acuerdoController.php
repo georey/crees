@@ -36,7 +36,7 @@ class acuerdoController extends Controller
     {
         $input = array_except($request->all(), ['_method', '_token']);
         $prestamo = prestamo::findOrFail($input["prestamo_id"]);
-        $prestamo->update(["tasa" => $input["interes"]]);
+        $prestamo->update(["tasa" => $input["interes"], "tasa_mora" => $input["tasa_mora"]]);
         $pago = [
             "capital" => 0,
             "interes" => $prestamo->getInteres(),

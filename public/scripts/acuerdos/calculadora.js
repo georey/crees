@@ -25,11 +25,13 @@ function Calculadora() {
 			saldo = parseFloat($("#prestamo_id option:selected").attr('data-saldo'));
 			interes = parseFloat($("#prestamo_id option:selected").attr('data-interes'));
 			tasa_interes = parseFloat($("#prestamo_id option:selected").attr('data-tasa-interes'));
+			tasa_mora = parseFloat($("#prestamo_id option:selected").attr('data-tasa-mora'));
 			dias = parseInt($("#prestamo_id option:selected").attr('data-dias-transcurridos'));
 			fecha = $("#prestamo_id option:selected").attr('data-fecha');
 			cuotaTotal = parseFloat(cuota) + parseFloat(multa) + parseFloat(mora) + parseFloat(capital_pendiente)  + parseFloat(interes);
 			saldo_total = (saldo + interes + multa + mora ).toFixed(2)
 			$("#interes").val(tasa_interes.toFixed(2));			
+			$("#tasa_mora").val(tasa_mora.toFixed(2));			
 			$("#monto_pendiente").val(saldo_total);
 			$("#monto_pendiente").data("valor", saldo_total);
 			$("#chk_interes").data("valor", interes.toFixed(2));			

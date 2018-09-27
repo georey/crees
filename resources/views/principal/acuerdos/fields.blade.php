@@ -13,6 +13,7 @@
 		         data-cobrador="{{$prestamo->cobrador_id}}"
 		         data-interes="{{$prestamo->getInteres()}}"
 		         data-tasa-interes="{{$prestamo->tasa}}"
+		         data-tasa-mora="{{$prestamo->tasa_mora}}"
 		         data-fecha="{{$prestamo->getFechaVencimiento()->format('d/m/Y')}}" 
 		         data-dias-transcurridos="{{$prestamo->getDias()}}" 
 		         data-capital-pendiente="{{$prestamo->getCapitalPendiente()}}">
@@ -56,6 +57,14 @@
 		@include("layouts.form.input_text", array(
 											'label' => 'Tasa Interes',
 											'name' => 'interes',
+											'value' => null,
+											'validations' => array(['type' => 'required'], ['type' => 'minlength', 'parameter' => 3])
+											))
+	</div>
+	<div class="form-group col-md-12">
+		@include("layouts.form.input_text", array(
+											'label' => 'Tasa Moratoria',
+											'name' => 'tasa_mora',
 											'value' => null,
 											'validations' => array(['type' => 'required'], ['type' => 'minlength', 'parameter' => 3])
 											))
