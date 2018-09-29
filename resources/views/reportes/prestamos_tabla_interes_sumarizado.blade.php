@@ -8,7 +8,8 @@
 	        		<th>Capital</th>
 	        		<th>Interes</th>
 	        		<th>Mora</th>
-	        		<th>Multa</th>	        		
+	        		<th>Multa</th>
+	        		<th>Tramites</th>
 	        		<th>Total</th>
 	        	</tr>
 	        </thead>
@@ -20,7 +21,8 @@
 	        			<td>{{number_format($prestamo->Interes, 2)}}</td>
 	        			<td>{{number_format($prestamo->Mora, 2)}}</td>
 	        			<td>{{number_format($prestamo->Multa, 2)}}</td>
-	        			<th>{{number_format($prestamo->Capital+$prestamo->Interes+$prestamo->Mora+$prestamo->Multa, 2)}}</th>
+	        			<td>{{number_format($prestamo->Tramites, 2)}}</td>
+	        			<th>{{number_format($prestamo->Capital+$prestamo->Interes+$prestamo->Mora+$prestamo->Multa+$prestamo->Tramites, 2)}}</th>
 	        		</tr>
 	        	@endforeach
 	        </tbody>
@@ -30,7 +32,8 @@
 	        	<th>{{number_format($prestamos->sum('Interes'), 2)}}</th>
 	        	<th>{{number_format($prestamos->sum('Mora'), 2)}}</th>
 	        	<th>{{number_format($prestamos->sum('Multa'), 2)}}</th>
-	        	<th>{{number_format($prestamos->sum('Capital')+$prestamos->sum('Interes')+$prestamos->sum('Mora')+$prestamos->sum('Multa'), 2)}}</th>
+	        	<th>{{number_format($prestamos->sum('Tramites'), 2)}}</th>
+	        	<th>{{number_format($prestamos->sum('Capital')+$prestamos->sum('Interes')+$prestamos->sum('Mora')+$prestamos->sum('Multa')+$prestamos->sum('Tramites'), 2)}}</th>
 	        </tfoot>
 	      </table>
 	    </div>
