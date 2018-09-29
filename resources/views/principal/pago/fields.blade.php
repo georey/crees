@@ -54,6 +54,7 @@
 			         data-multa="{{$prestamo->getMulta()}}" 
 			         data-cobrador="{{$prestamo->cobrador_id}}" 
 			         data-interes="{{$prestamo->getInteres()}}" 
+			         data-interes-pendiente="{{$prestamo->getInteresesPendientes()}}"
 			         data-fecha="{{$prestamo->getFechaVencimiento()->format('d/m/Y')}}" 
 			         data-dias-transcurridos="{{$prestamo->getDias()}}" 
 			         data-capital-pendiente="{{$prestamo->getCapitalPendiente()}}"

@@ -12,6 +12,7 @@ function Calculadora() {
 			multa = parseFloat($("#prestamo_id option:selected").attr('data-multa'));
 			saldo = parseFloat($("#prestamo_id option:selected").attr('data-saldo'));
 			interes = parseFloat($("#prestamo_id option:selected").attr('data-interes'));
+			interes_pendiente = parseFloat($("#prestamo_id option:selected").attr('data-interes-pendiente'));
 			dias = parseInt($("#prestamo_id option:selected").attr('data-dias-transcurridos'));
 			fecha = $("#prestamo_id option:selected").attr('data-fecha');
 			cuotaTotal = parseFloat(cuota) + parseFloat(multa) + parseFloat(mora) + parseFloat(capital_pendiente)  + parseFloat(interes);
@@ -21,7 +22,7 @@ function Calculadora() {
 			$("#multa").val(multa.toFixed(2));
 			$("#h3_saldo_anterior").html(saldo.toFixed(2));
 			$("#h3_capital").html((cuota == 0 ? capital_pendiente : cuota - interes).toFixed(2));
-			$("#hdn_capital").val((cuota == 0 ? capital_pendiente : cuota - interes).toFixed(2));
+			$("#hdn_capital").val((cuota == 0 ? capital_pendiente : cuota - (interes + interes_pendiente)).toFixed(2));
 			$("#h3_interes").html(interes.toFixed(2));
 			$("#h3_proxma_fecha").html(fecha);
 			$("#h3_total_pagar").html((cuotaTotal).toFixed(2));
