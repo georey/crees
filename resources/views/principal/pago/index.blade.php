@@ -5,8 +5,8 @@
 @section('content')
     <div class="box-header with-border">
         <h3 class="box-title">Prestamos</h3>
-        <a class="btn btn-primary pull-right" style="margin-top: 25px" href="{!! route('pagos.calculadora') !!}">Calculadora</a>
-        <a class="btn btn-primary pull-right" style="margin-top: 25px" href="{!! route('pagos.create') !!}">Pagos</a>
+        {{--<a class="btn btn-primary pull-right" style="margin-top: 25px" href="{!! route('pagos.calculadora') !!}">Calculadora</a>
+        <a class="btn btn-primary pull-right" style="margin-top: 25px" href="{!! route('pagos.create') !!}">Pagos</a>--}}
     </div>
     <div class="box-body">
         <input type="hidden" id="hf_message" value="return confirm('{{trans('form.confirm'). ' '. trans('form.catalog.action_type')}}')">

@@ -282,6 +282,13 @@ class clienteController extends Controller
         return view('principal.cliente.historial')->with($data);
     }
 
+    public function getGarantias($id)
+    {
+        $data['cliente'] = cliente::findOrFail($id);
+        $data["prestamos"] = prestamo::where("cliente_id",$id)->whereNotIn("estado_prestamo_id",[4])->orderBy("id","desc")->get();
+        return view('principal.cliente.garantia')->with($data);
+    }
+
     public function cumpleaneros($mes = 0){
         if($mes == 0)
             return redirect("cumpleaneros/". Date("n"));

@@ -27,6 +27,7 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::get('clientes/historial/{id}', 'principal\clienteController@getHistorial');
 	Route::get('clientes/pdf_pagare_sin_protesto/{id}', 'principal\clienteController@pdfPagareSinProtesto');
 	Route::get('clientes/pdf_hoja_liquidacion/{id}', 'principal\clienteController@pdfHojaLiquidacion');
+	Route::get('clientes/garantias/{id}', 'principal\clienteController@getGarantias');
 	Route::get('clientes/ficha/{id}', 'principal\clienteController@pdfFicha');
 	Route::get('clientes/getMunicipios', 'principal\clienteController@getMunicipios');
 	Route::get('clientes/datatable', 'principal\clienteController@getDataTable');

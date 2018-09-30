@@ -156,7 +156,31 @@ class pagoController extends Controller
         $carbon = new Carbon();
         $data['fecha'] = $carbon;
         $data['prestamo'] = prestamo::findOrFail($id);
+        $content = view('pdf.nota_cobro')->with($data)->render();
+        $doc_name = $carbon->format('dmYHis').'nota_cobro.doc';
+
+        $headers = array(
+            "Content-type"=>"text/html",
+            "Content-Disposition"=>"attachment;Filename={$doc_name}",
+            //"charset" =>"utf-8"
+        );
+
+        return Response::make(utf8_decode($content),200, $headers);
+
+        /*$phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $section = $phpWord->addSection();
+        $section->addText(($vista));
+        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $objWriter->save($doc_name);
+        header("Content-Disposition: attachment; filename='{$doc_name}';'Content-Type: text/html; charset=utf-8'");
+        readfile($doc_name);
+        unlink($doc_name);*/
+
+
+        /*$carbon = new Carbon();
+        $data['fecha'] = $carbon;
+        $data['prestamo'] = prestamo::findOrFail($id);
         $pdf = PDF::loadView('pdf.nota_cobro', $data);
-        return $pdf->download($carbon->format('dmYHis').'nota_cobro.pdf');
+        return $pdf->download($carbon->format('dmYHis').'nota_cobro.pdf');*/
     }
 }

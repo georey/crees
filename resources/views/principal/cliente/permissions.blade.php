@@ -14,4 +14,7 @@
 	<a class="btn_permiso" href="{{url(Request::url().'/ficha/permiso_data_id')}}" target="_blank" title="Ficha">
 	    <i class="glyphicon glyphicon-folder-open"></i>
 	</a>
+	<a class="btn_permiso" href="{{url(Request::url().'/garantias/permiso_data_id')}}" title="Garantias">
+	    <i class="glyphicon glyphicon-screenshot"></i>
+	</a>
 </div>
