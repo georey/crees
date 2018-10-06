@@ -26,6 +26,9 @@
 					<td>Monto:</td><td>${{$prestamo->monto}}</td>
 				</tr>
 				<tr>
+					<td>Tasa:</td><td>{{$prestamo->tasa}}%</td>
+				</tr>
+				<tr>
 					<td>Cuota:</td><td>${{$prestamo->cuota}}</td>
 				</tr>
 				<tr>

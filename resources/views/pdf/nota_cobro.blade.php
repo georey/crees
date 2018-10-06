@@ -1,11 +1,20 @@
 @include('pdf.css')
-<div class="text-center" style="width:100%; font-size: x-small; font-weight: bold;">
+<table>
+	<tr>
+		<th style="width:20%; display: inline-block; text-align:right">			
+		</th>
+		<th class="text-center" style="width:60%; display: inline-block;font-size: x-small; font-weight: bold;">
 SERVICIOS CREDITICIOS DE EL SALVADOR,<br>
 SOCIEDAD ANONIMA DE CAPITAL VARIABLE<br>
 NIT 0210-070416-101-0    NRC 250340-1<br>
 1 CALLE PTE. LOCAL 204, Bo. SALVADOREÑO 2 NIVEL EDIF. BANCO SALVADOREÑO,<br>
 SANTA ANA. SANTA ANA. TEL. 2421-9058
-</div>
+		</th>
+		<th style="width:20%; display: inline-block; text-align:right">
+			<img src="{{ asset('img/logo_mini_75.jpg') }}" style="width:25px">
+		</th>
+	</tr>
+</table>
 <div class="line-separator"></div>
 <br><br>
 <div style="margin: auto;width: 80%;padding: 10px; font-weight: bold;">
@@ -13,7 +22,7 @@ SANTA ANA. SANTA ANA. TEL. 2421-9058
 Santa Ana, {{trans("dias.".$fecha->format('l'))}} {{$fecha->format('d')}} de {{trans('meses.'.$fecha->format('F'))}} de {{$fecha->format('Y')}}.
 </div>
 <br>
-Señora:<br>
+Señor(a):<br>
 {{$prestamo->cliente->nombreCompleto()}}<br>
 Presente:<br><br>
 <p class="text-justify">

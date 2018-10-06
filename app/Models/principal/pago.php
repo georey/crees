@@ -67,8 +67,8 @@ class pago extends Model
             INNER JOIN tipo_gastos tg ON tg.id = g.tipo_gasto_id
             INNER JOIN prestamos p ON p.id = g.prestamo_id
             WHERE
-                g.prestamo_id = prestamos.id AND
-                p.fecha BETWEEN '{$fecha_ini}' AND '{$fecha_fin}'
+                DATE(p.fecha) = DATE(pagos.fecha) AND
+                p.estado_prestamo_id not in (4)
             ) AS Tramites"))
                     ->join('prestamos', 'prestamos.id', '=', 'pagos.prestamo_id')
                     ->join('clientes', 'clientes.id', '=', 'prestamos.cliente_id')
