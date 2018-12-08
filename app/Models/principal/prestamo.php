@@ -105,7 +105,7 @@ class prestamo extends Model
         $carbon = $this->getFechaActualSinHora();
         $proximaFecha = $this->getProximaFecha();
         if ($this->linea_id != 1) {
-            $proximaFecha->day = $proximaFecha->day + 1;
+            $proximaFecha->addDays(2);
         }
         if ($carbon <= $proximaFecha) {
             return 0;
@@ -169,14 +169,14 @@ class prestamo extends Model
         $carbon = $this->getFechaActualSinHora();
         $proximaFecha = $this->getProximaFecha();
         if ($this->linea_id != 1) {
-            $proximaFecha->addDay();
+            $proximaFecha->addDays(1);
         }
         $diffInDays = $proximaFecha->diffInDays($carbon);        
         if ($carbon <= $proximaFecha || $diffInDays == 0) {
             return 0;
         } else {
             if ($this->linea_id != 1) {
-                return $this->multa * $this->getNumeroCuotas();
+                return $this->multa * $this->getNumeroCuotas(true);
             }
             return $this->multa * ($this->getNumeroCuotas() - 1);
         }
@@ -200,13 +200,16 @@ class prestamo extends Model
         return $ultima_fecha->diffInDays($carbon);
     }
 
-    public function getNumeroCuotas()
+    public function getNumeroCuotas($dia_gracia = false)
     {
         $carbon = $this->getFechaActualSinHora();
-        $ultima_fecha = $this->getUltimaFecha();
+        $ultima_fecha = $this->getUltimaFecha();        
         if ($carbon <= $ultima_fecha) {
             return 0;
-        } else {
+        } else {            
+            if($dia_gracia){
+                $ultima_fecha->addDays(1);
+            }
             $dias = $ultima_fecha->diffInDays($carbon);
             $periodo = round(365 / $this->linea->indice_conversion);
             return floor($dias / $periodo);

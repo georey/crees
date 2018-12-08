@@ -7,7 +7,7 @@
 SERVICIOS CREDITICIOS DE EL SALVADOR,<br>
 SOCIEDAD ANONIMA DE CAPITAL VARIABLE<br>
 NIT 0210-070416-101-0    NRC 250340-1<br>
-1 CALLE PTE. LOCAL 204, Bo. SALVADOREÑO 2 NIVEL EDIF. BANCO SALVADOREÑO,<br>
+1 CALLE PTE. LOCAL 106, Bo. SALVADOREÑO 1 NIVEL EDIF. BANCO SALVADOREÑO,<br>
 SANTA ANA. SANTA ANA. TEL. 2421-9058
 		</th>
 		<th style="width:20%; display: inline-block; text-align:right">
@@ -34,7 +34,7 @@ Por este medio se le  comunica que el crédito No.{{$prestamo->codigo}} concedid
 
 <p class="text-justify">
 El atraso que su cuenta refleja es de {{number_format($prestamo->getMora() + $prestamo->getMulta() + $prestamo->getInteres(),2)}} dólares de saldos de intereses y comisiones y de 
-@if($prestamo->montoCuotas()==0){{number_format($prestamo->getCapitalPendiente(),2)}}@else{{number_format($prestamo->montoCuotas() - $prestamo->getInteres(),2)}}@endif de capital en mora al {{$fecha->format('d/m/Y')}} haciendo un total de {{number_format($prestamo->saldoAnterior() + $prestamo->getMora() + $prestamo->getMulta() + $prestamo->getInteres(),2)}}
+{{number_format($prestamo->saldoAnterior(),2)}} de capital en mora al {{$fecha->format('d/m/Y')}} haciendo un total de {{number_format($prestamo->saldoAnterior() + $prestamo->getMora() + $prestamo->getMulta() + $prestamo->getInteres(),2)}}
 </p>
 
 <p class="text-justify">
@@ -62,7 +62,7 @@ En espera de una reacción positiva de parte de su persona, me suscribo.
 		<td style="text-align:center!important">Servicios Crediticios de El Salvador S.A. de C.V.</td>
 	</tr>
 	<tr>
-		<td style="text-align:center!important">1 Calle Pte. Local 204, 2 Nivel. Edif. Banco Salvadoreño, Santa Ana.</td>
+		<td style="text-align:center!important">1 Calle Pte. Local 106, 1 Nivel. Edif. Banco Salvadoreño, Santa Ana.</td>
 	</tr>
 	<tr>
 		<td style="text-align:center!important">Tel. 2421-9058</td>
