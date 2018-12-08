@@ -88,7 +88,8 @@ class pago extends Model
                     ->join('clientes', 'clientes.id', '=', 'prestamos.cliente_id')
                     ->whereRaw("date(pagos.fecha) >= '{$fecha_ini}'")
                     ->whereRaw("date(pagos.fecha) <= '{$fecha_fin}'")
-                    ->whereRaw("(pagos.saldo is null OR pagos.saldo > 0)");
+                    ->whereRaw("(pagos.saldo is null OR pagos.saldo > 0)")
+                    ->orderBy("pagos.id");
         return $rpt->get();
     }
 }
