@@ -71,9 +71,9 @@ class prestamo extends Model
     {
         $pago = $this->pagos()->latest()->first();
         $interes = isset($pago->interes_pendiente) ? $pago->interes_pendiente : 0;
-        $mora = isset($pago->mora_pendiente) ? $pago->mora_pendiente : 0;
-        $multa = isset($pago->multa_pendiente) ? $pago->multa_pendiente : 0;
-        return $interes + $mora + $multa;
+        //$mora = isset($pago->interes_mora_pendiente) ? $pago->interes_mora_pendiente : 0;
+        //$multa = isset($pago->multa_pendiente) ? $pago->multa_pendiente : 0;
+        return $interes; //+ $mora + $multa;
     }
 
     public function getCapitalPendienteAcumulado()
@@ -116,8 +116,22 @@ class prestamo extends Model
                 $proximaFecha->day = $proximaFecha->day - 1;
             }
             $dias = $proximaFecha->diffInDays($carbon);
-            return $cuota * $tasa * $dias;
+            return ($cuota * $tasa * $dias);
         }
+    }
+
+    public function getMoraPendiente()
+    {
+        $pago = $this->pagos()->latest()->first();        
+        $mora = isset($pago->interes_mora_pendiente) ? $pago->interes_mora_pendiente : 0;        
+        return $mora;
+    }
+
+    public function getMultaPendiente()
+    {
+        $pago = $this->pagos()->latest()->first();        
+        $multa = isset($pago->multa_pendiente) ? $pago->multa_pendiente : 0;        
+        return $multa;
     }
 
     public function getClasificacion(){
@@ -178,7 +192,7 @@ class prestamo extends Model
             if ($this->linea_id != 1) {
                 return $this->multa * $this->getNumeroCuotas(true);
             }
-            return $this->multa * ($this->getNumeroCuotas() - 1);
+            return ($this->multa * ($this->getNumeroCuotas() - 1));
         }
     }
 
@@ -307,6 +321,11 @@ class prestamo extends Model
         $data['totalDescuento'] = $totalGasto;
         $data['totalLiquido'] = $this->monto - $totalGasto;
         return $data;
+    }
+
+    public function getTipoGarantia()
+    {
+        return $this->fiadores->count('prestamo_id') > 0 ? "FIDUCIARIA" : "PRENDARIA";
     }
 
     public static function getPrestamoCliente()

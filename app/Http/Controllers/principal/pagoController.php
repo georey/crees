@@ -78,11 +78,12 @@ class pagoController extends Controller
         $input['multa'] = $multa;
         $input['multa_pendiente'] = $multa_pendiente;
         $input['mora'] = $mora;
-        $input['mora_pendiente'] = $mora_pendiente;
+        $input['interes_mora_pendiente'] = $mora_pendiente;
         $input['interes'] = $interes;
         $input['interes_pendiente'] = $interes_pendiente;
         $input['capital'] = $capital;
         $input['capital_pendiente'] = $capital_pendiente < 0 ? 0 : $capital_pendiente;
+        
 
         $prestamo->pagos()->create($input);
 

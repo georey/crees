@@ -9,6 +9,7 @@ use App\Models\principal\pago;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Excel;
+use PDF;
 
 class prestamosController extends Controller {
 
@@ -57,6 +58,7 @@ class prestamosController extends Controller {
                 "reporte_id" =>$tipo,
                 "asesor_id" => $request->asesor_id
                 ];
+        $carbon = new Carbon();
         switch ($tipo) {
             case 1:
                 $data = pago::getReporteInteres($fecha_ini, $fecha_fin, $request->asesor_id);
@@ -64,7 +66,7 @@ class prestamosController extends Controller {
                 $info['tabla'] = 'reportes.prestamos_tabla_interes';
                 if ($filtro == 'filtrar') {
                     return view('reportes.prestamos')->with($info);
-                } else {
+                } else if ($filtro == 'xls') {
                     Excel::create('Reporte de interes cobrados', function($excel) use($data){
                         $excel->setTitle('Reporte de interes cobrados');
                         $excel->sheet('Intereses', function($sheet) use($data){
@@ -72,6 +74,9 @@ class prestamosController extends Controller {
                             $sheet->fromArray($data->toArray());
                         });
                     })->export('xls');
+                } else if ($filtro == "pdf") {
+                    $pdf = PDF::loadView('reportes.prestamos_tabla_interes', $info);
+                    return $pdf->download($carbon->format('dmYHis').'prestamos_tabla_interes.pdf');
                 }
                 break;
             case 2:
@@ -80,7 +85,7 @@ class prestamosController extends Controller {
                 $info['tabla'] = 'reportes.prestamos_tabla_colocacion_prestamo';
                 if ($filtro == 'filtrar') {
                     return view('reportes.prestamos')->with($info);
-                } else {
+                } else if ($filtro == 'xls') {
                     Excel::create('Reporte de prestamos colocados', function($excel) use($data){
                         $excel->setTitle('Reporte de prestamos colocados');
                         $excel->sheet('Prestamos', function($sheet) use($data){
@@ -88,6 +93,9 @@ class prestamosController extends Controller {
                             $sheet->fromArray($data->toArray());
                         });
                     })->export('xls');
+                } else if ($filtro == "pdf") {
+                    $pdf = PDF::loadView('reportes.prestamos_tabla_colocacion_prestamo', $info);
+                    return $pdf->download($carbon->format('dmYHis').'prestamos_tabla_colocacion_prestamo.pdf');
                 }
                 break;
             case 3:
@@ -96,7 +104,7 @@ class prestamosController extends Controller {
                 $info['tabla'] = 'reportes.infored';
                 if ($filtro == 'filtrar') {
                     return view('reportes.prestamos')->with($info);
-                } else {
+                } else if ($filtro == 'xls') {
                     Excel::create('Reporte de Infored', function($excel) use($data){
                         $excel->setTitle('Reporte de Infored');
                         $excel->sheet('Prestamos', function($sheet) use($data){
@@ -104,6 +112,9 @@ class prestamosController extends Controller {
                             $sheet->fromArray($data->toArray());
                         });
                     })->export('xls');
+                } else if ($filtro == "pdf") {
+                    $pdf = PDF::loadView('reportes.infored', $info);
+                    return $pdf->download($carbon->format('dmYHis').'infored.pdf');
                 }
                 break;
             case 4:
@@ -112,7 +123,7 @@ class prestamosController extends Controller {
                 $info['tabla'] = 'reportes.prestamos_tabla_interes_sumarizado';
                 if ($filtro == 'filtrar') {
                     return view('reportes.prestamos')->with($info);
-                } else {
+                } else if ($filtro == 'xls') {
                     Excel::create('Reporte de interes cobrados', function($excel) use($data){
                         $excel->setTitle('Reporte de interes cobrados');
                         $excel->sheet('Intereses', function($sheet) use($data){
@@ -120,6 +131,9 @@ class prestamosController extends Controller {
                             $sheet->fromArray($data->toArray());
                         });
                     })->export('xls');
+                } else if ($filtro == "pdf") {
+                    $pdf = PDF::loadView('reportes.prestamos_tabla_interes_sumarizado', $info);
+                    return $pdf->download($carbon->format('dmYHis').'prestamos_tabla_interes_sumarizado.pdf');
                 }
                 break;
             case 5:
@@ -128,7 +142,7 @@ class prestamosController extends Controller {
                 $info['tabla'] = 'reportes.prestamos_tabla_colocacion_prestamo_sumarizado';
                 if ($filtro == 'filtrar') {
                     return view('reportes.prestamos')->with($info);
-                } else {
+                } else if ($filtro == 'xls') {
                     Excel::create('Reporte de prestamos colocados', function($excel) use($data){
                         $excel->setTitle('Reporte de prestamos colocados');
                         $excel->sheet('Prestamos', function($sheet) use($data){
@@ -136,6 +150,9 @@ class prestamosController extends Controller {
                             $sheet->fromArray($data->toArray());
                         });
                     })->export('xls');
+                } else if ($filtro == "pdf") {
+                    $pdf = PDF::loadView('reportes.prestamos_tabla_colocacion_prestamo_sumarizado', $info);
+                    return $pdf->download($carbon->format('dmYHis').'prestamos_tabla_colocacion_prestamo_sumarizado.pdf');
                 }
                 break;
             default:

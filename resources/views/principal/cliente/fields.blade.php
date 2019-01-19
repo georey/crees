@@ -135,6 +135,41 @@
 	<a href="{!! route('clientes.index') !!}" class="btn btn-default pull-right">Cancelar</a>
 	<button type="submit" class="btn btn-info pull-right">Guardar</button>
 </div>
+<div class="clearfix"></div>
+<div class="box">
+    <div class="box-body">
+      <table class="table table-bordered table-striped crud-datatable">
+        <thead>
+		    <tr>
+		    	<th>Nombre</th>
+		    	<th>Direccion</th>
+		    	<th>Telefono</th>
+		    	<th>Antiguedad</th>
+		    	<th>Empleados</th>
+		    	<th>Dias de trabajo</th>
+		    	<th>Horario</th>
+		    	<th>Tipo de negocio</th>
+		    </tr>
+		</thead>
+		<tbody>
+			@if (isset($negocios))
+			@foreach($negocios as $negocio)
+				<tr>
+					<td>{{$negocio->nombre}}</td>
+			    	<td>{{$negocio->direccion .', '. $negocio->municipio->nombre . '-' . $negocio->municipio->departamento->nombre}}</td>
+			    	<td>{{$negocio->telefono}}</td>
+			    	<td>{{$negocio->edad}}</td>
+			    	<td>{{$negocio->empleados}}</td>
+			    	<td>{{$negocio->dias_trabajo}}</td>
+			    	<td>{{$negocio->horario}}</td>
+			    	<td>{{$negocio->tipo_negocio->tipo or ''}}</td>
+				</tr>
+			@endforeach
+			@endif
+		</tbody>
+      </table>
+    </div>
+</div>
 @section('scripts')
 	<script type="text/javascript" src="{{ asset('scripts/clientes/validaciones.js') }}"></script>
 @endsection

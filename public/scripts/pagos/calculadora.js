@@ -9,24 +9,27 @@ function Calculadora() {
 			cuota_acordada = parseFloat($("#prestamo_id option:selected").attr('data-cuota-acordada'));			
 			capital_pendiente = parseFloat($("#prestamo_id option:selected").attr('data-capital-pendiente'));
 			mora = parseFloat($("#prestamo_id option:selected").attr('data-mora'));
+			mora_pendiente = parseFloat($("#prestamo_id option:selected").attr('data-mora-pendiente'));
 			multa = parseFloat($("#prestamo_id option:selected").attr('data-multa'));
+			multa_pendiente = parseFloat($("#prestamo_id option:selected").attr('data-multa-pendiente'));
 			saldo = parseFloat($("#prestamo_id option:selected").attr('data-saldo'));
 			interes = parseFloat($("#prestamo_id option:selected").attr('data-interes'));
 			interes_pendiente = parseFloat($("#prestamo_id option:selected").attr('data-interes-pendiente'));
 			dias = parseInt($("#prestamo_id option:selected").attr('data-dias-transcurridos'));
 			fecha = $("#prestamo_id option:selected").attr('data-fecha');
-			cuotaTotal = parseFloat(cuota) + parseFloat(multa) + parseFloat(mora) + parseFloat(capital_pendiente)  + parseFloat(interes);
+			cuotaTotal = parseFloat(cuota) + parseFloat(multa) + parseFloat(mora) + parseFloat(capital_pendiente)  + parseFloat(interes) + parseFloat(mora_pendiente)
+parseFloat(multa_pendiente);
 			//$("#cuota").val(cuotaTotal.toFixed(2));
 			$("#h3_cuota_acordada").html(cuota_acordada.toFixed(2));
-			$("#mora").val(mora.toFixed(2));
-			$("#multa").val(multa.toFixed(2));
+			$("#mora").val((mora+mora_pendiente).toFixed(2));
+			$("#multa").val((multa+multa_pendiente).toFixed(2));
 			$("#h3_saldo_anterior").html(saldo.toFixed(2));
 			$("#h3_capital").html((cuota == 0 ? capital_pendiente : cuota - interes).toFixed(2));
 			$("#hdn_capital").val((cuota == 0 ? capital_pendiente : cuota - (interes + interes_pendiente)).toFixed(2));
 			$("#h3_interes").html(interes.toFixed(2));
 			$("#h3_proxma_fecha").html(fecha);
 			$("#h3_total_pagar").html((cuotaTotal).toFixed(2));
-			$("#h3_deuda_total").html((saldo + interes + multa + mora ).toFixed(2));
+			$("#h3_deuda_total").html((saldo + interes + multa + mora+ multa_pendiente + mora_pendiente ).toFixed(2));
 			$("#h3_dias_transcurridos").html(dias);
 
 		});

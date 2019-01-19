@@ -22,6 +22,7 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::controller('reportes', 'reportes\prestamosController');
 
 	Route::post('clientes/anular_prestamo', 'principal\clienteController@anularPrestamo');
+	Route::post('clientes/actualizar_garantia', 'principal\clienteController@actualizarGarantia');	
 	Route::get('clientes/verificarDui', 'principal\clienteController@verificarDui');
 	Route::get('clientes/getGastos', 'principal\clienteController@getGastos');
 	Route::get('clientes/historial/{id}', 'principal\clienteController@getHistorial');

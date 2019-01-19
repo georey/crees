@@ -90,7 +90,7 @@
 			    	<td class="monto-mora">{!!$pago->mora > 0 ? $span_red . number_format($pago->mora, 2) . $span_close : $span_gray. '0.00' . $span_close!!}</td>
 			    	<td class="monto-multa">{!!$pago->multa > 0 ? $span_red . number_format($pago->multa, 2) . $span_close : $span_gray. '0.00' . $span_close!!}</td>
 			    	<td>{!!$pago->interes_pendiente > 0 ? $span_red . number_format($pago->interes_pendiente, 2) . $span_close : $span_gray. '0.00' . $span_close!!}</td>
-			    	<td>{!!$pago->mora_pendiente > 0 ? $span_red . number_format($pago->mora_pendiente, 2) . $span_close : $span_gray. '0.00' . $span_close!!}</td>
+			    	<td>{!!$pago->interes_mora_pendiente > 0 ? $span_red . number_format($pago->interes_mora_pendiente, 2) . $span_close : $span_gray. '0.00' . $span_close!!}</td>
 			    	<td>{!!$pago->multa_pendiente > 0 ? $span_red . number_format($pago->multa_pendiente, 2) . $span_close : $span_gray. '0.00' . $span_close!!}</td>
 			    	<th><span class="badge bg-light-blue">{{number_format($prestamo->monto - $capital, 2)}}</span></th>
 			    	<td>

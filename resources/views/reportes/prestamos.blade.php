@@ -58,6 +58,7 @@
 	        <div id="div_buttons" class="form-group col-md-12">
 	        	<button type="submit" id="btn_filtrar" name="btn_submit" value="filtrar" class="btn btn-info">Filtrar</button>
 	        	<button type="submit" id="btn_excel" name="btn_submit" value="xls" class="btn btn-info">Excel</button>
+	        	<button type="submit" id="btn_pdf" name="btn_submit" value="pdf" class="btn btn-info">PDF</button>
 	        </div>
     	</div>
     </form>

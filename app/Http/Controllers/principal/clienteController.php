@@ -70,6 +70,7 @@ class clienteController extends Controller
         $data['profesiones'] = profesion::all();
         $data['zonas'] = zona::all();
         $data['estados_civiles'] = estado_civil::all();
+        $data['negocios'] = negocio::where('cliente_id', $id)->get();
         return view('principal.cliente.edit')->with($data);
     }
 
@@ -273,6 +274,14 @@ class clienteController extends Controller
             $prestamo->save();
             return "prestamo anulado";
         }
+    }
+
+    public function actualizarGarantia(Request $request)
+    {
+        $prestamo = prestamo::findOrFail($request->prestamo_id);
+        $prestamo->garantia = trim($request->garantia);
+        $prestamo->save();
+        return "garantia actualizada";
     }
 
     public function getHistorial($id)
