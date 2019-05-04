@@ -83,15 +83,15 @@ class pagoController extends Controller
         $input['interes_pendiente'] = $interes_pendiente;
         $input['capital'] = $capital;
         $input['capital_pendiente'] = $capital_pendiente < 0 ? 0 : $capital_pendiente;
-        
 
-        $prestamo->pagos()->create($input);
+        $pago = $prestamo->pagos()->create($input);       
 
         $prestamo = prestamo::findOrFail($input['prestamo_id']);
         if($prestamo->saldoAnterior() <= 0) {
             $prestamo->estado_prestamo_id = 3;
             $prestamo->save();
         }
+        //return redirect(route('pagos.recibo',$pago->id));
         return redirect(route('pagos.create'));
     }
 
@@ -183,5 +183,17 @@ class pagoController extends Controller
         $data['prestamo'] = prestamo::findOrFail($id);
         $pdf = PDF::loadView('pdf.nota_cobro', $data);
         return $pdf->download($carbon->format('dmYHis').'nota_cobro.pdf');*/
+    }
+
+    public function pdfRecibo($pago_id){        
+        $pago = pago::findOrFail($pago_id);
+        $prestamo = prestamo::findOrFail($pago->prestamo_id);
+        $carbon = new Carbon();
+        $data['fecha'] = $carbon;
+        $data['prestamo'] = $prestamo;
+        $data['pago'] = $pago;
+        $data['titulo'] = '<h1>Recibo</h1>';
+        $pdf = PDF::loadView('pdf.recibo', $data);
+        return $pdf->download($carbon->format('dmYHis').'recibo.pdf');
     }
 }

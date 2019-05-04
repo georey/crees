@@ -20,5 +20,7 @@ tr {border-spacing:5px}
 .fecha_apertura {
 	text-align: right;
 }
+.colspan_3 {width: 100%!important}
+
 
 </style>

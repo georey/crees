@@ -259,7 +259,7 @@ class clienteController extends Controller
         $carbon = new Carbon();
         $data['fecha'] = $carbon;
         $data['cliente'] = cliente::findOrFail($id);
-        $data['titulo'] = '<h1>Test</h1>';
+        $data['titulo'] = '<h1>Ficha</h1>';
         $pdf = PDF::loadView('pdf.ficha', $data);
         return $pdf->download($carbon->format('dmYHis').'ficha.pdf');
     }

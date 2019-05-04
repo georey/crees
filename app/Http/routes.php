@@ -74,6 +74,10 @@ Route::group(['middleware' => 'auth'], function() {
 	    'uses' => 'principal\pagoController@destroy',
 	]);
 	Route::get('pagos/pdf_nota_cobro/{id}', 'principal\pagoController@pdfNotaCobro');
+	Route::get('pagos/pdf_recibo/{id}', [
+	    'as' => 'pagos.recibo',
+	    'uses' => 'principal\pagoController@pdfRecibo',
+	]);
 
 	Route::get('acuerdos_pagos/datatable', 'principal\acuerdoController@getDataTable');
     Route::get('acuerdos_pagos/restore/{id}', 'principal\acuerdoController@restore');
