@@ -385,8 +385,8 @@ class prestamo extends Model
                                     lineas.nombre AS Linea,
                                     prestamos.monto AS Monto,
                                     prestamos.liquido As Liquido,
-                                    SUM(prestamos_liquidados.monto) as total_liquidacion,
-                                    SUM(tipo_gastos.monto) as total_gastos
+                                    SUM(DISTINCT prestamos_liquidados.monto) as total_liquidacion,
+                                    SUM(DISTINCT tipo_gastos.monto) as total_gastos
                                     '))
                     ->join('clientes', 'clientes.id', '=', 'prestamos.cliente_id')
                     ->join('lineas', 'lineas.id', '=', 'prestamos.linea_id')

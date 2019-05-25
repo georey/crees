@@ -64,6 +64,16 @@ parseFloat(multa_pendiente);
     	});
     }
 
+    self.initSubmitForm = () =>{
+    	$("form").submit(function(e){
+        	e.preventDefault();
+			if(cuotaTotal < $("#cuota").val())
+				alert("el monto de la cuota no puede superar el monto total del prestamo");
+			else
+				$(this).submit();
+		});
+    }
+
     function init() {}
 
     init();
@@ -77,4 +87,5 @@ $(document).ready(function () {
     calculadora.initCalculadora();
     calculadora.initCookies();
     calculadora.initFecha();
+    calculadora.initSubmitForm();
 });
