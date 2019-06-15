@@ -91,8 +91,11 @@ class pagoController extends Controller
             $prestamo->estado_prestamo_id = 3;
             $prestamo->save();
         }
-        //return redirect(route('pagos.recibo',$pago->id));
-        return redirect(route('pagos.create'));
+        if($input['btn_enviar'] == "guardar")
+            return redirect(route('pagos.create'));
+        if($input['btn_enviar'] == "recibo")
+            return redirect(route('pagos.recibo',$pago->id));
+        return false;
     }
 
     public function show($id)

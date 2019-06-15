@@ -105,11 +105,49 @@ class prestamosController extends Controller {
                 if ($filtro == 'filtrar') {
                     return view('reportes.prestamos')->with($info);
                 } else if ($filtro == 'xls') {
-                    Excel::create('Reporte de Infored', function($excel) use($data){
+                    $xlsdata = array();
+                    foreach($info['prestamos'] as $prestamo){
+                        $fecha = Carbon::parse($prestamo->fecha);
+                        $fecha_ultimo_pago = Carbon::parse($prestamo->getUltimaFecha());
+                        $fecha_nacimiento = Carbon::parse($prestamo->cliente->fecha_nacimiento);
+                        $xlsdetail["Año"] = $fecha->year;
+                        $xlsdetail["mes"] = str_pad($fecha->month,2,'0',STR_PAD_LEFT);
+                        $xlsdetail["nombre"] = $prestamo->nombre_completo;
+                        $xlsdetail["Tipo_per"] = 1;
+                        $xlsdetail["Num_ptmo"] = $prestamo->codigo;
+                        $xlsdetail["inst"] = "";
+                        $xlsdetail["fec_otor"] = $fecha->format("d/m/Y");
+                        $xlsdetail["monto"] = $prestamo->monto;
+                        $xlsdetail["plazo"] = number_format($prestamo->meses,0);
+                        $xlsdetail["saldo"] = $prestamo->saldoAnterior();
+                        $xlsdetail["mora"] = number_format($prestamo->montoCuotas() + $prestamo->getMora() + $prestamo->getMulta() + $prestamo->getInteres() + $prestamo->getCapitalPendiente(),2);
+                        $xlsdetail["forma_pag"] = $prestamo->linea->id_infored;
+                        $xlsdetail["tipo_rel"] = 1;
+                        $xlsdetail["linea_cre"] = "COM";
+                        $xlsdetail["dias"] = $fecha->diffInDays($fecha_ultimo_pago);
+                        $xlsdetail["ult_pag"] = $fecha_ultimo_pago->format("d/m/Y");
+                        $xlsdetail["tipo_gar"] = "-";
+                        $xlsdetail["tipo_mon"] = "02";
+                        $xlsdetail["valcuota"] = $prestamo->cuota;
+                        $xlsdetail["dia"] = $fecha->endOfMonth()->day;
+                        $xlsdetail["fechanac"] = $fecha_nacimiento->format("d/m/Y");
+                        $xlsdetail["dui"] = $prestamo->cliente->dui;
+                        $xlsdetail["nit"] = $prestamo->cliente->nit;
+                        $xlsdetail["fecha_can"] = $prestamo->saldoAnterior() == 0 ? $fecha_ultimo_pago->format("d/m/Y") : "";
+                        $xlsdetail["fecha_ven"] = $prestamo->getFechaVencimiento()->format('d/m/Y');
+                        $xlsdetail["ncuotascre"] = $prestamo->cuotas;
+                        $xlsdetail["calif_act"] = $prestamo->getClasificacion();
+                        $xlsdetail["activi_eco"] = "COMERCIANTE";
+                        $xlsdetail["sexo"] = str_limit($prestamo->cliente->getSexo(), 1, '');
+                        $xlsdetail["estcredito"] = $prestamo->getEstadoInfored();
+                        $xlsdata[] = $xlsdetail;
+                    }
+        
+                    Excel::create('Reporte de Infored', function($excel) use($xlsdata){
                         $excel->setTitle('Reporte de Infored');
-                        $excel->sheet('Prestamos', function($sheet) use($data){
+                        $excel->sheet('Prestamos', function($sheet) use($xlsdata){
                             $sheet->setOrientation('landscape');
-                            $sheet->fromArray($data->toArray());
+                            $sheet->fromArray($xlsdata);
                         });
                     })->export('xls');
                 } else if ($filtro == "pdf") {

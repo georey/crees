@@ -74,11 +74,21 @@ SANTA ANA. SANTA ANA. TEL. 2421-9058
 		<th style="text-align: right; width: 50%; font-size: 20px">Saldo Capital despues de pago:</th>
 		<th style="text-align: left;padding-left: 15px; font-size: 20px">$ {{number_format($prestamo->saldoAnterior(),2)}}</th>
 	</tr>
+	<tr>
+		<th style="text-align: right; width: 50%; font-size: 20px">Intereses pendientes:</th>
+		<th style="text-align: left;padding-left: 15px; font-size: 20px">$ {{number_format($prestamo->getInteresesPendientes(),2)}}</th>
+	</tr>
+	<tr>
+		<th style="text-align: right; width: 50%; font-size: 20px">Deuda Total:</th>
+		<th style="text-align: left;padding-left: 15px; font-size: 20px">$ {{number_format($prestamo->saldoAnterior() + $prestamo->getInteresesPendientes(),2)}}</th>
+	</tr>
 </table>
 <div class="line-separator"></div>
 <br><br>
 <table style="width: 100%">
 	<tr>
+		<td>F:</td>
+		<td>________________</td>
 		<td>F:</td>
 		<td>________________</td>
 		<td>F:</td>
@@ -89,5 +99,7 @@ SANTA ANA. SANTA ANA. TEL. 2421-9058
 		<td>Autorizado</td>
 		<td></td>
 		<td>Cajero Colector</td>
+		<td></td>
+		<td>Cliente</td>
 	</tr>
 </table>

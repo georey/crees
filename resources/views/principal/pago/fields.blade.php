@@ -110,11 +110,12 @@
 		</div>
 		<div class="clearfix"></div>
 		<div class="box-footer">
-			<a href="{!! route('pagos.index') !!}" class="btn btn-default pull-right">Regresar</a>
-			<button type="submit" class="btn btn-info pull-right">Guardar</button>
+			<a href="{!! route('pagos.index') !!}" class="btn btn-default pull-right">Regresar</a>&nbsp;&nbsp;&nbsp;
+			<button type="submit" name="btn_enviar" value="recibo" class="btn btn-success pull-right">Guardar y Generar Recibo</button>&nbsp;&nbsp;&nbsp;
+			<button type="submit" name="btn_enviar" value="guardar" class="btn btn-info pull-right">Guardar</button>			
 		</div>
 	</div>
 </div>
 @section('scripts')
-	<script type="text/javascript" src="{{ asset('scripts/pagos/calculadora.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('scripts/pagos/calculadora.js') }}?2"></script>
 @endsection

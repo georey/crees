@@ -66,11 +66,20 @@ parseFloat(multa_pendiente);
 
     self.initSubmitForm = () =>{
     	$("form").submit(function(e){
-        	e.preventDefault();
-			if(cuotaTotal < $("#cuota").val())
-				alert("el monto de la cuota no puede superar el monto total del prestamo");
-			else
-				$(this).submit();
+			if(cuotaTotal < $("#cuota").val()){
+				//alert("El monto de la cuota no puede superar el monto total del prestamo");
+				var r = confirm("Esta seguro de ingresar esta cantidad mayor al monto del prestamo?");
+				if(r) {
+					return true;
+				} else {
+					return false;
+				}
+				
+			}
+			else{
+				return true;
+			}
+			return false;
 		});
     }
 
@@ -82,6 +91,8 @@ parseFloat(multa_pendiente);
 
 }
 $(document).ready(function () {
+	$('form').trigger("reset");
+	$("#prestamo_id").select2();
     calculadora = new Calculadora();
     calculadora.initTasas();
     calculadora.initCalculadora();
