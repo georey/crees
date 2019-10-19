@@ -22,5 +22,17 @@ tr {border-spacing:5px}
 }
 .colspan_3 {width: 100%!important}
 
+.div_table{width: 100%; display: table;  }
+.div_tr{
+	display: table-row; }
+.div_td{
+	display: table-cell;
+	/*border: 1px solid red;*/
+}
+.colspan-12{width: 100%!important;padding-bottom: 15px}
+.colspan-6{width: 50%!important;padding-bottom: 15px}
+.colspan-4{width: 33%!important;padding-bottom: 15px}
+.colspan-3{width: 25%!important;padding-bottom: 15px}
+
 
 </style>

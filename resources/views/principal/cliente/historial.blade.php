@@ -43,6 +43,10 @@
 				<tr>
 					<td>Garantia:</td><td>{{$prestamo->getTipoGarantia()}}</td>
 				</tr>
+				<tr>
+					<td>Categoria:</td><td>{{$prestamo->getClasificacion()}}
+					</td>
+				</tr>
 			</table>
 			</h3>
 			</th>

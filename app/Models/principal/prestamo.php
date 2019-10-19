@@ -135,16 +135,65 @@ class prestamo extends Model
     }
 
     public function getClasificacion(){
-        /*A1 Atrasos hasta de 7 días
+        /*
+        A1 Atrasos hasta de 7 días
         A2 Atrasos hasta 30 días
         B  Atrasos hasta 90 días
         C1 Atrasos hasta 120 días
         C2 Atrasos hasta 180 días
         D1 Atrasos hasta 270 días
         D2 Atrasos hasta 360 días
-        E  Atrasos de más de 360 días*/
-        $carbon = $this->getFechaActualSinHora();
-        $dias = $carbon->diffInDays($this->getProximaFecha());
+        E  Atrasos de más de 360 días
+        */
+        $fechaVencimiento = $this->getFechaVencimiento();
+        $fechaActual = $this->getFechaActualSinHora();
+        $proximaFecha = $this->getProximaFecha();
+        $ultimaFecha = $this->getUltimaFecha();
+        $penultimaFecha = $this->getPenultimaFecha();
+        $tipo = 0;
+        
+        $dias = 0;
+        $ultimateDias = 0;
+        $fechaInicialPago = $this->fecha;
+        foreach ($this->pagos as $pago) {
+            $dias = $fechaInicialPago->diffInDays($pago->fecha);            
+            $fechaInicialPago = $pago->fecha;
+            if($dias > $ultimateDias)
+                $ultimateDias = $dias;
+        }
+        $dias = $ultimateDias;
+        switch ($this->estado_prestamo_id) {
+            case 1://Activo
+                if($fechaActual < $fechaVencimiento) //no esta vencido 
+                {
+                    $tipo = 1;
+                    //$dias = $fechaActual < $proximaFecha ? 1 : $fechaActual->diffInDays($proximaFecha);
+                }
+                else //esta vencido
+                {
+                    $tipo = 2;
+                    //$dias = $fechaActual->diffInDays($fechaVencimiento);
+                }
+                break;
+            case 2://Refill
+            case 3://Cancelado
+                if($ultimaFecha < $fechaVencimiento) //no esta vencido 
+                {
+                    $tipo = 3;
+                    //$dias = $penultimaFecha->diffInDays($ultimaFecha);
+                }
+                else //esta vencido
+                {
+                    $tipo = 4;
+                    //$dias = $ultimaFecha->diffInDays($fechaVencimiento);
+                }
+            break;
+            
+            default:
+                //$dias = 0;
+                break;
+        }
+        
         $calificacion ="";
         switch (true) {
             case ($dias <= 7):
@@ -176,6 +225,7 @@ class prestamo extends Model
                 break;
         }
         return $calificacion;
+        return $dias."-".$calificacion."-".$tipo;
     }
 
     public function getMulta()
@@ -234,6 +284,21 @@ class prestamo extends Model
     {
         if ($this->pagos->count('id') > 0) {
             $fecha = $this->pagos->max('fecha');
+        } else {
+            $fecha = $this->fecha;
+        }
+        $carbon = Carbon::parse($fecha);
+        $carbon->hour = 0;
+        $carbon->minute = 0;
+        $carbon->second = 0;
+        return $carbon;
+    }
+
+    public function getPenultimaFecha()
+    {
+        $totalPagos = $this->pagos->count('id');
+        if ($totalPagos > 1) {
+            $fecha = $this->pagos->get($totalPagos-2)->fecha;  
         } else {
             $fecha = $this->fecha;
         }
@@ -335,7 +400,7 @@ class prestamo extends Model
                         ->addSelect(DB::raw("estados_prestamo.estado as estado"))
                         ->join('clientes', 'prestamos.cliente_id', '=', 'clientes.id')
                         ->join('estados_prestamo', 'estados_prestamo.id', '=', 'prestamos.estado_prestamo_id')
-                        ->where("estado_prestamo_id","!=", 4)
+                        ->where("estado_prestamo_id","=", 1)
                         //->orderBy('clientes.apellido')
                         ->orderBy('prestamos.codigo');
                         //->get();

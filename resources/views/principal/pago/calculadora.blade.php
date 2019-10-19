@@ -14,6 +14,22 @@
 			<div class="box-body">
 				<div class="col-md-6">
 					<div class="form-group col-md-10">
+						<label for="prestamo_id">Cliente</label>
+						<select style="width: 100%;" id="prestamo_id" name="prestamo_id" class="form-control select2 validation_required">
+						    <option>-- Seleccione una opcion --</option>
+						    @foreach($prestamos as $prestamo)
+						         <option value = "{{ $prestamo->id }}" 
+						         data-monto="{{$prestamo->monto}}" 
+						         data-cuotas="{{$prestamo->cuotas}}"
+						         data-linea="{{$prestamo->linea_id}}"
+						         data-fecha="{{$prestamo->fecha->format('m-d-Y')}}"
+						         >
+						         	{{$prestamo->codigo . " - " . $prestamo->nombre_completo}}
+						         </option>
+						    @endforeach
+						</select>
+					</div>
+					<div class="form-group col-md-10">
 						@include("layouts.form.input_text", array(
 															'label' => 'Monto',
 															'name' => 'monto',

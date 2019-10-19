@@ -47,6 +47,11 @@
 			    <option>-- Seleccione una opcion --</option>
 			    @foreach($prestamos as $prestamo)
 			         <option value = "{{ $prestamo->id }}" 
+		         	 data-monto="{{$prestamo->monto}}" 
+		         	 data-cuotas="{{$prestamo->cuotas}}" 
+		         	 data-tasa="{{$prestamo->linea->tasa_anual}}" 
+		         	 data-indice_conversion="{{$prestamo->linea->indice_conversion}}"
+		         	 data-fecha-inicio="{{$prestamo->fecha->format('m-d-Y')}}"
 			         data-saldo="{{$prestamo->saldoAnterior()}}" 
 			         data-cuota-acordada="{{$prestamo->cuota}}"
 			         data-cuota="{{$prestamo->montoCuotas()}}" 

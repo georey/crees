@@ -138,6 +138,7 @@ class pagoController extends Controller
     public function getCalculadora()
     {
         $data['lineas'] = linea::all();
+        $data['prestamos'] = prestamo::getPrestamoActivosCliente();
         return view('principal.pago.calculadora')->with($data);
     }
 

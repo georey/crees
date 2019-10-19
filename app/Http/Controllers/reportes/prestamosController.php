@@ -110,8 +110,8 @@ class prestamosController extends Controller {
                         $fecha = Carbon::parse($prestamo->fecha);
                         $fecha_ultimo_pago = Carbon::parse($prestamo->getUltimaFecha());
                         $fecha_nacimiento = Carbon::parse($prestamo->cliente->fecha_nacimiento);
-                        $xlsdetail["Año"] = $fecha->year;
-                        $xlsdetail["mes"] = str_pad($fecha->month,2,'0',STR_PAD_LEFT);
+                        $xlsdetail["Año"] = $fecha_ini->year;
+                        $xlsdetail["mes"] = str_pad($fecha_ini->month,2,'0',STR_PAD_LEFT);
                         $xlsdetail["nombre"] = $prestamo->nombre_completo;
                         $xlsdetail["Tipo_per"] = 1;
                         $xlsdetail["Num_ptmo"] = $prestamo->codigo;
@@ -119,8 +119,8 @@ class prestamosController extends Controller {
                         $xlsdetail["fec_otor"] = $fecha->format("d/m/Y");
                         $xlsdetail["monto"] = $prestamo->monto;
                         $xlsdetail["plazo"] = number_format($prestamo->meses,0);
-                        $xlsdetail["saldo"] = $prestamo->saldoAnterior();
-                        $xlsdetail["mora"] = number_format($prestamo->montoCuotas() + $prestamo->getMora() + $prestamo->getMulta() + $prestamo->getInteres() + $prestamo->getCapitalPendiente(),2);
+                        $xlsdetail["saldo"] = in_array($prestamo->estado_prestamo_id, array(2,3)) ? '=0' : $prestamo->saldoAnterior();
+                        $xlsdetail["mora"] = in_array($prestamo->estado_prestamo_id, array(2,3)) ? '=0' : number_format($prestamo->montoCuotas() + $prestamo->getMora() + $prestamo->getMulta() + $prestamo->getInteres() + $prestamo->getCapitalPendiente(),2);
                         $xlsdetail["forma_pag"] = $prestamo->linea->id_infored;
                         $xlsdetail["tipo_rel"] = 1;
                         $xlsdetail["linea_cre"] = "COM";
@@ -141,11 +141,20 @@ class prestamosController extends Controller {
                         $xlsdetail["sexo"] = str_limit($prestamo->cliente->getSexo(), 1, '');
                         $xlsdetail["estcredito"] = $prestamo->getEstadoInfored();
                         $xlsdata[] = $xlsdetail;
-                    }
-        
+                    }                    
                     Excel::create('Reporte de Infored', function($excel) use($xlsdata){
                         $excel->setTitle('Reporte de Infored');
                         $excel->sheet('Prestamos', function($sheet) use($xlsdata){
+                            $total_columns = count($xlsdata);
+                            $sheet->setColumnFormat(array(
+                                "H2:H".$total_columns => '0.00',
+                                "J2:J".$total_columns => '0.00',
+                                "K2:K".$total_columns => '0.00'
+                            ));
+                            $sheet->getStyle("H2:H".$total_columns)->getAlignment()->applyFromArray(array('horizontal' => 'right'));
+                            $sheet->getStyle("J2:J".$total_columns)->getAlignment()->applyFromArray(array('horizontal' => 'right'));
+                            $sheet->getStyle("K2:K".$total_columns)->getAlignment()->applyFromArray(array('horizontal' => 'right'));
+
                             $sheet->setOrientation('landscape');
                             $sheet->fromArray($xlsdata);
                         });

@@ -1,7 +1,7 @@
 var calculadora = {};
 
 function Calculadora() {
-    var self = this;
+    var self = this;    
 
     self.initTasas = () => {
 		$("#linea_id").change(function() {
@@ -10,6 +10,19 @@ function Calculadora() {
 			$("#multa").val($("#linea_id option:selected").attr('data-multa'));
 		});
 	}
+
+	self.initPrestamos = () => {
+		$("#prestamo_id").change(function(){
+			monto = $("option:selected",this).data("monto");
+			cuotas = $("option:selected",this).data("cuotas");
+			linea_id = $("option:selected",this).data("linea");
+			$("#monto").val(monto);
+			$("#cuotas").val(cuotas);
+			$("#linea_id").val(linea_id);
+			$("#linea_id").trigger("change");
+		});
+	}
+
     self.initCalculadora = () => {
 		$("#btn_calcular").click(function(){
 			monto = $("#monto").val();
@@ -24,8 +37,8 @@ function Calculadora() {
 	        $("#spn_cuota").html(cuota);
 	        $("#cuota").val(cuota);
 	        periodo = parseInt(365 / indice_conversion);
-	        var fecha_actual = new Date();
-			var fecha_pago = new Date();
+	        var fecha_actual = $("#prestamo_id option:selected").val() > 0 ? new Date($("#prestamo_id option:selected").data("fecha")) : new Date();
+			var fecha_pago = fecha_actual;
 			tasa = (tasa_anual / 100) / 365;
 			capital = parseFloat(0);
 			var tabla = $("#tbl_plan > tbody");
@@ -81,4 +94,5 @@ $(document).ready(function () {
     calculadora = new Calculadora();
     calculadora.initTasas();
     calculadora.initCalculadora();
+    calculadora.initPrestamos();
 });
