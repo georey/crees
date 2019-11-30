@@ -5,7 +5,10 @@ function Calculadora() {
 
     self.initTasas = () => {
 		$("#linea_id").change(function() {
-			$("#tasa").val($("#linea_id option:selected").attr('data-tasa_anual'));
+			if($("#prestamo_id option:selected").val() > 0)
+				tasa = 0;
+			else
+				$("#tasa").val($("#linea_id option:selected").attr('data-tasa_anual'));
 			$("#tasa_mora").val($("#linea_id option:selected").attr('data-tasa_mora'));
 			$("#multa").val($("#linea_id option:selected").attr('data-multa'));
 		});
@@ -16,9 +19,11 @@ function Calculadora() {
 			monto = $("option:selected",this).data("monto");
 			cuotas = $("option:selected",this).data("cuotas");
 			linea_id = $("option:selected",this).data("linea");
+			tasa = $("option:selected",this).data("tasa");
 			$("#monto").val(monto);
 			$("#cuotas").val(cuotas);
 			$("#linea_id").val(linea_id);
+			$("#tasa").val(tasa);
 			$("#linea_id").trigger("change");
 		});
 	}

@@ -22,6 +22,7 @@
 						         data-monto="{{$prestamo->monto}}" 
 						         data-cuotas="{{$prestamo->cuotas}}"
 						         data-linea="{{$prestamo->linea_id}}"
+						         data-tasa="{{$prestamo->tasa}}"
 						         data-fecha="{{$prestamo->fecha->format('m-d-Y')}}"
 						         >
 						         	{{$prestamo->codigo . " - " . $prestamo->nombre_completo}}
