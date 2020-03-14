@@ -32,9 +32,10 @@ class pago extends Model
             prestamos.codigo AS codigo,
             clientes.nombre AS nombre,
             clientes.apellido AS apellido,
-            SUM(CASE WHEN estado_prestamo_id = 1 THEN pagos.capital ELSE 0 END) capital,
-            SUM(CASE WHEN estado_prestamo_id = 2 THEN pagos.capital ELSE 0 END) refill,
-            /*SUM(pagos.capital) AS capital,*/
+            /*SUM(CASE WHEN estado_prestamo_id = 1 THEN pagos.capital ELSE 0 END) capital,
+            SUM(CASE WHEN estado_prestamo_id = 2 THEN pagos.capital ELSE 0 END) refill,*/
+            SUM(pagos.capital) AS capital,
+            0 as refill,
             SUM(pagos.interes) AS interes,
             SUM(pagos.mora) AS mora, SUM(pagos.multa) AS multa,
             (SELECT
@@ -64,9 +65,10 @@ class pago extends Model
     {
         $rpt = pago::select(DB::raw("
             DATE(pagos.fecha) AS fecha,
-            SUM(CASE WHEN estado_prestamo_id = 1 THEN pagos.capital ELSE 0 END) capital,
-            SUM(CASE WHEN estado_prestamo_id = 2 THEN pagos.capital ELSE 0 END) refill,
-            /*SUM(pagos.capital) AS capital,*/
+            /*SUM(CASE WHEN estado_prestamo_id = 1 THEN pagos.capital ELSE 0 END) capital,
+            SUM(CASE WHEN estado_prestamo_id = 2 THEN pagos.capital ELSE 0 END) refill,*/
+            SUM(pagos.capital) AS capital,
+            0 AS refill,
             SUM(pagos.interes) AS interes,
             SUM(pagos.mora) AS mora, SUM(pagos.multa) AS multa,
             (SELECT
