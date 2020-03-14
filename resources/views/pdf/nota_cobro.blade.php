@@ -24,17 +24,20 @@ Santa Ana, {{trans("dias.".$fecha->format('l'))}} {{$fecha->format('d')}} de {{t
 <br>
 Señor(a):<br>
 {{$prestamo->cliente->nombreCompleto()}}<br>
+@if($prestamo->fiadores->count() > 0)
+	Señor(a) fiador(a):<br>
+	{{$prestamo->fiadores->first()->nombreCompleto()}}<br>
+@endif
 Presente:<br><br>
 <p class="text-justify">
-Por este medio se le  comunica que el crédito No.{{$prestamo->codigo}} concedido en fecha {{$prestamo->fecha->format('d/m/Y')}}, otorgado por Servicios Crediticios de El Salvador Sociedad Anónima de Capital Variable (CREES) con un monto de {{$prestamo->monto}} dólares, se encuentra actualmente EN MORA
+Por este medio se le  comunica que el crédito No.{{$prestamo->codigo}} concedido en fecha {{$prestamo->fecha->format('d/m/Y')}}, otorgado por Servicios Crediticios de El Salvador Sociedad Anónima de Capital Variable (CREES) con un monto de ${{$prestamo->monto}}, se encuentra actualmente EN MORA
 @if($fecha > $prestamo->getVencimiento())
  y VENCIDO el día {{$prestamo->getVencimiento()->format('d/m/Y')}}
 @endif
 .</p>
 
 <p class="text-justify">
-El atraso que su cuenta refleja es de {{number_format($prestamo->getMora() + $prestamo->getMulta() + $prestamo->getInteres(),2)}} dólares de saldos de intereses y comisiones y de 
-{{number_format($prestamo->saldoAnterior(),2)}} de capital en mora al {{$fecha->format('d/m/Y')}} haciendo un total de {{number_format($prestamo->saldoAnterior() + $prestamo->getMora() + $prestamo->getMulta() + $prestamo->getInteres(),2)}}
+El atraso que su cuenta refleja es de ${{number_format($prestamo->getMora() + $prestamo->getMulta() + $prestamo->getInteres(),2)}} de saldos de intereses y comisiones y de ${{number_format($prestamo->saldoAnterior(),2)}} de capital en mora al {{$fecha->format('d/m/Y')}} haciendo un total de ${{number_format($prestamo->saldoAnterior() + $prestamo->getMora() + $prestamo->getMulta() + $prestamo->getInteres(),2)}}.
 </p>
 
 <p class="text-justify">

@@ -127,4 +127,5 @@ $(document).ready(function () {
     calculadora.initCookies();
     calculadora.initFecha();
     calculadora.initSubmitForm();
+    $('#select2-cobrador_id-container').attr('tabindex', 0);
 });

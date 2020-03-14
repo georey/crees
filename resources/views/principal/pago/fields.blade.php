@@ -117,7 +117,7 @@
 		<div class="box-footer">
 			<a href="{!! route('pagos.index') !!}" class="btn btn-default pull-right">Regresar</a>&nbsp;&nbsp;&nbsp;
 			<button type="submit" name="btn_enviar" value="recibo" class="btn btn-success pull-right">Guardar y Generar Recibo</button>&nbsp;&nbsp;&nbsp;
-			<button type="submit" name="btn_enviar" value="guardar" class="btn btn-info pull-right">Guardar</button>			
+			<button tabindex="0" type="submit" name="btn_enviar" value="guardar" class="btn btn-info pull-right">Guardar</button>			
 		</div>
 	</div>
 </div>
