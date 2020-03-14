@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Excel;
 use PDF;
+use PHPExcel_Style_Alignment;
+use PHPExcel_Style_Fill;
+use PHPExcel_Style_NumberFormat;
 
 class prestamosController extends Controller {
 
@@ -39,6 +42,41 @@ class prestamosController extends Controller {
         return view('reportes.prestamos')->with($data);
     }
 
+    private function getStyles(){
+        $cabecera_principal = array(
+            'alignment' => array(
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+            ),
+            'fill' => array(
+                'type'  => PHPExcel_Style_Fill::FILL_SOLID,
+                'color' => array('rgb' => '66B2FF')
+            ),
+            'font' => array(
+                'size'      =>  14,
+                'bold'      =>  true
+            )
+        );
+
+        $cabecera_titulos = array(
+            'font' => array(
+                'size'      =>  12,
+                'bold'      =>  true
+            )
+        );
+
+        $negrita = array(
+            'font' => array(
+                'bold'      =>  true
+            )
+        );
+
+        return [
+            'cabecera_principal'=>$cabecera_principal,
+            'cabecera_titulos'=>$cabecera_titulos,
+            'negrita'=>$negrita
+        ];
+    }
+
     public function postIndex(Request $request)
     {
         $info['estados'] = estado_prestamo::all();
@@ -49,6 +87,8 @@ class prestamosController extends Controller {
         $filtro = $request->btn_submit;
         $fecha_ini = Carbon::createFromFormat('d-m-Y H:i:s', $request->fecha_ini . " 00:00:00");
         $fecha_fin = Carbon::createFromFormat('d-m-Y H:i:s', $request->fecha_fin . " 23:59:59");
+        $fecha_ini_show =$request->fecha_ini;
+        $fecha_fin_show =$request->fecha_fin;
         $mes = $fecha_ini->month;
         $data['prestamos'] = null;
         $info['reporte'] = [
@@ -67,11 +107,46 @@ class prestamosController extends Controller {
                 if ($filtro == 'filtrar') {
                     return view('reportes.prestamos')->with($info);
                 } else if ($filtro == 'xls') {
-                    Excel::create('Reporte de interes cobrados', function($excel) use($data){
+                    Excel::create('Reporte de interes cobrados', function($excel) use($data,$fecha_ini_show,$fecha_fin_show){
                         $excel->setTitle('Reporte de interes cobrados');
-                        $excel->sheet('Intereses', function($sheet) use($data){
+                        $excel->sheet('Intereses', function($sheet) use($data,$fecha_ini_show,$fecha_fin_show){
+                            $styles = $this->getStyles();
                             $sheet->setOrientation('landscape');
-                            $sheet->fromArray($data->toArray());
+                            $sheet->mergeCells('A1:H1');
+                            $sheet->row(1, array("Reporte de Ingresos del {$fecha_ini_show} al {$fecha_fin_show}"));
+                            $sheet->row(2, array('Fecha','ID abono','Codigo','Nombre','Apellido','Capital Abono','Capital refill','Interes','Mora','Multa','Tramites','Total'));
+                            $sheet->getStyle('A1')->applyFromArray($styles['cabecera_principal']);
+                            $sheet->getStyle('A2:H2')->applyFromArray($styles['cabecera_titulos']);#Using HT
+                            $arrData = $data->toArray();
+                            $finalData = [];
+                            foreach ($arrData as $row){
+                                $finalData[] = [
+                                    'fecha'=>date('d-m-Y',strtotime($row['fecha'])),
+                                    'id_abono'=>$row['id_abono'],
+                                    'codigo'=>$row['codigo'],
+                                    'nombre'=>$row['nombre'],
+                                    'apellido'=>$row['apellido'],
+                                    'capital'=>floatval($row['capital']),
+                                    'refill'=>floatval($row['refill']),
+                                    'interes'=>floatval($row['interes']),
+                                    'mora'=>floatval($row['mora']),
+                                    'multa'=>floatval($row['multa']),
+                                    'tramites'=>floatval($row['tramites']),
+                                ];
+                            }
+                            $sheet->fromArray($finalData, null, 'A3', false, false);
+                            if(count($finalData)>0){
+                                $inicio = 3;
+                                $fin = count($data->toArray()) + $inicio - 1;
+                                for($i=$inicio;$i<=$fin;$i++){
+                                    $sheet->setCellValue(
+                                        'L'.$i,
+                                        '=SUM(F'.$i.':K'.$i.')'
+                                    );
+                                }
+                                $sheet->getStyle('L'.$inicio.':L'.$fin)->applyFromArray($styles['negrita']);
+                            }
+                            $sheet->freezePane('A3');
                         });
                     })->export('xls');
                 } else if ($filtro == "pdf") {
@@ -171,11 +246,46 @@ class prestamosController extends Controller {
                 if ($filtro == 'filtrar') {
                     return view('reportes.prestamos')->with($info);
                 } else if ($filtro == 'xls') {
-                    Excel::create('Reporte de interes cobrados', function($excel) use($data){
+                    Excel::create('Reporte de interes cobrados', function($excel) use($data,$fecha_ini_show, $fecha_fin_show){
                         $excel->setTitle('Reporte de interes cobrados');
-                        $excel->sheet('Intereses', function($sheet) use($data){
+                        $excel->sheet('Intereses', function($sheet) use($data,$fecha_ini_show,$fecha_fin_show){
+                            $styles = $this->getStyles();
                             $sheet->setOrientation('landscape');
-                            $sheet->fromArray($data->toArray());
+                            $sheet->mergeCells('A1:H1');
+                            $sheet->row(1, array("Reporte de Ingresos sumarizados del {$fecha_ini_show} al {$fecha_fin_show}"));
+                            $sheet->row(2, array('Fecha','Ingreso Capital Abono','Ingreso Capital Refill','Interes','Mora','Multa','Tramites', 'Total'));
+                            $sheet->getStyle('A1')->applyFromArray($styles['cabecera_principal']);
+                            $sheet->getStyle('A2:H2')->applyFromArray($styles['cabecera_titulos']);#Using HT
+                            $arrData = $data->toArray();
+                            $finalData = [];
+                            foreach ($arrData as $row){
+                                $finalData[] = [
+                                    'fecha'=>date('d-m-Y',strtotime($row['fecha'])),
+                                    'capital'=>floatval($row['capital']),
+                                    'refill'=>floatval($row['refill']),
+                                    'interes'=>floatval($row['interes']),
+                                    'mora'=>floatval($row['mora']),
+                                    'multa'=>floatval($row['multa']),
+                                    'tramites'=>floatval($row['tramites']),
+                                ];
+                            }
+                            $sheet->fromArray($finalData, null, 'A3', false, false);
+                            if(count($finalData)>0){
+                                $inicio = 3;
+                                $fin = count($data->toArray()) + $inicio - 1;
+                                for($i=$inicio;$i<=$fin;$i++){
+                                    $sheet->setCellValue(
+                                        'H'.$i,
+                                        '=SUM(B'.$i.':G'.$i.')'
+                                    );
+                                }
+                                $sheet->getStyle('H'.$inicio.':H'.$fin)->applyFromArray($styles['negrita']);
+                                /*$sheet->setCellValue(
+                                    'H'.($fin+1),
+                                    '=SUM(H'.$inicio.':H'.$fin.')'
+                                );*/
+                            }
+                            $sheet->freezePane('A3');
                         });
                     })->export('xls');
                 } else if ($filtro == "pdf") {

@@ -27,12 +27,16 @@ class pago extends Model
     public static function getReporteInteres($fecha_ini, $fecha_fin, $asesor_id = 0)
     {
         $rpt = pago::select(DB::raw("
-            prestamos.codigo AS Codigo,
-            clientes.nombre AS Nombre,
-            clientes.apellido AS Apellido,
-            SUM(pagos.capital) AS Capital,
-            SUM(pagos.interes) AS Interes,
-            SUM(pagos.mora) AS Mora, SUM(pagos.multa) AS Multa,
+            pagos.id as id_abono,
+            DATE(pagos.fecha) AS fecha,
+            prestamos.codigo AS codigo,
+            clientes.nombre AS nombre,
+            clientes.apellido AS apellido,
+            SUM(CASE WHEN estado_prestamo_id = 1 THEN pagos.capital ELSE 0 END) capital,
+            SUM(CASE WHEN estado_prestamo_id = 2 THEN pagos.capital ELSE 0 END) refill,
+            /*SUM(pagos.capital) AS capital,*/
+            SUM(pagos.interes) AS interes,
+            SUM(pagos.mora) AS mora, SUM(pagos.multa) AS multa,
             (SELECT
                 SUM(tg.monto)
             FROM gastos g
@@ -41,7 +45,7 @@ class pago extends Model
             WHERE
                 g.prestamo_id = prestamos.id AND
                 p.fecha BETWEEN '{$fecha_ini}' AND '{$fecha_fin}'
-            ) AS Tramites"))
+            ) AS tramites"))
                     ->join('prestamos', 'prestamos.id', '=', 'pagos.prestamo_id')
                     ->join('clientes', 'clientes.id', '=', 'prestamos.cliente_id')
                     ->where('pagos.fecha','>=',$fecha_ini)
@@ -49,6 +53,8 @@ class pago extends Model
                     ->groupBy('prestamos.codigo')
                     ->groupBy('clientes.nombre')
                     ->groupBy('clientes.apellido')
+                    ->groupBy('pagos.id')
+                    ->groupBy(DB::raw('DATE(pagos.fecha)'))
                     ->orderBy('prestamos.codigo');
         $rpt = $asesor_id > 0 ? $rpt->where('prestamos.asesor_id',$asesor_id) : $rpt;                    
         return $rpt->get();
@@ -58,9 +64,11 @@ class pago extends Model
     {
         $rpt = pago::select(DB::raw("
             DATE(pagos.fecha) AS fecha,
-            SUM(pagos.capital) AS Capital,
-            SUM(pagos.interes) AS Interes,
-            SUM(pagos.mora) AS Mora, SUM(pagos.multa) AS Multa,
+            SUM(CASE WHEN estado_prestamo_id = 1 THEN pagos.capital ELSE 0 END) capital,
+            SUM(CASE WHEN estado_prestamo_id = 2 THEN pagos.capital ELSE 0 END) refill,
+            /*SUM(pagos.capital) AS capital,*/
+            SUM(pagos.interes) AS interes,
+            SUM(pagos.mora) AS mora, SUM(pagos.multa) AS multa,
             (SELECT
                 SUM(tg.monto)
             FROM gastos g
@@ -69,7 +77,7 @@ class pago extends Model
             WHERE
                 DATE(p.fecha) = DATE(pagos.fecha) AND
                 p.estado_prestamo_id not in (4)
-            ) AS Tramites"))
+            ) AS tramites"))
                     ->join('prestamos', 'prestamos.id', '=', 'pagos.prestamo_id')
                     ->join('clientes', 'clientes.id', '=', 'prestamos.cliente_id')
                     ->where('pagos.fecha','>=',$fecha_ini)
