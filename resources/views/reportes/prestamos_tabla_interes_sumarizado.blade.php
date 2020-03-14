@@ -36,12 +36,12 @@
 	        <tfoot>
 	        	<tr>
 		        	<th style="text-align:right">TOTAL:</th>
-		        	<th style="text-align:right">{{number_format($prestamos->sum('Capital'), 2)}}</th>
-		        	<th style="text-align:right">{{number_format($prestamos->sum('Interes'), 2)}}</th>
-		        	<th style="text-align:right">{{number_format($prestamos->sum('Mora'), 2)}}</th>
-		        	<th style="text-align:right">{{number_format($prestamos->sum('Multa'), 2)}}</th>
-		        	<th style="text-align:right">{{number_format($prestamos->sum('Tramites'), 2)}}</th>
-		        	<th style="text-align:right">{{number_format($prestamos->sum('Interes')+$prestamos->sum('Mora')+$prestamos->sum('Multa')+$prestamos->sum('Tramites'), 2)}}</th>
+		        	<th style="text-align:right">{{number_format($prestamos->sum('capital'), 2)}}</th>
+		        	<th style="text-align:right">{{number_format($prestamos->sum('interes'), 2)}}</th>
+		        	<th style="text-align:right">{{number_format($prestamos->sum('mora'), 2)}}</th>
+		        	<th style="text-align:right">{{number_format($prestamos->sum('multa'), 2)}}</th>
+		        	<th style="text-align:right">{{number_format($prestamos->sum('tramites'), 2)}}</th>
+		        	<th style="text-align:right">{{number_format($prestamos->sum('interes')+$prestamos->sum('mora')+$prestamos->sum('multa')+$prestamos->sum('tramites'), 2)}}</th>
 	        	</tr>
 	        </tfoot>
 	      </table>
