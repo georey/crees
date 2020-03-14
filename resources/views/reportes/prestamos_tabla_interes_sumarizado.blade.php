@@ -13,6 +13,7 @@
 	        	<tr>
 	        		<th>Fecha</th>
 	        		<th>Capital</th>
+					<th>Refill</th>
 	        		<th>Interes</th>
 	        		<th>Mora</th>
 	        		<th>Multa</th>
@@ -25,6 +26,7 @@
 	        		<tr>
 	        			<td>{{$prestamo->fecha->format('d-m-Y')}}</td>
 	        			<td style="text-align:right">{{number_format($prestamo->capital, 2)}}</td>
+						<td style="text-align:right">{{number_format($prestamo->refill, 2)}}</td>
 	        			<td style="text-align:right">{{number_format($prestamo->interes, 2)}}</td>
 	        			<td style="text-align:right">{{number_format($prestamo->mora, 2)}}</td>
 	        			<td style="text-align:right">{{number_format($prestamo->multa, 2)}}</td>
@@ -37,6 +39,7 @@
 	        	<tr>
 		        	<th style="text-align:right">TOTAL:</th>
 		        	<th style="text-align:right">{{number_format($prestamos->sum('capital'), 2)}}</th>
+					<th style="text-align:right">{{number_format($prestamos->sum('refill'), 2)}}</th>
 		        	<th style="text-align:right">{{number_format($prestamos->sum('interes'), 2)}}</th>
 		        	<th style="text-align:right">{{number_format($prestamos->sum('mora'), 2)}}</th>
 		        	<th style="text-align:right">{{number_format($prestamos->sum('multa'), 2)}}</th>
