@@ -112,7 +112,7 @@ class prestamosController extends Controller {
                         $excel->sheet('Intereses', function($sheet) use($data,$fecha_ini_show,$fecha_fin_show){
                             $styles = $this->getStyles();
                             $sheet->setOrientation('landscape');
-                            $sheet->mergeCells('A1:H1');
+                            $sheet->mergeCells('A1:L1');
                             $sheet->row(1, array("Reporte de Ingresos del {$fecha_ini_show} al {$fecha_fin_show}"));
                             $sheet->row(2, array('Fecha','ID abono','Codigo','Nombre','Apellido','Capital Abono','Capital refill','Interes','Mora','Multa','Tramites','Total'));
                             $sheet->getStyle('A1')->applyFromArray($styles['cabecera_principal']);
