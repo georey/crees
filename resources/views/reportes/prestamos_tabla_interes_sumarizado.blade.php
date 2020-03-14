@@ -24,12 +24,12 @@
 	        	@foreach($prestamos as $prestamo)
 	        		<tr>
 	        			<td>{{$prestamo->fecha->format('d-m-Y')}}</td>
-	        			<td style="text-align:right">{{number_format($prestamo->Capital, 2)}}</td>
-	        			<td style="text-align:right">{{number_format($prestamo->Interes, 2)}}</td>
-	        			<td style="text-align:right">{{number_format($prestamo->Mora, 2)}}</td>
-	        			<td style="text-align:right">{{number_format($prestamo->Multa, 2)}}</td>
-	        			<td style="text-align:right">{{number_format($prestamo->Tramites, 2)}}</td>
-	        			<td style="text-align:right">{{number_format($prestamo->Interes+$prestamo->Mora+$prestamo->Multa+$prestamo->Tramites, 2)}}</td>
+	        			<td style="text-align:right">{{number_format($prestamo->capital, 2)}}</td>
+	        			<td style="text-align:right">{{number_format($prestamo->interes, 2)}}</td>
+	        			<td style="text-align:right">{{number_format($prestamo->mora, 2)}}</td>
+	        			<td style="text-align:right">{{number_format($prestamo->multa, 2)}}</td>
+	        			<td style="text-align:right">{{number_format($prestamo->tramites, 2)}}</td>
+	        			<td style="text-align:right">{{number_format($prestamo->interes+$prestamo->mora+$prestamo->multa+$prestamo->tramites, 2)}}</td>
 	        		</tr>
 	        	@endforeach
 	        </tbody>

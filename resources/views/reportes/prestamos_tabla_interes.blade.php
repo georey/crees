@@ -16,23 +16,23 @@
 	        <tbody>
 	        	@foreach($prestamos as $prestamo)
 	        		<tr>
-	        			<td>{{$prestamo->Codigo}}</td>
-	        			<td>{{$prestamo->Nombre.' '.$prestamo->Apellido}}</td>
-	        			<td>{{number_format($prestamo->Capital, 2)}}</td>
-	        			<td>{{number_format($prestamo->Interes, 2)}}</td>
-	        			<td>{{number_format($prestamo->Mora, 2)}}</td>
-	        			<td>{{number_format($prestamo->Multa, 2)}}</td>
-	        			<th>{{number_format($prestamo->Capital+$prestamo->Interes+$prestamo->Mora+$prestamo->Multa, 2)}}</th>
+	        			<td>{{$prestamo->codigo}}</td>
+	        			<td>{{$prestamo->nombre.' '.$prestamo->apellido}}</td>
+	        			<td>{{number_format($prestamo->capital, 2)}}</td>
+	        			<td>{{number_format($prestamo->interes, 2)}}</td>
+	        			<td>{{number_format($prestamo->mora, 2)}}</td>
+	        			<td>{{number_format($prestamo->multa, 2)}}</td>
+	        			<th>{{number_format($prestamo->capital+$prestamo->interes+$prestamo->mora+$prestamo->multa, 2)}}</th>
 	        		</tr>
 	        	@endforeach
 	        </tbody>
 	        <tfoot>
 	        	<th colspan="2" style="text-align:right">TOTAL:</th>
-	        	<th>{{number_format($prestamos->sum('Capital'), 2)}}</th>
-	        	<th>{{number_format($prestamos->sum('Interes'), 2)}}</th>
-	        	<th>{{number_format($prestamos->sum('Mora'), 2)}}</th>
-	        	<th>{{number_format($prestamos->sum('Multa'), 2)}}</th>
-	        	<th>{{number_format($prestamos->sum('Capital')+$prestamos->sum('Interes')+$prestamos->sum('Mora')+$prestamos->sum('Multa'), 2)}}</th>
+	        	<th>{{number_format($prestamos->sum('capital'), 2)}}</th>
+	        	<th>{{number_format($prestamos->sum('interes'), 2)}}</th>
+	        	<th>{{number_format($prestamos->sum('mora'), 2)}}</th>
+	        	<th>{{number_format($prestamos->sum('multa'), 2)}}</th>
+	        	<th>{{number_format($prestamos->sum('capital')+$prestamos->sum('interes')+$prestamos->sum('mora')+$prestamos->sum('multa'), 2)}}</th>
 	        </tfoot>
 	      </table>
 	    </div>
