@@ -191,14 +191,12 @@ class mhController extends Controller
             return 'Sin nombre';
         })
         ->addColumn('tipo_dte_nombre', function ($row) {
-            $json = json_decode($row->json);
-            $tipoDte = isset($json->identificacion->tipoDte) ? $json->identificacion->tipoDte : '01';
-            switch ($tipoDte) {
-                case '01':
+            switch ($row->tipo_dte) {
+                case 1:
                     return 'Factura';
-                case '03':
+                case 3:
                     return 'Crédito Fiscal';
-                case '14':
+                case 14:
                     return 'Sujeto Excluido';
                 default:
                     return 'Tipo ' . $tipoDte;

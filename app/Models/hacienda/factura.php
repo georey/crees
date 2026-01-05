@@ -9,7 +9,7 @@ class factura extends Model
     public $table = "mh_factura";
     protected $dates = ['created_at', 'updated_at'];
     public $fillable = [
-        "cliente_id", "estado", "numero_control", "codigo_generacion", "json","sello_recepcion","respuesta_mh","respuesta_anulacion"
+        "cliente_id", "estado", "numero_control", "codigo_generacion", "json","sello_recepcion","respuesta_mh","respuesta_anulacion","tipo_dte"
     ];
     protected $casts = [];
     public static $rules = [];
@@ -19,10 +19,20 @@ class factura extends Model
         return $this->belongsTo('App\Models\principal\cliente', 'cliente_id');
     }
 
-    public static function secuencia(){
-        $nextId = DB::select("SHOW TABLE STATUS LIKE 'mh_factura'");
-        $siguienteId = $nextId[0]->Auto_increment;
-        return $siguienteId;
+
+    /**
+     * Obtiene la secuencia correlativa para el tipo de DTE y año actual.
+     * @param string $tipoDte ("01", "03", "14", etc)
+     * @return int
+     */
+    public static function secuencia($tipoDte)
+    {
+        $anio = date('Y');
+        $count = DB::table('mh_factura')
+            ->where('tipo_dte', $tipoDte)
+            ->whereYear('created_at', '=', $anio)
+            ->count();
+        return $count + 1;
     }
 
     

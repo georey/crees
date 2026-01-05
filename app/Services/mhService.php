@@ -275,7 +275,7 @@ class mhService
         $fecha_emision = $now->format('Y-m-d');
         $hora_emision = $now->format('H:i:s');
         $tipoDte = "01";
-        $secuencia = $this->generarSecuencia(factura::secuencia());
+        $secuencia = $this->generarSecuencia(factura::secuencia(1));
 
         $numero_control = 'DTE-' . $tipoDte . '-' . $this->dte['numero_establecimiento'] . '-' . $secuencia;
         $codigo_generacion = strtoupper(Uuid::uuid4()->toString());
@@ -615,7 +615,7 @@ class mhService
 
         $fecha_emision = $now->format('Y-m-d');
         $hora_emision = $now->format('H:i:s');
-        $secuencia = $this->generarSecuencia(factura::secuencia());
+        $secuencia = $this->generarSecuencia(factura::secuencia((int)$tipoDte));
 
         $numero_control = 'DTE-' . $tipoDte . '-' . $this->dte['numero_establecimiento'] . '-' . $secuencia;
         $codigo_generacion = strtoupper(Uuid::uuid4()->toString());
@@ -1036,7 +1036,8 @@ class mhService
             "estado" => estadoFactura::CREADA,
             "numero_control" => $numero_control,
             "codigo_generacion" => $codigo_generacion,
-            "json" => $jsonString
+            "json" => $jsonString,
+            "tipo_dte" => (int)$tipoDte
         ]);
 
         Log::info('Iniciando enviar json custom - Tipo DTE: ' . $tipoDte);
