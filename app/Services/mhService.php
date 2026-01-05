@@ -696,8 +696,9 @@ class mhService
             }
         }
 
-        // Estructura diferente para crédito fiscal
+        // Estructura diferente según el tipo de DTE
         if ($tipoDte == '03') {
+            // Crédito Fiscal
             $receptor = [
                 'nit' => $nit,
                 'nrc' => $nrc,
@@ -709,8 +710,20 @@ class mhService
                 'telefono' => $telefono,
                 'correo' => $correo
             ];
+        } elseif ($tipoDte == '14') {
+            // Sujeto Excluido
+            $receptor = [
+                "tipoDocumento" => "36",
+                "numDocumento" => $nit,
+                'nombre' => $nombreCompleto,
+                'codActividad' => $codActividad,
+                'descActividad' => $descActividad,
+                'direccion' => $direccion,
+                'telefono' => $telefono,
+                'correo' => $correo
+            ];
         } else {
-            // Para factura y sujeto excluido
+            // Factura de consumidor final y otros
             $receptor = [
                 "tipoDocumento" => "36",
                 "numDocumento" => $nit,
@@ -784,11 +797,12 @@ class mhService
                 $ivaItem = 0.00;
             }
 
-            // Estructura de item para crédito fiscal (03)
+            // Estructura de item según el tipo de DTE
             if ($tipoDte == '03') {
+                // Crédito Fiscal
                 $item = array(
                     'numItem' => $numItemCuerpo,
-                    'tipoItem' => 2,//$tipo[$i],
+                    'tipoItem' => 2,
                     'numeroDocumento' => null,
                     'codigo' => null,
                     'codTributo' => null,
@@ -804,8 +818,21 @@ class mhService
                     'noGravado' => $noGravado,
                     'psv' => 0.0
                 );
+            } elseif ($tipoDte == '14') {
+                // Sujeto Excluido - estructura simplificada
+                $item = array(
+                    'numItem' => $numItemCuerpo,
+                    'tipoItem' => $tipo[$i],
+                    'cantidad' => $cantidad,
+                    'codigo' => null,
+                    'uniMedida' => $unidades[$i],
+                    'descripcion' => $descripciones[$i],
+                    'precioUni' => $precio,
+                    'montoDescu' => round((float)$descuento[$i], 2),
+                    'compra' => $subtotal - round((float)$descuento[$i], 2)
+                );
             } else {
-                // Para factura y sujeto excluido
+                // Factura de consumidor final y otros
                 $item = array(
                     'numItem' => $numItemCuerpo,
                     'tipoItem' => $tipo[$i],
@@ -865,67 +892,108 @@ class mhService
             $totalPagar = round($montoTotalOperacion + $totalIVA + $totalNoGravado, 2);
         }
 
-        // Resumen
-        $tributos = [];
-        if ($tipoDte == '03' && $totalIVA > 0) {
-            // Para crédito fiscal, agregar tributo del IVA
-            $tributos[] = array(
-                'codigo' => '20',
-                'descripcion' => 'Impuesto al Valor Agregado 13%',
-                'valor' => round($totalIVA, 2)
+        // Resumen según tipo de DTE
+        if ($tipoDte == '14') {
+            // Resumen simplificado para Sujeto Excluido
+            $totalCompra = round($totalPagar, 2);
+            $resumen = array(
+                'totalCompra' => $totalCompra,
+                'descu' => round($totalDescuento, 2),
+                'totalDescu' => round($totalDescuento, 2),
+                'subTotal' => $totalCompra,
+                'ivaRete1' => 0.00,
+                'reteRenta' => 0.00,
+                'totalPagar' => $totalCompra,
+                'totalLetras' => $this->moneyService->convertirMontoADolares($totalCompra),
+                'condicionOperacion' => 1,
+                'pagos' => array(
+                    array(
+                        'codigo' => '01',
+                        'montoPago' => $totalCompra,
+                        'referencia' => null,
+                        'plazo' => null,
+                        'periodo' => null
+                    )
+                ),
+                'observaciones' => null
             );
+        } else {
+            // Resumen para Crédito Fiscal y Factura
+            $tributos = [];
+            if ($tipoDte == '03' && $totalIVA > 0) {
+                // Para crédito fiscal, agregar tributo del IVA
+                $tributos[] = array(
+                    'codigo' => '20',
+                    'descripcion' => 'Impuesto al Valor Agregado 13%',
+                    'valor' => round($totalIVA, 2)
+                );
+            }
+
+            $resumen = array(
+                'totalNoSuj' => round($totalNoSujeto, 2),
+                'totalExenta' => round($totalExenta, 2),
+                'totalGravada' => round($totalGravada, 2),
+                'subTotalVentas' => $subTotalVentas,
+                'descuNoSuj' => round($totalDescuentoNosujeto, 2),
+                'descuExenta' => round($totalDescuentoExento, 2),
+                'descuGravada' => round($totalDescuentoGravado, 2),
+                'porcentajeDescuento' => round($subTotalVentas > 0 ? ($totalDescuento / $subTotalVentas) * 100 : 0, 2),
+                'totalDescu' => round($totalDescuento, 2),
+                'tributos' => count($tributos) > 0 ? $tributos : null,
+                'subTotal' => $subTotalVentas,
+                'ivaPerci1' => 0.00,
+                'ivaRete1' => 0.00,
+                'reteRenta' => 0.00,
+                'montoTotalOperacion' => $montoTotalOperacion,
+                'totalNoGravado' => round($totalNoGravado, 2),
+                'totalPagar' => round($totalPagar, 2),
+                'totalLetras' => $this->moneyService->convertirMontoADolares($totalPagar),
+                'saldoFavor' => 0.00,
+                'condicionOperacion' => 1,
+                'pagos' => array(
+                    array(
+                        'codigo' => '01',
+                        'montoPago' => round($totalPagar, 2),
+                        'referencia' => null,
+                        'plazo' => null,
+                        'periodo' => null
+                    )
+                ),
+                'numPagoElectronico' => null
+            );
+            
+            // Para factura (no crédito fiscal), agregar totalIva
+            if ($tipoDte != '03') {
+                $resumen['totalIva'] = round($totalIVA, 2);
+            }
         }
 
-        $resumen = array(
-            'totalNoSuj' => round($totalNoSujeto, 2),
-            'totalExenta' => round($totalExenta, 2),
-            'totalGravada' => round($totalGravada, 2),
-            'subTotalVentas' => $subTotalVentas,
-            'descuNoSuj' => round($totalDescuentoNosujeto, 2),
-            'descuExenta' => round($totalDescuentoExento, 2),
-            'descuGravada' => round($totalDescuentoGravado, 2),
-            'porcentajeDescuento' => round($subTotalVentas > 0 ? ($totalDescuento / $subTotalVentas) * 100 : 0, 2),
-            'totalDescu' => round($totalDescuento, 2),
-            'tributos' => count($tributos) > 0 ? $tributos : null,
-            'subTotal' => $subTotalVentas,
-            'ivaPerci1' => 0.00,
-            'ivaRete1' => 0.00,
-            'reteRenta' => 0.00,
-            'montoTotalOperacion' => $montoTotalOperacion,
-            'totalNoGravado' => round($totalNoGravado, 2),
-            'totalPagar' => round($totalPagar, 2),
-            'totalLetras' => $this->moneyService->convertirMontoADolares($totalPagar),
-            'saldoFavor' => 0.00,
-            'condicionOperacion' => 1,
-            'pagos' => array(
-                array(
-                    'codigo' => '01',
-                    'montoPago' => round($totalPagar, 2),
-                    'referencia' => null,
-                    'plazo' => null,
-                    'periodo' => null
-                )
-            ),
-            'numPagoElectronico' => null
-        );
-        
-        // Para factura y sujeto excluido, agregar totalIva
-        if ($tipoDte != '03') {
-            $resumen['totalIva'] = round($totalIVA, 2);
+        // Construir documento según tipo de DTE
+        if ($tipoDte == '14') {
+            // Factura de Sujeto Excluido - usar "sujetoExcluido" en lugar de "receptor"
+            $factura = [
+                'identificacion' => $identificacion,
+                'emisor' => $emisor,
+                'sujetoExcluido' => $receptor,
+                'cuerpoDocumento' => $cuerpo,
+                'resumen' => $resumen,
+                "apendice" => count($apendice) > 0 ? $apendice : null
+            ];
+        } else {
+            // Crédito Fiscal y Factura - usar "receptor"
+            $factura = [
+                'identificacion' => $identificacion,
+                'emisor' => $emisor,
+                'receptor' => $receptor,
+                'cuerpoDocumento' => $cuerpo,
+                'resumen' => $resumen,
+                "documentoRelacionado" => null,
+                "otrosDocumentos" => null,
+                "ventaTercero" => null,
+                "extension" => null,
+                "apendice" => count($apendice) > 0 ? $apendice : null
+            ];
         }
-
-        $factura = [
-            'identificacion' => $identificacion,
-            'emisor' => $emisor,
-            'receptor' => $receptor,
-            'cuerpoDocumento' => $cuerpo,
-            'resumen' => $resumen,
-            "documentoRelacionado" => null,
-            "otrosDocumentos" => null,
-            "ventaTercero" => null,
-            "extension" => null,
-            "apendice" => count($apendice) > 0 ? $apendice : null
-        ];
 
         Log::info('Factura construida. Items en cuerpoDocumento: ' . count($cuerpo));
         Log::info('JSON Factura completa: ' . json_encode($factura, JSON_PRETTY_PRINT));
