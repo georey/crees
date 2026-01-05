@@ -52,7 +52,7 @@ Facturacion Electronica
 							<input type="text" class="form-control" id="nit" name="nit" placeholder="0614-000000-000-0">
 						</div>
 
-						<div class="form-group col-md-3">
+<div class="form-group col-md-3" id="nrc_field">
 							<label for="nrc">NRC</label>
 							<input type="text" class="form-control" id="nrc" name="nrc" placeholder="000000-0">
 						</div>
@@ -106,6 +106,8 @@ Facturacion Electronica
 								<option value="3">Bien y servicio</option>
 							</select>
 						</div>
+						@for ($i = 0; $i < 5; $i++)
+						<div class="form-row col-md-12">
 						<div class="form-group col-md-1">
 							<label for="unidad_medida">Unidad</label>
 							<select style="width: 100%;" id="unidad_medida" name="unidad_medida[]" class="form-control select2 validation_required">
@@ -114,58 +116,33 @@ Facturacion Electronica
 								</select>
 							</div>
 							<div class="form-group col-md-3">
-								@include("layouts.form.input_text", array(
-									'label' => 'Descripcion',
-									'name' => 'descripcion',
-									'value' => ["descripcion"=>"item"],
-									
-								))
-
-														</div>
+								<label for="descripcion">Descripcion</label>
+								<input type="text" class="form-control" name="descripcion[]">
+							</div>
 							<div class="form-group col-md-2">
-								@include("layouts.form.input_text", array(
-									'label' => 'Cantidad',
-									'name' => 'cantidad',
-									'value' => ['cantidad'=>1],
-								
-								))
+								<label for="cantidad">Cantidad</label>
+								<input type="text" class="form-control" name="cantidad[]">
 							</div>
 							
 							<div class="form-group col-md-2">
-								@include("layouts.form.input_text", array(
-									'label' => 'Precio Unitario',
-									'name' => 'precio_unitario',
-									'value' => ['precio_unitario'=>10],
-									
-								))
+								<label for="precio_unitario">Precio U</label>
+								<input type="text" class="form-control" name="precio_unitario[]">
 							</div>
 							<div class="form-group col-md-1">
-								@include("layouts.form.input_text", array(
-									'label' => 'Desc',
-									'name' => 'descuento',
-									'value' => ['descuento'=>0],
-									
-								))
+								<label for="descuento">Descuento</label>
+								<input type="text" class="form-control" name="descuento[]">							
 							</div>
 							<div class="form-group col-md-1">
-								@include("layouts.form.input_text", array(
-									'label' => 'V no suj',
-									'name' => 'no_suj',
-									'value' => ['no_suj'=>0],
-									
-								))
+								<label for="no_suj">No Suj</label>
+								<input type="text" class="form-control" name="no_suj[]">										
 							</div>
 							<div class="form-group col-md-1">
-								@include("layouts.form.input_text", array(
-									'label' => 'V exenta',
-									'name' => 'exenta',
-									'value' => ['exenta'=>0],
-									
-								))
+								<label for="exenta">Exenta</label>
+								<input type="text" class="form-control" name="exenta[]">		
 							</div>
-						<div class="form-group col-md-1">							
-					<button style="margin-top: 30px;" type="button" id="agregar-item">+</button>
-						</div>
+					
+</div>
+						@endfor
 					</div>
  <div id="items-container"></div>
 					<button type="submit">Generar</button>
@@ -175,7 +152,7 @@ Facturacion Electronica
 			</div>
 @endsection
 @section('scripts')
-	<script type="text/javascript" src="{{ asset('scripts/hacienda/factura.js') }}?v=4"></script>
+	
 	<script type="text/javascript">
 		$(document).ready(function() {
 			// Función para mostrar/ocultar campos según tipo de documento
@@ -184,20 +161,28 @@ Facturacion Electronica
 				if (tipoDte == '01') {
 					// Factura consumidor final - mostrar select de cliente
 					$('#cliente_fields').show();
-					$('#receptor_manual').hide();
-					$('#actividad_economica_field').hide();
+					$('#receptor_manual').hide();				$('#nrc_field').show();					$('#actividad_economica_field').hide();
 					$('#cliente_id').prop('required', true);
 					$('#nombre, #apellido').prop('required', false);
 					$('#actividad_economica').prop('required', false);
-				} else if (tipoDte == '03') {
-					// Crédito fiscal - mostrar campos manuales y actividad económica
-					$('#cliente_fields').hide();
-					$('#receptor_manual').show();
-					$('#actividad_economica_field').show();
-					$('#cliente_id').prop('required', false);
-					$('#nombre, #apellido, #actividad_economica').prop('required', true);
-				} else {
-					// Sujeto excluido - mostrar campos manuales sin actividad económica
+			} else if (tipoDte == '03') {
+				// Crédito fiscal - mostrar campos manuales, NRC y actividad económica
+				$('#cliente_fields').hide();
+				$('#receptor_manual').show();
+				$('#nrc_field').show();
+				$('#actividad_economica_field').show();
+				$('#cliente_id').prop('required', false);
+				$('#nombre, #apellido, #actividad_economica').prop('required', true);
+			} else if (tipoDte == '14') {
+				// Sujeto excluido - mostrar campos manuales y actividad económica, ocultar NRC
+				$('#cliente_fields').hide();
+				$('#receptor_manual').show();
+				$('#nrc_field').hide();
+				$('#actividad_economica_field').show();
+				$('#cliente_id').prop('required', false);
+				$('#nombre, #apellido, #actividad_economica').prop('required', true);
+			} else {
+				// Otros tipos - mostrar campos manuales sin actividad económica
 					$('#cliente_fields').hide();
 					$('#receptor_manual').show();
 					$('#actividad_economica_field').hide();

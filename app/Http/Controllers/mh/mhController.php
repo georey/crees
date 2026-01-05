@@ -77,6 +77,18 @@ class mhController extends Controller
             $mh_factura = $this->mhService->generarFactura($cliente,$descripciones,$cantidades,$precios,$tipo,$unidades,$descuento,$no_suj,$exenta);
         } else {
             // Para crédito fiscal (03) y sujeto excluido (14), crear objeto con datos del formulario
+            \Log::info('=== DATOS RECIBIDOS DEL FORMULARIO ===');
+            \Log::info('Nombre: ' . $request->input('nombre'));
+            \Log::info('Apellido: ' . $request->input('apellido'));
+            \Log::info('NIT: ' . $request->input('nit'));
+            \Log::info('NRC: ' . $request->input('nrc'));
+            \Log::info('Correo: ' . $request->input('correo'));
+            \Log::info('Teléfono: ' . $request->input('telefono'));
+            \Log::info('Actividad económica: ' . $request->input('actividad_economica'));
+            \Log::info('Departamento: ' . $request->input('departamento'));
+            \Log::info('Municipio: ' . $request->input('municipio'));
+            \Log::info('Dirección: ' . $request->input('complemento'));
+            
             $cliente = new \stdClass();
             $cliente->nombre = $request->input('nombre');
             $cliente->apellido = $request->input('apellido');
@@ -127,6 +139,7 @@ class mhController extends Controller
         $data['json'] = json_decode($factura->json) ;
         $data["crees"] = $this->obtenerInfoEmpresa();
         $data['montoLetras'] = $this->moneyService->convertirMontoADolares($data["json"]->resumen->totalPagar);
+        $data['destinatario'] = isset($data['json']->sujetoExcluido) ? $data['json']->sujetoExcluido : $data['json']->receptor;
        
         $pdf = PDF::loadView('pdf.mh_factura', $data);        
         if($enviar_correo){
@@ -161,6 +174,22 @@ class mhController extends Controller
         ->addColumn('estado', function ($row) {
             return $row->estado;
         })
+        ->addColumn('nombre_completo', function ($row) {
+            // Si tiene cliente_id, usar nombre del cliente
+            if ($row->nombre_completo && trim($row->nombre_completo) != '') {
+                return $row->nombre_completo;
+            }
+            
+            // Si no tiene cliente, obtener nombre del JSON
+            $json = json_decode($row->json);
+            if (isset($json->sujetoExcluido->nombre)) {
+                return $json->sujetoExcluido->nombre;
+            } elseif (isset($json->receptor->nombre)) {
+                return $json->receptor->nombre;
+            }
+            
+            return 'Sin nombre';
+        })
         ->addColumn('tipo_dte_nombre', function ($row) {
             $json = json_decode($row->json);
             $tipoDte = isset($json->identificacion->tipoDte) ? $json->identificacion->tipoDte : '01';
@@ -189,6 +218,8 @@ class mhController extends Controller
                 return 'Pendiente';
             case estadoFactura::CLIENTE:
                 return 'Cliente';
+            case estadoFactura::ANULADA:
+                return 'Anulada';
             default:
                 return 'Desconocido';
         }
@@ -223,6 +254,9 @@ class mhController extends Controller
             $query->where('estado', estadoFactura::PENDIENTE);
         } elseif ($keyword === 'cliente') {
             $query->where('estado', estadoFactura::CLIENTE);
+        }
+            elseif ($keyword === 'anulada') {
+            $query->where('estado', estadoFactura::ANULADA);
         } else {
             $query->whereRaw('1 = 0');
         }

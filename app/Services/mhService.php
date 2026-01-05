@@ -361,12 +361,12 @@ class mhService
 
         for ($i = 0; $i < count($descripciones); $i++) {
 
-            $precio   = round((float)$precios[$i], 2);
+            $precio   = round((float)$precios[$i], 6);
             $cantidad = (int)$cantidades[$i];
-            $subtotal = round($precio * $cantidad, 2);
+            $subtotal = round($precio * $cantidad, 6);
 
-            $noSuj   = round((float)$no_suj[$i], 2);
-            $exenta  = round((float)$exenta[$i], 2);
+            $noSuj   = round((float)$no_suj[$i], 6);
+            $exenta  = round((float)$exenta[$i], 6);
 
             // Si es capital (no sujeto), usar noGravado en lugar de ventaNoSuj
             $noGravado = 0.00;
@@ -383,8 +383,8 @@ class mhService
 
                 // Precio incluye IVA - ventaGravada lleva el precio completo
                 $ventaGravadaItem = $subtotal;
-                $baseParaIva = round($subtotal / 1.13, 2);
-                $ivaItem     = round($subtotal - $baseParaIva, 2);
+                $baseParaIva = round($subtotal / 1.13, 6);
+                $ivaItem = round($subtotal - $baseParaIva, 6);
 
             } else {
                 $ventaGravadaItem = 0.00;
@@ -402,7 +402,7 @@ class mhService
 
                 // Valores unitarios
                 'precioUni'        => $precio,
-                'montoDescu'       => round((float)$descuento[$i], 2),
+                'montoDescu'       => round((float)$descuento[$i], 6),
 
                 // Ventas
                 'ventaNoSuj'       => $noSuj,
@@ -444,14 +444,14 @@ class mhService
         // TOTALES GENERALES
         // =========================
         // subTotalVentas NO incluye noGravado según el estándar del MH
-        $subTotalVentas = round($totalNoSujeto + $totalExenta + $totalGravada, 2);
-        $totalDescuento = round($totalDescuentoNosujeto + $totalDescuentoExento + $totalDescuentoGravado, 2);
+        $subTotalVentas = round($totalNoSujeto + $totalExenta + $totalGravada, 6);
+        $totalDescuento = round($totalDescuentoNosujeto + $totalDescuentoExento + $totalDescuentoGravado, 6);
 
         // montoTotalOperacion NO incluye noGravado (es el total de ventas gravables)
-        $montoTotalOperacion = round($subTotalVentas - $totalDescuento, 2);
+        $montoTotalOperacion = round($subTotalVentas - $totalDescuento, 6);
         
         // totalPagar SÍ incluye noGravado (total final a pagar)
-        $totalPagar = round($montoTotalOperacion + $totalNoGravado, 2);
+        $totalPagar = round($montoTotalOperacion + $totalNoGravado, 6);
 
         // =========================
         // RESUMEN (CORRECTO MH)
@@ -462,7 +462,7 @@ class mhService
             'totalExenta'         => round($totalExenta, 2),
             'totalGravada'        => round($totalGravada, 2),
 
-            'subTotalVentas'      => $subTotalVentas,
+            'subTotalVentas'      => round($subTotalVentas, 2),
 
             'descuNoSuj'          => round($totalDescuentoNosujeto, 2),
             'descuExenta'         => round($totalDescuentoExento, 2),
@@ -471,14 +471,14 @@ class mhService
             'porcentajeDescuento' => round($subTotalVentas > 0 ? ($totalDescuento / $subTotalVentas) * 100 : 0, 2),
             'totalDescu'          => round($totalDescuento, 2),
 
-            'subTotal'            => $subTotalVentas,
+            'subTotal'            => round($subTotalVentas, 2),
 
             'reteRenta'           => 0.00,
             'ivaRete1'            => 0.00,
 
             'totalIva'            => round($totalIVA, 2),
 
-            'montoTotalOperacion' => $montoTotalOperacion,
+            'montoTotalOperacion' => round($montoTotalOperacion, 2),
             'totalPagar'          => round($totalPagar, 2),
 
             'saldoFavor'          => 0.00,
@@ -561,10 +561,19 @@ class mhService
                 'correo' => $this->dte['correo']
             ];
             $data['montoLetras'] = $this->moneyService->convertirMontoADolares($data["json"]->resumen->totalPagar);
+            $data['destinatario'] = isset( $data['json'] ->sujetoExcluido) ?  $data['json'] ->sujetoExcluido :  $data['json'] ->receptor;
             
             $pdf = PDF::loadView('pdf.mh_factura', $data);
             
-            $correo = $factura->cliente->correo ? $factura->cliente->correo : $this->dte['correo'];
+            // Para sujeto excluido o crédito fiscal, usar correo del JSON; para otros, usar correo del cliente
+            $tipoDte = $data['json']->identificacion->tipoDte;
+            if ($tipoDte == '14' || $tipoDte == '03') {
+                // Usar correo del destinatario (del formulario)
+                $correo = $data['destinatario']->correo;
+            } else {
+                // Usar correo del cliente de base de datos
+                $correo = ($factura->cliente && $factura->cliente->correo) ? $factura->cliente->correo : $this->dte['correo'];
+            }
             $bccCorreo = $this->dte['correo'];
             $pdfContent = $pdf->output();
             $jsonContent = $factura->json;
@@ -636,22 +645,42 @@ class mhService
             'complemento' => $this->dte['direccion']
         ];
 
-        $emisor = [
-            'nit' => $this->dte['nit'],
-            'nrc' => $this->dte['nrc'],
-            'nombre' => $this->dte['nombre'],
-            'nombreComercial' => $this->dte['nombre_comercial'],
-            'codActividad' => $this->dte['cod_actividad_economica'],
-            "tipoEstablecimiento" => "01",
-            "descActividad" => $this->dte['actividad_economica'],
-            'direccion' => $direccion_emisor,
-            'telefono' => $this->dte['telefono'],
-            'correo' => $this->dte['correo'],
-            "codEstableMH" => "0001",
-            "codEstable" => "0001",
-            "codPuntoVentaMH" => "0001",
-            "codPuntoVenta" => "0001"
-        ];
+        // Emisor - estructura diferente según tipo de DTE
+        if ($tipoDte == '14') {
+            // Sujeto Excluido - sin nombreComercial ni tipoEstablecimiento
+            $emisor = [
+                'nit' => $this->dte['nit'],
+                'nrc' => $this->dte['nrc'],
+                'nombre' => $this->dte['nombre'],
+                'codActividad' => $this->dte['cod_actividad_economica'],
+                "descActividad" => $this->dte['actividad_economica'],
+                'direccion' => $direccion_emisor,
+                'telefono' => $this->dte['telefono'],
+                'correo' => $this->dte['correo'],
+                "codEstableMH" => "0001",
+                "codEstable" => "0001",
+                "codPuntoVentaMH" => "0001",
+                "codPuntoVenta" => "0001"
+            ];
+        } else {
+            // Crédito Fiscal y otros - con todos los campos
+            $emisor = [
+                'nit' => $this->dte['nit'],
+                'nrc' => $this->dte['nrc'],
+                'nombre' => $this->dte['nombre'],
+                'nombreComercial' => $this->dte['nombre_comercial'],
+                'codActividad' => $this->dte['cod_actividad_economica'],
+                "tipoEstablecimiento" => "01",
+                "descActividad" => $this->dte['actividad_economica'],
+                'direccion' => $direccion_emisor,
+                'telefono' => $this->dte['telefono'],
+                'correo' => $this->dte['correo'],
+                "codEstableMH" => "0001",
+                "codEstable" => "0001",
+                "codPuntoVentaMH" => "0001",
+                "codPuntoVenta" => "0001"
+            ];
+        }
 
         // Receptor - Para crédito fiscal (03)
         // Verificar si el cliente es un objeto de base de datos o un objeto manual
@@ -711,10 +740,13 @@ class mhService
                 'correo' => $correo
             ];
         } elseif ($tipoDte == '14') {
-            // Sujeto Excluido
+            // Sujeto Excluido - Detectar tipo de documento por longitud
+            $numDocumentoLimpio = preg_replace('/[^0-9]/', '', $nit); // Eliminar guiones y espacios
+            $tipoDocumento = strlen($numDocumentoLimpio) == 14 ? "36" : "13"; // NIT: 14 dígitos, DUI: 9 dígitos
+            
             $receptor = [
-                "tipoDocumento" => "36",
-                "numDocumento" => $nit,
+                "tipoDocumento" => $tipoDocumento,
+                "numDocumento" => $numDocumentoLimpio,
                 'nombre' => $nombreCompleto,
                 'codActividad' => $codActividad,
                 'descActividad' => $descActividad,
@@ -773,12 +805,12 @@ class mhService
             
             Log::info('Item #' . $i . ' pasó validación de datos');
 
-            $precio = round((float)$precios[$i], 2);
+            $precio = round((float)$precios[$i], 6);
             $cantidad = (int)$cantidades[$i];
-            $subtotal = round($precio * $cantidad, 2);
+            $subtotal = round($precio * $cantidad, 6);
 
-            $noSuj = isset($no_suj[$i]) ? round((float)$no_suj[$i], 2) : 0.00;
-            $exemptaItem = isset($exenta[$i]) ? round((float)$exenta[$i], 2) : 0.00;
+            $noSuj = isset($no_suj[$i]) ? round((float)$no_suj[$i], 6) : 0.00;
+            $exemptaItem = isset($exenta[$i]) ? round((float)$exenta[$i], 6) : 0.00;
 
             // Si es capital (no sujeto), usar noGravado
             $noGravado = 0.00;
@@ -789,9 +821,9 @@ class mhService
 
             // IVA INCLUIDO EN GRAVADOS
             if ($subtotal > 0 && $noSuj == 0 && $exemptaItem == 0 && $noGravado == 0) {
-                $baseParaIva = round($subtotal / 1.13, 2);
+                $baseParaIva = round($subtotal / 1.13, 6);
                 $ventaGravadaItem = $baseParaIva;
-                $ivaItem = round($subtotal - $baseParaIva, 2);
+                $ivaItem = round($subtotal - $baseParaIva, 6);
             } else {
                 $ventaGravadaItem = 0.00;
                 $ivaItem = 0.00;
@@ -810,7 +842,7 @@ class mhService
                     'uniMedida' => 99,
                     'descripcion' => $descripciones[$i],
                     'precioUni' => $baseParaIva,
-                    'montoDescu' => round((float)$descuento[$i], 2),
+                    'montoDescu' => round((float)$descuento[$i], 6),
                     'ventaNoSuj' => $noSuj,
                     'ventaExenta' => $exemptaItem,
                     'ventaGravada' => $ventaGravadaItem,
@@ -822,14 +854,14 @@ class mhService
                 // Sujeto Excluido - estructura simplificada
                 $item = array(
                     'numItem' => $numItemCuerpo,
-                    'tipoItem' => $tipo[$i],
-                    'cantidad' => $cantidad,
+                    'tipoItem' => (int)$tipo[$i],
+                    'cantidad' => (float)$cantidad,
                     'codigo' => null,
-                    'uniMedida' => $unidades[$i],
+                    'uniMedida' => (int)$unidades[$i],
                     'descripcion' => $descripciones[$i],
-                    'precioUni' => $precio,
-                    'montoDescu' => round((float)$descuento[$i], 2),
-                    'compra' => $subtotal - round((float)$descuento[$i], 2)
+                    'precioUni' => (float)$precio,
+                    'montoDescu' => round((float)$descuento[$i], 6),
+                    'compra' => round($subtotal - (float)$descuento[$i], 6)
                 );
             } else {
                 // Factura de consumidor final y otros
@@ -842,7 +874,7 @@ class mhService
                     'uniMedida' => $unidades[$i],
                     'descripcion' => $descripciones[$i],
                     'precioUni' => $precio,
-                    'montoDescu' => round((float)$descuento[$i], 2),
+                    'montoDescu' => round((float)$descuento[$i], 6),
                     'ventaNoSuj' => $noSuj,
                     'ventaExenta' => $exemptaItem,
                     'ventaGravada' => $ventaGravadaItem,
@@ -880,26 +912,26 @@ class mhService
         Log::info('cuerpoDocumento: ' . json_encode($cuerpo));
 
         // Totales generales
-        $subTotalVentas = round($totalNoSujeto + $totalExenta + $totalGravada, 2);
-        $totalDescuento = round($totalDescuentoNosujeto + $totalDescuentoExento + $totalDescuentoGravado, 2);
+        $subTotalVentas = round($totalNoSujeto + $totalExenta + $totalGravada, 6);
+        $totalDescuento = round($totalDescuentoNosujeto + $totalDescuentoExento + $totalDescuentoGravado, 6);
         
         // Para CCF, montoTotalOperacion incluye IVA; para otros, no
         if ($tipoDte == '03') {
-            $montoTotalOperacion = round($subTotalVentas - $totalDescuento + $totalIVA, 2);
-            $totalPagar = round($montoTotalOperacion + $totalNoGravado, 2);
+            $montoTotalOperacion = round($subTotalVentas - $totalDescuento + $totalIVA, 6);
+            $totalPagar = round($montoTotalOperacion + $totalNoGravado, 6);
         } else {
-            $montoTotalOperacion = round($subTotalVentas - $totalDescuento, 2);
-            $totalPagar = round($montoTotalOperacion + $totalIVA + $totalNoGravado, 2);
+            $montoTotalOperacion = round($subTotalVentas - $totalDescuento, 6);
+            $totalPagar = round($montoTotalOperacion + $totalIVA + $totalNoGravado, 6);
         }
 
         // Resumen según tipo de DTE
         if ($tipoDte == '14') {
             // Resumen simplificado para Sujeto Excluido
-            $totalCompra = round($totalPagar, 2);
+            $totalCompra = round($totalPagar, 6);
             $resumen = array(
                 'totalCompra' => $totalCompra,
-                'descu' => round($totalDescuento, 2),
-                'totalDescu' => round($totalDescuento, 2),
+                'descu' => round($totalDescuento, 6),
+                'totalDescu' => round($totalDescuento, 6),
                 'subTotal' => $totalCompra,
                 'ivaRete1' => 0.00,
                 'reteRenta' => 0.00,
@@ -933,18 +965,18 @@ class mhService
                 'totalNoSuj' => round($totalNoSujeto, 2),
                 'totalExenta' => round($totalExenta, 2),
                 'totalGravada' => round($totalGravada, 2),
-                'subTotalVentas' => $subTotalVentas,
+                'subTotalVentas' => round($subTotalVentas, 2),
                 'descuNoSuj' => round($totalDescuentoNosujeto, 2),
                 'descuExenta' => round($totalDescuentoExento, 2),
                 'descuGravada' => round($totalDescuentoGravado, 2),
                 'porcentajeDescuento' => round($subTotalVentas > 0 ? ($totalDescuento / $subTotalVentas) * 100 : 0, 2),
                 'totalDescu' => round($totalDescuento, 2),
                 'tributos' => count($tributos) > 0 ? $tributos : null,
-                'subTotal' => $subTotalVentas,
+                'subTotal' => round($subTotalVentas, 2),
                 'ivaPerci1' => 0.00,
                 'ivaRete1' => 0.00,
                 'reteRenta' => 0.00,
-                'montoTotalOperacion' => $montoTotalOperacion,
+                'montoTotalOperacion' => round($montoTotalOperacion, 2),
                 'totalNoGravado' => round($totalNoGravado, 2),
                 'totalPagar' => round($totalPagar, 2),
                 'totalLetras' => $this->moneyService->convertirMontoADolares($totalPagar),
@@ -1055,7 +1087,7 @@ class mhService
         return $mh_factura;
     }
 
-    public function anularFactura($factura_id, $motivo = 'Reversion de pago')
+    public function anularFactura($factura_id, $motivo = 'Error en el monto facturado', $responsable = null)
     {
         Log::info('Iniciando anulación de factura ID: ' . $factura_id);
         $factura = factura::findOrFail($factura_id);
@@ -1070,7 +1102,20 @@ class mhService
 
         // Decodificar JSON original para obtener datos necesarios
         $jsonOriginal = json_decode($factura->json);
+        $tipoDte = $jsonOriginal->identificacion->tipoDte;
         $montoIva = isset($jsonOriginal->resumen->totalIva) ? $jsonOriginal->resumen->totalIva : 0;
+        
+        // Obtener datos del destinatario (receptor o sujetoExcluido)
+        $destinatario = isset($jsonOriginal->sujetoExcluido) ? $jsonOriginal->sujetoExcluido : $jsonOriginal->receptor;
+        
+        // Si no se proporciona responsable, usar datos del emisor
+        if (!$responsable) {
+            $responsable = [
+                'nombre' => $this->dte['nombre'],
+                'tipoDocumento' => '36',
+                'numDocumento' => str_replace('-', '', $this->dte['nit'])
+            ];
+        }
         
         // Generar documento de anulación
         $uuid = Uuid::uuid4()->toString();
@@ -1097,61 +1142,64 @@ class mhService
                 'correo' => $this->dte['correo']
             ],
             'documento' => [
-                'tipoDte' => '01',
+                'tipoDte' => $tipoDte,
                 'codigoGeneracion' => $factura->codigo_generacion,
                 'selloRecibido' => $factura->sello_recepcion,
                 'numeroControl' => $factura->numero_control,
                 'fecEmi' => $factura->created_at->format('Y-m-d'),
                 'montoIva' => round($montoIva, 2),
                 'codigoGeneracionR' => null,
-                'tipoDocumento' => isset($jsonOriginal->receptor->tipoDocumento) ? $jsonOriginal->receptor->tipoDocumento : null,
-                'numDocumento' => isset($jsonOriginal->receptor->numDocumento) ? $jsonOriginal->receptor->numDocumento : null,
-                'nombre' => isset($jsonOriginal->receptor->nombre) ? $jsonOriginal->receptor->nombre : null,
-                'telefono' => isset($jsonOriginal->receptor->telefono) ? $jsonOriginal->receptor->telefono : null,
-                'correo' => isset($jsonOriginal->receptor->correo) ? $jsonOriginal->receptor->correo : null
+                'tipoDocumento' => isset($destinatario->tipoDocumento) ? $destinatario->tipoDocumento : null,
+                'numDocumento' => isset($destinatario->numDocumento) ? $destinatario->numDocumento : null,
+                'nombre' => isset($destinatario->nombre) ? $destinatario->nombre : null,
+                'telefono' => isset($destinatario->telefono) ? $destinatario->telefono : null,
+                'correo' => isset($destinatario->correo) ? $destinatario->correo : null
             ],
             'motivo' => [
-                'tipoAnulacion' => 1,
+                'tipoAnulacion' => 2,
                 'motivoAnulacion' => substr($motivo, 0, 250),
-                'nombreResponsable' => $this->dte['nombre'],
-                'tipDocResponsable' => '36',
-                'numDocResponsable' => str_replace('-', '', $this->dte['nit']),
-                'nombreSolicita' => $this->dte['nombre'],
-                'tipDocSolicita' => '36',
-                'numDocSolicita' => str_replace('-', '', $this->dte['nit'])
+                'nombreResponsable' => $responsable['nombre'],
+                'tipDocResponsable' => $responsable['tipoDocumento'],
+                'numDocResponsable' => str_replace('-', '', $responsable['numDocumento']),
+                'nombreSolicita' => $responsable['nombre'],
+                'tipDocSolicita' => $responsable['tipoDocumento'],
+                'numDocSolicita' => str_replace('-', '', $responsable['numDocumento'])
             ]
         ];
 
-        // Guardar JSON de anulación
-        $jsonString = json_encode($dteAnulacion);
+        // Guardar JSON de anulación para debug
+        $jsonString = json_encode($dteAnulacion, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $rutaJson = storage_path('signed_dtes/anulacion-' . $now->format('YmdHis') . '.json');
         file_put_contents($rutaJson, $jsonString);
         Log::info('JSON de anulación guardado en: ' . $rutaJson);
 
         // Firmar documento de anulación
-        Log::info('Iniciando firmado de documento de anulación');
-        $dteJsonFirmado = $this->firmarJson($rutaJson, $this->dte['passwordPri']);
-        Log::info('Documento de anulación firmado exitosamente');
+        Log::info('Firmando documento de anulación');
+        $jwt = $this->firmarJson($rutaJson);
+        Log::info('Documento de anulación firmado');
+
+        // Crear wrapper para envío al MH
+        $wrapper = [
+            'ambiente' => $this->dte['ambiente'],
+            'idEnvio' => 1,
+            'version' => 2,
+            'documento' => $jwt
+        ];
 
         // Enviar anulación al MH
         Log::info('Obteniendo token de autenticación');
         $token = $this->auth();
         $client = new \GuzzleHttp\Client();
-        Log::info('Enviando anulación al MH');
+        Log::info('Enviando anulación al MH. URL: ' . $this->dte['url_anulacion']);
         
         try {
-            // Para anulaciones, usar estructura similar a DTEs normales
-            $response = $client->post($this->dte['url_envio'], [
+            // Enviar a endpoint de anulación
+            $response = $client->post($this->dte['url_anulacion'], [
                 'headers' => [
                     'Authorization' => $token,
+                    'Content-Type' => 'application/json'
                 ],
-                'json' => [
-                    'ambiente' => '00',
-                    'idEnvio' => $secuencia,
-                    'version' => 2,
-                    'tipoDte' => '07',
-                    'documento' => $dteJsonFirmado,
-                ],
+                'json' => $wrapper
             ]);
 
             $result = json_decode($response->getBody(), true);

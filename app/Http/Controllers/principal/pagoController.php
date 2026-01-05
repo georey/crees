@@ -158,7 +158,15 @@ class pagoController extends Controller
             $exenta[] = 0.00;
         }
         
-        return $this->mhService->generarFactura($pago->prestamo->cliente,$descripciones,$cantidades,$precios,$tipo,$unidades,$descuento,$no_suj,$exenta, '01'); 
+        $factura = $this->mhService->generarFactura($pago->prestamo->cliente,$descripciones,$cantidades,$precios,$tipo,$unidades,$descuento,$no_suj,$exenta, '01');
+        
+        // Asignar pago_id a la factura
+        if ($factura) {
+            $factura->pago_id = $pago->id;
+            $factura->save();
+        }
+        
+        return $factura;
     }
 
     public function show($id)

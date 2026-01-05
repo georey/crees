@@ -76,22 +76,26 @@
 <table>
     <tr>
         <td>
-            Nombre: {{$json->receptor->nombre}}<br>
+            Nombre: {{$destinatario->nombre}}<br>
             @if($json->identificacion->tipoDte == '03')
-                NIT: {{$json->receptor->nit}}<br>
-                NRC: {{$json->receptor->nrc}}<br>
-                Actividad Economica: {{$json->receptor->descActividad}}<br>
+                NIT: {{$destinatario->nit}}<br>
+                NRC: {{$destinatario->nrc}}<br>
+                Actividad Economica: {{$destinatario->descActividad}}<br>
+            @elseif($json->identificacion->tipoDte == '14')
+                Tipo de doc. de identificacion: {{$destinatario->tipoDocumento == '36' ? 'NIT' : 'DUI'}}<br>
+                No de doc de identificacion: {{$destinatario->numDocumento}}<br>
+                Actividad Economica: {{$destinatario->descActividad}}<br>
             @else
                 Tipo de doc. de identificacion: DUI<br>
-                No de doc de identificacion:{{$json->receptor->numDocumento}}<br>
+                No de doc de identificacion: {{$destinatario->numDocumento}}<br>
             @endif
-            Direccion:{{$json->receptor->direccion->complemento}}<br>
-            Departamento:{{$json->receptor->direccion->departamento}}
-            Municipio:{{$json->receptor->direccion->municipio}}<br>
-            @if(isset($json->receptor->telefono))
-                Telefono: {{$json->receptor->telefono}}<br>
+            Direccion: {{$destinatario->direccion->complemento}}<br>
+            Departamento: {{$destinatario->direccion->departamento}}
+            Municipio: {{$destinatario->direccion->municipio}}<br>
+            @if(isset($destinatario->telefono))
+                Telefono: {{$destinatario->telefono}}<br>
             @endif
-            Correo electronico:{{$json->receptor->correo}}<br>
+            Correo electronico: {{$destinatario->correo}}<br>
         </td>
     </tr>
 </table>
@@ -99,35 +103,61 @@
 <div class="line-separator"></div>
 
 <table style="font-size: 12px">
-    <tr style="background: #FFD6A6">
-        <th>ITEM</th>
-        <th>TIPO</th>
-        <th>CANT</th>
-        <th>DESCRIPCION</th>
-        <th>UNID MED</th>
-        <th>PRECIO UNITARIO</th>
-        <th>DESCUENTOS</th>
-        <th>NO GRAVADO</th>
-        <th>VENTAS NO SUJETAS</th>
-        <th>VENTAS EXENTAS</th>
-        <th>VENTAS GRAVADAS</th>
-    </tr>
-    @foreach ($json->cuerpoDocumento as $item)
-        <tr>{{ isset($variable) ? $variable : '' }}
-            <td>{{isset($item->numItem)? $item->numItem:''}}</td>
-            <td>{{isset($item->tipoItem)? $item->tipoItem:''}}</td>
-            <td>{{isset($item->cantidad)? $item->cantidad:''}}</td>
-            <td>{{isset($item->descripcion)? $item->descripcion:''}}</td>
-            <td>{{isset($item->uniMedida)? $item->uniMedida:''}}</td>
-            <td style="text-align: right">{{isset($item->precioUni)? $item->precioUni:''}}</td>
-            <td style="text-align: right">{{isset($item->montoDescu)? $item->montoDescu:''}}</td>
-            <td style="text-align: right">{{isset($item->noGravado)? $item->noGravado:''}}</td>
-            <td style="text-align: right">{{isset($item->ventaNoSuj)? $item->ventaNoSuj:''}}</td>
-            <td style="text-align: right">{{isset($item->ventaExenta)? $item->ventaExenta:''}}</td>
-            <td style="text-align: right">{{isset($item->ventaGravada)? $item->ventaGravada:''}}</td>
-
+    @if($json->identificacion->tipoDte == '14')
+        {{-- Encabezado para Sujeto Excluido --}}
+        <tr style="background: #FFD6A6">
+            <th>ITEM</th>
+            <th>TIPO</th>
+            <th>CANT</th>
+            <th>DESCRIPCION</th>
+            <th>UNID MED</th>
+            <th>PRECIO UNITARIO</th>
+            <th>DESCUENTOS</th>
+            <th>COMPRA</th>
         </tr>
-    @endforeach
+        @foreach ($json->cuerpoDocumento as $item)
+            <tr>
+                <td>{{isset($item->numItem)? $item->numItem:''}}</td>
+                <td>{{isset($item->tipoItem)? $item->tipoItem:''}}</td>
+                <td>{{isset($item->cantidad)? $item->cantidad:''}}</td>
+                <td>{{isset($item->descripcion)? $item->descripcion:''}}</td>
+                <td>{{isset($item->uniMedida)? $item->uniMedida:''}}</td>
+                <td style="text-align: right">{{isset($item->precioUni)? $item->precioUni:''}}</td>
+                <td style="text-align: right">{{isset($item->montoDescu)? $item->montoDescu:''}}</td>
+                <td style="text-align: right">{{isset($item->compra)? $item->compra:''}}</td>
+            </tr>
+        @endforeach
+    @else
+        {{-- Encabezado para Crédito Fiscal y Factura --}}
+        <tr style="background: #FFD6A6">
+            <th>ITEM</th>
+            <th>TIPO</th>
+            <th>CANT</th>
+            <th>DESCRIPCION</th>
+            <th>UNID MED</th>
+            <th>PRECIO UNITARIO</th>
+            <th>DESCUENTOS</th>
+            <th>NO GRAVADO</th>
+            <th>VENTAS NO SUJETAS</th>
+            <th>VENTAS EXENTAS</th>
+            <th>VENTAS GRAVADAS</th>
+        </tr>
+        @foreach ($json->cuerpoDocumento as $item)
+            <tr>
+                <td>{{isset($item->numItem)? $item->numItem:''}}</td>
+                <td>{{isset($item->tipoItem)? $item->tipoItem:''}}</td>
+                <td>{{isset($item->cantidad)? $item->cantidad:''}}</td>
+                <td>{{isset($item->descripcion)? $item->descripcion:''}}</td>
+                <td>{{isset($item->uniMedida)? $item->uniMedida:''}}</td>
+                <td style="text-align: right">{{isset($item->precioUni)? $item->precioUni:''}}</td>
+                <td style="text-align: right">{{isset($item->montoDescu)? $item->montoDescu:''}}</td>
+                <td style="text-align: right">{{isset($item->noGravado)? $item->noGravado:''}}</td>
+                <td style="text-align: right">{{isset($item->ventaNoSuj)? $item->ventaNoSuj:''}}</td>
+                <td style="text-align: right">{{isset($item->ventaExenta)? $item->ventaExenta:''}}</td>
+                <td style="text-align: right">{{isset($item->ventaGravada)? $item->ventaGravada:''}}</td>
+            </tr>
+        @endforeach
+    @endif
 </table>
 
 <div class="line-separator"></div>
@@ -152,7 +182,7 @@
                 <tr>
                     <td>
                         Recibido<br>
-                        {{$json->receptor->nombre}}
+                        {{$destinatario->nombre}}
                     </td>
                 </tr>
             </table>
@@ -161,47 +191,75 @@
         </td>
         <td style="width:50%">
             <table style="width:100%; border: solid 1px;">
-               
-                <tr>
-                    <td>TOTAL DE VENTAS NO SUJETAS</td>
-                    <td>{{$json->resumen->totalNoSuj}}</td>
-                </tr>
-                <tr>
-                    <td>TOTAL DE VENTAS EXENTAS</td>
-                    <td>{{$json->resumen->totalExenta}}</td>
-                </tr>
-                <tr>
-                    <td>TOTAL DE VENTAS GRAVADAS</td>
-                    <td>{{$json->resumen->totalGravada}}</td>
-                </tr>
-                <tr>
-                    <td>SUBTOTAL DE VENTAS</td>
-                    <td>{{$json->resumen->subTotalVentas}}</td>
-                </tr>
-                <tr>
-                    <td>TOTAL DESCUENTOS, BONIFICACIONES REB. Y OTROS</td>
-                    <td>{{$json->resumen->totalDescu}}</td>
-                </tr>
-                <tr>
-                    <td>SUBTOTAL</td>
-                    <td>{{$json->resumen->subTotalVentas}}</td>
-                </tr>
-                <tr>
-                    <td>IVA RETENIDO</td>
-                    <td>{{$json->resumen->ivaRete1}}</td>
-                </tr>
-                <tr>
-                    <td>MONTO TOTAL DE LA OPERACION</td>
-                    <td>{{$json->resumen->montoTotalOperacion}}</td>
-                </tr>
-                <tr>
-                    <td>TOTAL NO GRAVADO</td>
-                    <td>{{isset($json->resumen->totalNoGravado) ? $json->resumen->totalNoGravado : '0.00'}}</td>
-                </tr>
-                <tr>
-                    <td><b>TOTAL A PAGAR</b></td>
-                    <td><b>{{$json->resumen->totalPagar}}</b></td>
-                </tr>
+                @if($json->identificacion->tipoDte == '14')
+                    {{-- Resumen para Sujeto Excluido --}}
+                    <tr>
+                        <td>TOTAL COMPRA</td>
+                        <td>{{$json->resumen->totalCompra}}</td>
+                    </tr>
+                    <tr>
+                        <td>TOTAL DESCUENTOS</td>
+                        <td>{{$json->resumen->totalDescu}}</td>
+                    </tr>
+                    <tr>
+                        <td>SUBTOTAL</td>
+                        <td>{{$json->resumen->subTotal}}</td>
+                    </tr>
+                    <tr>
+                        <td>IVA RETENIDO</td>
+                        <td>{{$json->resumen->ivaRete1}}</td>
+                    </tr>
+                    <tr>
+                        <td>RENTA RETENIDA</td>
+                        <td>{{$json->resumen->reteRenta}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>TOTAL A PAGAR</b></td>
+                        <td><b>{{$json->resumen->totalPagar}}</b></td>
+                    </tr>
+                @else
+                    {{-- Resumen para Crédito Fiscal y Factura --}}
+                    <tr>
+                        <td>TOTAL DE VENTAS NO SUJETAS</td>
+                        <td>{{$json->resumen->totalNoSuj}}</td>
+                    </tr>
+                    <tr>
+                        <td>TOTAL DE VENTAS EXENTAS</td>
+                        <td>{{$json->resumen->totalExenta}}</td>
+                    </tr>
+                    <tr>
+                        <td>TOTAL DE VENTAS GRAVADAS</td>
+                        <td>{{$json->resumen->totalGravada}}</td>
+                    </tr>
+                    <tr>
+                        <td>SUBTOTAL DE VENTAS</td>
+                        <td>{{$json->resumen->subTotalVentas}}</td>
+                    </tr>
+                    <tr>
+                        <td>TOTAL DESCUENTOS, BONIFICACIONES REB. Y OTROS</td>
+                        <td>{{$json->resumen->totalDescu}}</td>
+                    </tr>
+                    <tr>
+                        <td>SUBTOTAL</td>
+                        <td>{{$json->resumen->subTotalVentas}}</td>
+                    </tr>
+                    <tr>
+                        <td>IVA RETENIDO</td>
+                        <td>{{$json->resumen->ivaRete1}}</td>
+                    </tr>
+                    <tr>
+                        <td>MONTO TOTAL DE LA OPERACION</td>
+                        <td>{{$json->resumen->montoTotalOperacion}}</td>
+                    </tr>
+                    <tr>
+                        <td>TOTAL NO GRAVADO</td>
+                        <td>{{isset($json->resumen->totalNoGravado) ? $json->resumen->totalNoGravado : '0.00'}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>TOTAL A PAGAR</b></td>
+                        <td><b>{{$json->resumen->totalPagar}}</b></td>
+                    </tr>
+                @endif
             </table>
         </td>
     </tr>

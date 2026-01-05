@@ -29,7 +29,7 @@ class factura extends Model
     public static function getFacturas()
     {
         $prestamo = factura::select('mh_factura.*')
-                        ->addSelect(DB::raw("CONCAT(clientes.nombre, ' ', clientes.apellido) as nombre_completo"))
+                        ->addSelect(DB::raw("CONCAT(COALESCE(clientes.nombre, ''), ' ', COALESCE(clientes.apellido, '')) as nombre_completo"))
                         ->addSelect(DB::raw("
                             CASE mh_factura.estado
                                 WHEN " . estadoFactura::CREADA . " THEN 'Creada'
@@ -38,11 +38,12 @@ class factura extends Model
                                 WHEN " . estadoFactura::CERTIFICADA . " THEN 'Certificada'
                                 WHEN " . estadoFactura::PENDIENTE . " THEN 'Pendiente'
                                 WHEN " . estadoFactura::CLIENTE . " THEN 'Cliente'
+                                WHEN " . estadoFactura::ANULADA . " THEN 'Anulada'
                                 ELSE 'Desconocido'
                             END as estado_nombre
                         "))
                         ->addSelect(DB::raw("DATE_FORMAT(mh_factura.created_at, '%d/%m/%Y') as fecha_factura"))
-                        ->join('clientes', 'mh_factura.cliente_id', '=', 'clientes.id')
+                        ->leftJoin('clientes', 'mh_factura.cliente_id', '=', 'clientes.id')
                         
                         //->orderBy('clientes.apellido')
                         ;

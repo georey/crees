@@ -427,7 +427,15 @@ class clienteController extends Controller
         
         \Log::info('Items generados para factura: ' . json_encode(['descripciones' => $descripciones, 'precios' => $precios]));
         
-        return $this->mhService->generarFactura($pago->prestamo->cliente,$descripciones,$cantidades,$precios,$tipo,$unidades,$descuento,$no_suj,$exenta); 
+        $factura = $this->mhService->generarFactura($pago->prestamo->cliente,$descripciones,$cantidades,$precios,$tipo,$unidades,$descuento,$no_suj,$exenta);
+        
+        // Asignar pago_id a la factura
+        if ($factura) {
+            $factura->pago_id = $pago->id;
+            $factura->save();
+        }
+        
+        return $factura;
     }
 
     function generarFacturaSoloGastos($prestamo){

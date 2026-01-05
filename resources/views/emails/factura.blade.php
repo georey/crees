@@ -1,4 +1,4 @@
-<p>Hola  {{$json->receptor->nombre}},</p>
+<p>Hola  {{$destinatario->nombre}},</p>
 
 <p>Le enviamos su factura con un total de <strong>${{ number_format($json->resumen->totalPagar, 2) }}</strong>.</p>
 

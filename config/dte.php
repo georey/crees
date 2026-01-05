@@ -4,6 +4,7 @@ return [
 'password'=>env('MH_PASSWORD'),
 'url_auth'=>env('MH_URL_AUTH'),
 'url_envio'=>env('MH_URL_ENVIO'),
+'url_anulacion'=>env('MH_URL_ANULACION'),
 'url_firma'=>env('MH_URL_FIRMA'),
 'nit'=>env('MH_NIT'),
 'nrc'=>env('MH_NRC'),
