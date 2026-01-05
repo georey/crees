@@ -3,3 +3,5 @@
 .env
 /public/uploads/perfil
 /.idea
+*.sql
+backup*.sql
