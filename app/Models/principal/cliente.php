@@ -16,7 +16,7 @@ class cliente extends Model
     protected $primaryKey = 'id';
 
     public $fillable = [
-        "dui", "nit", "codigo", "nombre", "apellido", "direccion", "telefono", "zona_id", "profesion_id", "estado_id", "sexo", "estado_civil_id", "fecha_nacimiento", "conyuge", "observaciones", "conyuge_telefono"
+        "dui","nrc", "codigo", "nombre", "apellido", "direccion","municipio_id","departamento_id", "telefono", "zona_id", "profesion_id", "estado_id", "sexo", "estado_civil_id", "fecha_nacimiento", "conyuge", "observaciones", "conyuge_telefono","correo"
     ];
 
     protected $casts = [
@@ -52,13 +52,26 @@ class cliente extends Model
         return $this->sexo ==1 ? "Masculino" : "Femenino";
     }
 
+    public function municipio()
+    {
+        return $this->belongsTo('App\Models\catalogos\mh_municipio', 'municipio_id');
+    }
+
+        public function departamento()
+    {
+        return $this->belongsTo('App\Models\catalogos\mh_departamento', 'departamento_id');
+    }
+
     public static function ListaClientes() {
         $clientes = cliente::select('clientes.*', 'zonas.nombre as zona', 'profesiones.nombre as profesion', 'estados.nombre as estado')
                         ->addSelect(DB::raw("CONCAT(clientes.nombre, ' ', clientes.apellido) as nombre_completo"))
+                        ->addSelect(DB::raw("CONCAT(mh_departamentos.nombre, ' ', mh_municipios.nombre) as domicilio"))                        
                         ->join('profesiones', 'profesiones.id', '=', 'clientes.profesion_id')
                         ->join('zonas', 'zonas.id', '=', 'clientes.zona_id')
                         ->join('estados', 'estados.id', '=', 'clientes.estado_id')
-                        ->join('estados_civiles', 'estados_civiles.id', '=', 'clientes.estado_civil_id');
+                        ->join('estados_civiles', 'estados_civiles.id', '=', 'clientes.estado_civil_id')
+                        ->leftJoin('mh_municipios', 'mh_municipios.id', '=', 'clientes.municipio_id')
+                        ->leftJoin('mh_departamentos', 'mh_departamentos.id', '=', 'clientes.departamento_id');
         return $clientes;
     }
 }

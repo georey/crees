@@ -7,7 +7,7 @@ Clientes
     <tr>
         <td>Codigo</td>
     	<td>Dui</td>
-    	<td>Nit</td>
+    	<td>Domicilio</td>
     	<td>Nombre</td>
     	<th width="15%">Acciones</th>
     </tr>

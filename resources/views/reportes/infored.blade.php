@@ -56,7 +56,7 @@
     			<td>COM</td>
     			<td>{{$fecha->diffInDays($fecha_ultimo_pago)}}</td>
     			<td>{{$fecha_ultimo_pago->format("d/m/Y")}}</td>
-    			<td>-</td>
+    			<td>{{$prestamo->tipo_gar}}</td>
     			<td>02</td>
     			<td>{{$prestamo->cuota}}</td>
     			<td>{{$fecha->endOfMonth()->day}}</td>

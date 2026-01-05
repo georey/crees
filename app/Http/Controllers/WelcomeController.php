@@ -39,16 +39,16 @@ class WelcomeController extends Controller {
 	public function testConnection()
 	{
 		$user = user::findOrFail(1);
-		print_r($user->username);
-		echo "<br>";
-		print_r($user->password);
-		echo "<br>";
-		print_r(bcrypt('rootroot'));
-		echo "<br>";
+		// print_r($user->username);
+		// echo "<br>";
+		// print_r($user->password);
+		// echo "<br>";
+		// print_r(bcrypt('rootroot'));
+		// echo "<br>";
 		if(Hash::check('rootroot', $user->password)) 
-    		echo "match";		
+    		return "match";		
 		else
-			echo "missmatch";
+			return "missmatch";
 	}
 
 }

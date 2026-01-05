@@ -89,15 +89,12 @@ class pago extends Model
         return $rpt->get();
     }
 
-    public static function getIngresosByDate($params)
+    public static function getIngresosByDate($fecha_ini)
     {
-        $fecha_ini = array_key_exists("fecha_ini", $params) ? $params["fecha_ini"] : date("Y-m-d");
-        $fecha_fin = array_key_exists("fecha_fin", $params) ? $params["fecha_fin"] : date("Y-m-d");
         $rpt =pago::select('pagos.*')
                     ->join('prestamos', 'prestamos.id', '=', 'pagos.prestamo_id')
                     ->join('clientes', 'clientes.id', '=', 'prestamos.cliente_id')
-                    ->whereRaw("date(pagos.fecha) >= '{$fecha_ini}'")
-                    ->whereRaw("date(pagos.fecha) <= '{$fecha_fin}'")
+                    ->whereRaw("date(pagos.fecha) = '{$fecha_ini->format('Y-m-d')}'")                    
                     ->whereRaw("(pagos.saldo is null OR pagos.saldo > 0)")
                     ->orderBy("pagos.id");
         return $rpt->get();

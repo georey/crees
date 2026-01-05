@@ -1,0 +1,201 @@
+{
+  "info": {
+    "name": "Generar Crédito Fiscal - MH",
+    "description": "Ejemplo para generar crédito fiscal tipo 03 desde Postman",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Generar Crédito Fiscal",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "tipo_dte",
+              "value": "03",
+              "description": "Tipo de DTE: 01=Factura, 03=Crédito Fiscal, 14=Sujeto Excluido"
+            },
+            {
+              "key": "cliente_id",
+              "value": "4",
+              "description": "ID del cliente (ajustar según tu base de datos)"
+            },
+            {
+              "key": "descripcion[]",
+              "value": "Servicios de Intereses",
+              "description": "Descripción del item 1"
+            },
+            {
+              "key": "cantidad[]",
+              "value": "1",
+              "description": "Cantidad del item 1"
+            },
+            {
+              "key": "precio[]",
+              "value": "11.30",
+              "description": "Precio unitario CON IVA incluido del item 1"
+            },
+            {
+              "key": "tipo[]",
+              "value": "2",
+              "description": "Tipo: 1=Bien, 2=Servicio, 3=Bien y servicio"
+            },
+            {
+              "key": "unidad_medida[]",
+              "value": "99",
+              "description": "Unidad de medida: 99=Otra, 59=Unidad"
+            },
+            {
+              "key": "descuento[]",
+              "value": "0",
+              "description": "Descuento del item 1"
+            },
+            {
+              "key": "no_suj[]",
+              "value": "0",
+              "description": "Venta no sujeta del item 1"
+            },
+            {
+              "key": "exenta[]",
+              "value": "0",
+              "description": "Venta exenta del item 1"
+            },
+            {
+              "key": "descripcion[]",
+              "value": "Trámite y Gastos",
+              "description": "Descripción del item 2"
+            },
+            {
+              "key": "cantidad[]",
+              "value": "1",
+              "description": "Cantidad del item 2"
+            },
+            {
+              "key": "precio[]",
+              "value": "5.65",
+              "description": "Precio unitario CON IVA incluido del item 2"
+            },
+            {
+              "key": "tipo[]",
+              "value": "2",
+              "description": "Tipo del item 2"
+            },
+            {
+              "key": "unidad_medida[]",
+              "value": "99",
+              "description": "Unidad de medida del item 2"
+            },
+            {
+              "key": "descuento[]",
+              "value": "0",
+              "description": "Descuento del item 2"
+            },
+            {
+              "key": "no_suj[]",
+              "value": "0",
+              "description": "Venta no sujeta del item 2"
+            },
+            {
+              "key": "exenta[]",
+              "value": "0",
+              "description": "Venta exenta del item 2"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:8000/hacienda/generar_factura",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "hacienda",
+            "generar_factura"
+          ]
+        },
+        "description": "Genera un crédito fiscal (tipo 03) con dos items:\n\n**Item 1:** Servicios de Intereses - $11.30\n**Item 2:** Trámite y Gastos - $5.65\n\n**Total:** $16.95 (IVA incluido)\n\n**IMPORTANTE:**\n- Los precios deben incluir IVA (ya con el 13%)\n- El sistema calcula automáticamente la base gravada y el IVA\n- Ajusta el `cliente_id` según tu base de datos\n- Para agregar más items, duplica los campos con `[]` al final\n\n**Ejemplo de cálculo:**\n- Precio con IVA: $11.30\n- Base gravada: $10.00 ($11.30 / 1.13)\n- IVA: $1.30"
+      },
+      "response": []
+    },
+    {
+      "name": "Generar Factura Simple (01)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "tipo_dte",
+              "value": "01",
+              "description": "Tipo de DTE: 01=Factura (Consumidor Final)"
+            },
+            {
+              "key": "cliente_id",
+              "value": "4"
+            },
+            {
+              "key": "descripcion[]",
+              "value": "Servicios crediticios"
+            },
+            {
+              "key": "cantidad[]",
+              "value": "1"
+            },
+            {
+              "key": "precio[]",
+              "value": "20.00"
+            },
+            {
+              "key": "tipo[]",
+              "value": "2"
+            },
+            {
+              "key": "unidad_medida[]",
+              "value": "99"
+            },
+            {
+              "key": "descuento[]",
+              "value": "0"
+            },
+            {
+              "key": "no_suj[]",
+              "value": "0"
+            },
+            {
+              "key": "exenta[]",
+              "value": "0"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:8000/hacienda/generar_factura",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "hacienda",
+            "generar_factura"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

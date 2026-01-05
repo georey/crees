@@ -13,6 +13,7 @@
 	        		<th>Mora</th>
 	        		<th>Multa</th>	        		
 	        		<th>Total</th>
+	        		<th>Acciones</th>
 	        	</tr>
 	        </thead>
 	        <tbody>
@@ -27,6 +28,7 @@
 	        			<td>{{number_format($prestamo->mora, 2)}}</td>
 	        			<td>{{number_format($prestamo->multa, 2)}}</td>
 	        			<th>{{number_format($prestamo->capital+$prestamo->refill+$prestamo->interes+$prestamo->mora+$prestamo->multa, 2)}}</th>
+	        			<td><a href="{{ route('pagos.recibo', ['id' => $prestamo->id_abono]) }}">Recibos</a></td>
 	        		</tr>
 	        	@endforeach
 	        </tbody>
@@ -38,6 +40,7 @@
 	        	<th>{{number_format($prestamos->sum('mora'), 2)}}</th>
 	        	<th>{{number_format($prestamos->sum('multa'), 2)}}</th>
 	        	<th>{{number_format($prestamos->sum('capital')+$prestamos->sum('refill')+$prestamos->sum('interes')+$prestamos->sum('mora')+$prestamos->sum('multa'), 2)}}</th>
+	        	<th></th>
 	        </tfoot>
 	      </table>
 	    </div>

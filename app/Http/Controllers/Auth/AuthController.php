@@ -41,8 +41,7 @@ class AuthController extends Controller {
 	public function postLogin(Request $request)
 	{
 		$credentials = $request->only('username', 'password');		
-		$this->auth->basic("username");
-
+		
 		if ($this->auth->attempt($credentials, $request->has('remember')))
 		{
 			return redirect()->intended($this->redirectPath());

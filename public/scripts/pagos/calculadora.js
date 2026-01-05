@@ -17,6 +17,11 @@ function Calculadora() {
 			interes_pendiente = parseFloat($("#prestamo_id option:selected").attr('data-interes-pendiente'));
 			dias = parseInt($("#prestamo_id option:selected").attr('data-dias-transcurridos'));
 			fecha = $("#prestamo_id option:selected").attr('data-fecha');
+			correo = $("#prestamo_id option:selected").attr('data-correo');
+			departamentoStr = $("#prestamo_id option:selected").attr('data-departamento');
+			cliente = $("#prestamo_id option:selected").attr('data-cliente');
+			self.calculateMissingData(cliente,departamentoStr,correo)
+			
 			cuotaTotal = parseFloat(cuota) + parseFloat(multa) + parseFloat(mora) + parseFloat(capital_pendiente)  + parseFloat(interes) + parseFloat(mora_pendiente)
 parseFloat(multa_pendiente);
 			//$("#cuota").val(cuotaTotal.toFixed(2));
@@ -33,6 +38,33 @@ parseFloat(multa_pendiente);
 			$("#h3_dias_transcurridos").html(dias);
 			$("#h3_total_pagar").html(self.initCalculadora());
 		});
+	}
+
+	self.calculateMissingData =(cliente,departamentoStr,correo)=>{
+		
+		var missingData = $("#missing-data")
+var mensaje = "";
+var departamento = parseInt(departamentoStr, 10);
+
+
+if (correo.length==0) {
+    mensaje += "<p>FALTA EL CORREO</p>";
+}
+
+if (isNaN(departamento) || departamento <= 0) {
+    mensaje += "<p>FALTA EL DOMICILIO</p>";
+}
+
+   
+if (mensaje !== "") {
+    mensaje += `<p><a href="http://localhost/creditos/public/clientes/${cliente}/edit">Completar información</a></p>`;
+    
+ 
+    missingData.html(mensaje).removeClass("hidden");
+} else {
+ 
+    missingData.addClass("hidden").html("");
+}
 	}
 
 

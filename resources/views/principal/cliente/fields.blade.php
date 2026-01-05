@@ -19,6 +19,13 @@
 		</div>
 		<div class="form-group col-md-10">
 			@include("layouts.form.input_text", array(
+												'label' => 'NRC',
+												'name' => 'nrc',
+												'value' => isset($cliente) ? $cliente : null)
+												)
+		</div>
+		<div class="form-group col-md-10">
+			@include("layouts.form.input_text", array(
 												'label' => 'Nombre',
 												'name' => 'nombre',
 												'value' => isset($cliente) ? $cliente : null,
@@ -44,6 +51,28 @@
 	</div>
 	<div class="col-md-4">
 		<div class="form-group col-md-10">
+			<label for="departamento_id">Departamento</label>
+			<select style="width: 100%;" id="departamento_id" name="departamento_id" class="form-control select2">
+			    <option>-- Seleccione una opcion --</option>
+			    @foreach($departamentos as $departamento)
+			         <option value = "{{ $departamento->id }}" data-codigo="{{ $departamento->codigo }}" {{ $departamento->id == (isset($cliente->departamento_id) ? $cliente->departamento_id : '') ? 'selected="selected"': ''}}>
+			                {{$departamento->nombre}}
+			         </option>
+			    @endforeach
+			</select>
+		</div>
+		<div class="form-group col-md-10">
+			<label for="municipio_id">Municipio</label>
+			<select style="width: 100%;" id="municipio_id" name="municipio_id" class="form-control select2">
+			    <option>-- Seleccione una opcion --</option>
+				@foreach($municipios as $municipio)
+			         <option value = "{{ $municipio->id }}" {{ $municipio->id == (isset($cliente->municipio_id) ? $cliente->municipio_id : '') ? 'selected="selected"': ''}}>
+			                {{$municipio->nombre}}
+			         </option>
+			    @endforeach
+			</select>
+		</div>
+		<div class="form-group col-md-10">
 			@include("layouts.form.input_text", array(
 												'label' => 'Telefono',
 												'name' => 'telefono',
@@ -51,6 +80,13 @@
 												'value' => isset($cliente) ? $cliente : null,
 												'validations' => array(['type' => 'required'], ['type' => 'minlength', 'parameter' => 3])
 												))
+		</div>
+		<div class="form-group col-md-10">
+			@include("layouts.form.input_text", array(
+												'label' => 'Correo',
+												'name' => 'correo',
+												'value' => isset($cliente) ? $cliente : null)
+												)
 		</div>
 		<div class="form-group col-md-10">
 			@include("layouts.form.select", array(
@@ -79,11 +115,12 @@
                                                 'col' => 3,
                                                 'label' => 'Sexo',
                                                 'name' => 'sexo',
-                                                'value' => ['id' =>1],
+                                                'value' => isset($cliente) ? $cliente : null,
                                                 'options' => array(
                                                                     array('id' => 1, 'sexo' => 'Masculino'),
                                                                     array('id' => 2, 'sexo' => 'Femenino')),
                                                 'option_value' => array('sexo'),
+												'attributes' => array('data-category' => isset($cliente['sexo']) ? intval($cliente['sexo']) : 0 ),
                                                 'validations' => array(['type' => 'required'])
                                                 ))
 		</div>
@@ -172,4 +209,5 @@
 </div>
 @section('scripts')
 	<script type="text/javascript" src="{{ asset('scripts/clientes/validaciones.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('scripts/clientes/cliente.js') }}"></script>
 @endsection

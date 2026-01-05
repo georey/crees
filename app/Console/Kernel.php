@@ -12,6 +12,7 @@ class Kernel extends ConsoleKernel {
 	 */
 	protected $commands = [
 		'App\Console\Commands\Inspire',
+		 '\App\Console\Commands\DteFirmarCommand',
 	];
 
 	/**
@@ -25,5 +26,6 @@ class Kernel extends ConsoleKernel {
 		$schedule->command('inspire')
 				 ->hourly();
 	}
+
 
 }

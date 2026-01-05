@@ -201,7 +201,7 @@ class prestamosController extends Controller {
                         $xlsdetail["linea_cre"] = "COM";
                         $xlsdetail["dias"] = $fecha->diffInDays($fecha_ultimo_pago);
                         $xlsdetail["ult_pag"] = $fecha_ultimo_pago->format("d/m/Y");
-                        $xlsdetail["tipo_gar"] = "-";
+                        $xlsdetail["tipo_gar"] = $prestamo->tipo_garantia == 1? "PR":"FP";
                         $xlsdetail["tipo_mon"] = "02";
                         $xlsdetail["valcuota"] = $prestamo->cuota;
                         $xlsdetail["dia"] = $fecha->endOfMonth()->day;

@@ -1,0 +1,24 @@
+<?php
+return [
+'user'=>env('MH_USER'),
+'password'=>env('MH_PASSWORD'),
+'url_auth'=>env('MH_URL_AUTH'),
+'url_envio'=>env('MH_URL_ENVIO'),
+'url_firma'=>env('MH_URL_FIRMA'),
+'nit'=>env('MH_NIT'),
+'nrc'=>env('MH_NRC'),
+'nombre'=>env('MH_NOMBRE'),
+'nombre_comercial'=>env('MH_NOMBRE_COMERCIAL'),
+'actividad_economica'=>env('MH_ACTIVIDAD_ECONOMICA'),
+'cod_actividad_economica'=>env('MH_COD_ACTIVIDAD_ECONOMICA'),
+'departamento'=>env('MH_DEPARTAMENTO'),
+'municipio'=>env('MH_MUNICIPIO'),
+'direccion'=>env('MH_DIRECCION'),
+'telefono'=>env('MH_TELEFONO'),
+'correo'=>env('MH_CORREO'),
+'ambiente'=>env('MH_AMBIENTE'),
+'tipo_moneda'=>env('MH_TIPO_MONEDA'),
+'version'=>env('MH_VERSION'),
+'numero_establecimiento'=>env('MH_NUMERO_ESTABLECIMIENTO'),
+'passwordPri'=>env('MH_PASSWORD_PRI')
+];

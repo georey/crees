@@ -8,6 +8,10 @@
 	 font-size: 10px;
 }
 
+.table-minixs-text {
+	 font-size: 8px;
+}
+
 .table-medium-text {
 	 font-size: 14px;
 }

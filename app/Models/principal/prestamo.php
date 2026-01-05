@@ -10,7 +10,7 @@ class prestamo extends Model
     public $table = "prestamos";
     protected $dates = ['created_at', 'updated_at', 'fecha'];
     public $fillable = [
-        "monto", "linea_id", "cliente_id", "cuotas", "codigo", "estado_prestamo_id", "tasa_mora","multa", "observaciones", "garantia","descuento", "liquido","tasa","fecha","cuota","asesor_id", "cobrador_id"
+        "monto", "linea_id", "cliente_id", "cuotas", "codigo", "estado_prestamo_id", "tasa_mora","multa", "observaciones", "garantia","descuento", "liquido","tasa","fecha","cuota","asesor_id", "cobrador_id","tipo_garantia"
     ];
     protected $casts = [];
     public static $rules = [];
@@ -161,18 +161,18 @@ class prestamo extends Model
             if($dias > $ultimateDias)
                 $ultimateDias = $dias;
         }
-        $dias = $ultimateDias;
+
         switch ($this->estado_prestamo_id) {
             case 1://Activo
                 if($fechaActual < $fechaVencimiento) //no esta vencido 
                 {
                     $tipo = 1;
-                    //$dias = $fechaActual < $proximaFecha ? 1 : $fechaActual->diffInDays($proximaFecha);
+                    $dias = $fechaActual < $proximaFecha ? 1 : $fechaActual->diffInDays($proximaFecha);
                 }
                 else //esta vencido
                 {
                     $tipo = 2;
-                    //$dias = $fechaActual->diffInDays($fechaVencimiento);
+                    $dias = $fechaActual->diffInDays($fechaVencimiento);
                 }
                 break;
             case 2://Refill
@@ -180,12 +180,12 @@ class prestamo extends Model
                 if($ultimaFecha < $fechaVencimiento) //no esta vencido 
                 {
                     $tipo = 3;
-                    //$dias = $penultimaFecha->diffInDays($ultimaFecha);
+                    $dias = $penultimaFecha->diffInDays($ultimaFecha);
                 }
                 else //esta vencido
                 {
                     $tipo = 4;
-                    //$dias = $ultimaFecha->diffInDays($fechaVencimiento);
+                    $dias = $ultimaFecha->diffInDays($fechaVencimiento);
                 }
             break;
             
@@ -551,10 +551,13 @@ class prestamo extends Model
                                     "))*/
                         ->join('clientes', 'clientes.id', '=', 'prestamos.cliente_id')
                         ->join('lineas', 'lineas.id', '=', 'prestamos.linea_id')
-                        ->join('pagos', 'pagos.prestamo_id', '=', 'prestamos.id')
+                        ->leftJoin('pagos', 'pagos.prestamo_id', '=', 'prestamos.id')
                         ->groupBy('prestamos.id')
                         ->whereBetween("pagos.fecha",[$fecha_ini, $fecha_fin])
                         ->orWhere("estado_prestamo_id", 1)
+                        ->orWhere(function($query)  use ($fecha_ini, $fecha_fin){
+                            $query->whereBetween('prestamos.fecha',[$fecha_ini, $fecha_fin]);
+                        })
                         ->get();
         return $rpt;
     }

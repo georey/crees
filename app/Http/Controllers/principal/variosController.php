@@ -16,18 +16,26 @@ use Datatables;
 use Carbon\Carbon;
 use Excel;
 use PDF;
+use App\Services\PdfService;
 
 class variosController extends Controller
 {	
-     function __construct()
+    protected $pdfService;
+
+    public function __construct(PdfService $pdfService)
     {
         $this->middleware('menu');
+        $this->pdfService = $pdfService;
     }
     
 	public function corteCaja(Request $request)
     {
         $params = $request->all();
-    	$data["pagos"] = pago::getIngresosByDate($params);
+        $fecha_ini = Carbon::createFromFormat('d-m-Y H:i:s', ($request->fecha_ini?$request->fecha_ini:date('d-m-Y')) . " 00:00:00");
+        $data['reporte'] = [
+            "fecha_ini" => $request->fecha_ini,
+        ];   
+    	$data["pagos"] = pago::getIngresosByDate($fecha_ini);
         return view('principal.caja.corte_caja')->with($data);
     }
 
@@ -66,6 +74,10 @@ class variosController extends Controller
                 })->export('xls');
                 break;
             case 'pdf':
+                $html = view('reportes.colectas_saldos', $data)->render();
+                $this->pdfService->generatePdf($html);
+                return $this->pdfService->generatePdf($html);
+
                 $pdf = PDF::loadView('reportes.colectas_saldos', $data);
                 //$pdf->setPaper('A4', 'landscape');
                 return $pdf->download('Reporte de colectas y saldos'.date("Ymd").'.pdf');

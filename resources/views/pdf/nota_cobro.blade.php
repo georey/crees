@@ -1,16 +1,15 @@
 @include('pdf.css')
 <table>
 	<tr>
-		<th style="width:20%; display: inline-block; text-align:right">			
+		<th style="width:18%; display: inline-block; text-align:right">			
 		</th>
-		<th class="text-center" style="width:60%; display: inline-block;font-size: x-small; font-weight: bold;">
-SERVICIOS CREDITICIOS DE EL SALVADOR,<br>
-SOCIEDAD ANONIMA DE CAPITAL VARIABLE<br>
+		<th class="text-center" style="width:64%; display: inline-block;font-size: x-small; font-weight: bold;">
+{{ strtoupper($crees["nombre"]) }}<br>
 NIT 0210-070416-101-0    NRC 250340-1<br>
-1 CALLE PTE. LOCAL 106, Bo. SALVADOREÑO 1 NIVEL EDIF. BANCO SALVADOREÑO,<br>
-SANTA ANA. SANTA ANA. TEL. 2421-9058
+{{ strtoupper($crees["direccion"]["complemento"]) }},<br>
+SANTA ANA. SANTA ANA. TEL. {{ substr($crees["telefono"], 0, 4) . '-' . substr($crees["telefono"], 4) }}
 		</th>
-		<th style="width:20%; display: inline-block; text-align:right">
+		<th style="width:18%; display: inline-block; text-align:right">
 			<img src="{{ asset('img/logo_mini_75.jpg') }}" style="width:25px">
 		</th>
 	</tr>

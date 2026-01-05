@@ -147,7 +147,8 @@ return [
 		'Yajra\Datatables\DatatablesServiceProvider',        
         'Barryvdh\DomPDF\ServiceProvider',
         'Maatwebsite\Excel\ExcelServiceProvider',
-
+		"SimpleSoftwareIO\QrCode\QrCodeServiceProvider"
+		
 	],
 
 	/*
@@ -198,6 +199,8 @@ return [
 		'Datatables' => 'Yajra\Datatables\Datatables',
 		'PDF' => 'Barryvdh\DomPDF\Facade',
 		'Excel' => 'Maatwebsite\Excel\Facades\Excel',
+		'QrCode' => "SimpleSoftwareIO\QrCode\Facades\QrCode"
+
 
 	],
 

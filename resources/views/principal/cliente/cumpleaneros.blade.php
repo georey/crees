@@ -7,6 +7,11 @@
 @stop
 
 @section('content')
+<form method="POST" action="https://apitest.dtes.mh.gob.sv/seguridad/auth">
+	user<input type="text" name="user"><br>
+	pwd<input type="text" name="pwd">
+	<button type="submit">Autenticar</button>
+</form>
 <h4 class="text-center">CUMPLEAÑEROS</h4>
 Mes: 
 <select name="mes" id="mes">

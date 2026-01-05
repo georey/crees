@@ -1,0 +1,71 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: laravel_app
+    restart: always
+    volumes:
+      # Montar código fuente para desarrollo (cambios inmediatos sin rebuild)
+      - ./app:/var/www/html/app
+      - ./resources:/var/www/html/resources
+      - ./config:/var/www/html/config
+      # Volumenes para datos persistentes
+      - app_storage:/var/www/html/storage
+      - app_bootstrap_cache:/var/www/html/bootstrap/cache
+      - ./storage/logs:/var/www/html/storage/logs
+      - ./storage/signed_dtes:/var/www/html/storage/signed_dtes
+    ports:
+      - "8000:80"
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - SESSION_DRIVER=file
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=db_credito
+      - DB_USERNAME=laravel
+      - DB_PASSWORD=secret
+    depends_on:
+      - db
+    networks:
+      - laravel
+
+  db:
+    image: mariadb:10.1.38
+    container_name: laravel_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_credito
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - laravel
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: laravel_phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root
+    depends_on:
+      - db
+    networks:
+      - laravel
+
+volumes:
+  dbdata:
+  app_storage:
+  app_bootstrap_cache:
+
+networks:
+  laravel:

@@ -132,6 +132,19 @@
 		    </select>
 		</div>
 		<div class="form-group col-md-10">
+			<label for="tipo_garantia">
+			    <strong> Tipo Garantia: </strong>
+			</label>
+		    <select id="tipo_garantia" name="tipo_garantia" class="form-control select2">
+				<option value = "1">
+					Prendaria
+				</option>
+				<option value = "2">
+					Fiduciaria
+				</option>
+		    </select>
+		</div>
+		<div class="form-group col-md-10">
 			@include("layouts.form.multiselect", array(
 													'label' => 'Fiadores',
 													'name' => 'fiadores',
@@ -178,6 +191,7 @@
 		    	<th>No Cuotas</th>
 		    	<th>Monto Cuotas</th>
 		    	<th>Fecha</th>
+				<th>Tipo garantia</th>
 		    	<th>Estado</th>
 		    	<th>Acciones</th>
 		    </tr>
@@ -194,6 +208,7 @@
 			    	<td>{{$prestamo->cuotas}}</td>
 			    	<td>{{$prestamo->cuota}}</td>
 			    	<td>{{$prestamo->created_at}}</td>
+					<td>{{$prestamo->tipo_garantia == 1? "PR":"FP"}}</td>
 			    	<td>{{$prestamo->estadoPrestamo->estado}}</td>
 			    	<td>
 			    		<a class="btn_permiso" href="{{url('clientes/pdf_pagare_sin_protesto/'.$prestamo->id)}}" title="Pagare sin protesto" target="_blank">

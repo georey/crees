@@ -15,6 +15,9 @@ Route::get('auth/login', 'Auth\AuthController@getLogin');
 Route::post('auth/login', 'Auth\AuthController@postLogin');
 Route::get('auth/logout', 'Auth\AuthController@getLogout');
 Route::get('testconnection', 'WelcomeController@testConnection');
+Route::get('/whoami', function() {
+    return exec('whoami');
+});
 
 Route::group(['middleware' => 'auth'], function() {
 	Route::get('/', 'HomeController@index');
@@ -31,6 +34,7 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::get('clientes/garantias/{id}', 'principal\clienteController@getGarantias');
 	Route::get('clientes/ficha/{id}', 'principal\clienteController@pdfFicha');
 	Route::get('clientes/getMunicipios', 'principal\clienteController@getMunicipios');
+	Route::get('clientes/getMHMunicipios', 'principal\clienteController@getMHMunicipios');
 	Route::get('clientes/datatable', 'principal\clienteController@getDataTable');
 	Route::post('clientes/negocioSave', 'principal\clienteController@negocioSave');
 	Route::get('clientes/negocioDelete/{id}', 'principal\clienteController@negocioDelete');
@@ -48,12 +52,20 @@ Route::group(['middleware' => 'auth'], function() {
 
 
 	Route::get('caja/corte_caja', 'principal\variosController@corteCaja');
+	Route::post('caja/corte_caja', 'principal\variosController@corteCaja');
 	Route::get('cobros/colectas_saldos', 'principal\variosController@getColectasSaldos');
 	Route::post('cobros/colectas_saldos', 'principal\variosController@postColectasSaldos');
 	Route::get('cobros/cartera_asesor', 'principal\variosController@getCarteraAsesor');
 	Route::post('cobros/cartera_asesor', 'principal\variosController@postCarteraAsesor');
 
-
+	Route::get('hacienda/factura', 'mh\mhController@index');
+	Route::get('hacienda/facturas', 'mh\mhController@facturas');
+	Route::get('hacienda/facturas/datatable', 'mh\mhController@getDataTable');
+	Route::get('hacienda/facturas/correo/{id}', 'mh\mhController@correo');
+	Route::get('hacienda/facturas/reenvio_hacienda/{id}', 'mh\mhController@reenviarFactura');
+	Route::post('hacienda/generar_factura', 'mh\mhController@generarFactura');
+	Route::get('hacienda/facturas/factura_pdf/{id}', 'mh\mhController@generarFacturaPDF');
+	
 
 	Route::get('pagos/datatable', 'principal\pagoController@getDataTable');	
 	Route::get('pagos/calculadora', [

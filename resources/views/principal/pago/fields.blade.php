@@ -67,11 +67,15 @@
 			         data-capital-pendiente="{{$prestamo->getCapitalPendiente()}}"
 			         data-proxima-fecha="{{$prestamo->getProximaFecha()}} {{$prestamo->getFechaActualSinHora()}}" 
 			         data-cuotas="{{$prestamo->getNumeroCuotas()}}"
-			         data-cuotas-dia="{{$prestamo->getNumeroCuotas(true)}}" >
+			         data-cuotas-dia="{{$prestamo->getNumeroCuotas(true)}}"
+					 data-correo="{{$prestamo->cliente->correo}}"
+					 data-cliente="{{$prestamo->cliente->id}}"
+					 data-departamento="{{$prestamo->cliente->departamento_id}}" >
 			         	{{$prestamo->codigo . " - " . $prestamo->nombre_completo}}
 			         </option>
 			    @endforeach
 			</select>
+			<div id="missing-data" class="hidden alert alert-error"></div>
 		</div>
 		<div class="form-group col-md-12">
 			@include("layouts.form.input_text", array(

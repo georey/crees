@@ -103,6 +103,19 @@
 		    </select>
 		</div>
 		<div class="form-group col-md-10">
+			<label for="tipo_garantia">
+			    <strong> Tipo Garantia: </strong>
+			</label>
+		    <select id="tipo_garantia" name="tipo_garantia" class="form-control select2">
+				<option value = "1">
+					Prendaria
+				</option>
+				<option value = "2">
+					Fiduciaria
+				</option>
+		    </select>
+		</div>
+		<div class="form-group col-md-10">
 			@include("layouts.form.multiselect", array(
 													'label' => 'Fiadores',
 													'name' => 'fiadores',

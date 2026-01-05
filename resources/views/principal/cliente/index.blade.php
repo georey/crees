@@ -20,8 +20,8 @@
     <script type="text/javascript">
         var colnames = [
             { data: 'codigo', name: 'codigo' },
-            { data: 'dui', name: 'nit' },
-            { data: 'nit', name: 'nit' },
+            { data: 'dui', name: 'dui' },
+            { data: 'domicilio', name: 'domicilio' },
             { data: 'nombre_completo', name: 'nombre_completo' },
             { data: 'id', name: 'id' },
             //Array of columns to add in the datatable
