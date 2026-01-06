@@ -424,6 +424,11 @@ class clienteController extends Controller
             $no_suj[] = 0.00;
             $exenta[] = 0.00;
         }
+
+            // Verificar que $descripciones sea un array y tenga al menos un elemento
+        if(!is_array($descripciones) || count($descripciones) < 1){
+            return null;
+        }
         
         \Log::info('Items generados para factura: ' . json_encode(['descripciones' => $descripciones, 'precios' => $precios]));
         

@@ -125,6 +125,15 @@ class pagoController extends Controller
             $exenta[] = 0.00;
         }*/
 
+        $descripciones = [];
+        $cantidades = [];
+        $unidades = [];
+        $precios = [];
+        $tipo = [];
+        $descuento = [];
+        $no_suj = [];
+        $exenta = [];
+
         if($pago->interes>0){
             $descripciones[] = "Interes";
             $cantidades[] = 1;
@@ -147,7 +156,7 @@ class pagoController extends Controller
             $exenta[] = 0.00;
         }
 
-         if( $pago->multa>0){
+        if( $pago->multa>0){
             $descripciones[] = "Multa";
             $cantidades[] = 1;
             $unidades[] = 99;
@@ -157,7 +166,12 @@ class pagoController extends Controller
             $no_suj[] = 0.00;
             $exenta[] = 0.00;
         }
-        
+
+        // Verificar que $descripciones sea un array y tenga al menos un elemento
+        if(!is_array($descripciones) || count($descripciones) < 1){
+            return null;
+        }
+
         $factura = $this->mhService->generarFactura($pago->prestamo->cliente,$descripciones,$cantidades,$precios,$tipo,$unidades,$descuento,$no_suj,$exenta, '01');
         
         // Asignar pago_id a la factura
