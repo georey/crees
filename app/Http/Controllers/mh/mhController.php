@@ -295,4 +295,41 @@ class mhController extends Controller
         $this->mhService->reenviarFactura($factura_id);
         return redirect('hacienda/facturas');
     }
+
+    public function contingenciaIndex()
+    {
+        $fecha = date('d-m-Y');
+        // Buscar facturas rechazadas en la fecha seleccionada
+        $facturas = \App\Models\hacienda\factura::where('estado', \App\Models\hacienda\estadoFactura::RECHAZADA)
+            ->whereRaw('DATE_FORMAT(created_at, "%d-%m-%Y") = ?', [$fecha])
+            ->get();
+        return view('hacienda.contingencias')->with(['fecha' => $fecha, 'facturas' => $facturas]);
+    }
+
+    public function contingenciaFiltrar(Request $request)
+    {
+        $fecha = $request->input('fecha');
+        $facturas = \App\Models\hacienda\factura::where('estado', \App\Models\hacienda\estadoFactura::RECHAZADA)
+            ->whereRaw('DATE_FORMAT(created_at, "%d-%m-%Y") = ?', [$fecha])
+            ->get();
+        return view('hacienda.contingencias')->with(['fecha' => $fecha, 'facturas' => $facturas]);
+    }
+
+        /**
+     * Procesa la creación de contingencia para facturas seleccionadas.
+     */
+    public function crearContingencia(Request $request)
+    {
+        $ids = $request->input('facturas', []);
+        $motivo = $request->input('motivo', 'Falla en el servicio de internet');
+        $fInicio = $request->input('fInicio', '');
+        $fFin = $request->input('fFin', '');
+        $hInicio = $request->input('hInicio', '');
+        $hFin = $request->input('hFin', '');
+        if (empty($ids)) {
+            return redirect()->back()->with('error', 'Debe seleccionar al menos una factura.');
+        }
+        $this->mhService->contingencia($ids, $motivo, $fInicio, $fFin, $hInicio, $hFin  );
+        return redirect()->back()->with('success', 'Contingencia creada para las facturas: ' . implode(', ', $ids));
+    }
 }
