@@ -1067,8 +1067,10 @@ class mhService
     {
         $mh_factura = factura::findOrFail($factura_id);
         Log::error('reenvio json');
-        $jsonResponse = $this->enviarJson($mh_factura->json, $factura_id);
+       
+        $jsonResponse = $this->enviarJson(json_decode($mh_factura->json, true), $factura_id);
         if ($jsonResponse) {
+            Log::error('reenvio exitoso');
             $mh_factura->estado = estadoFactura::CERTIFICADA;
             $mh_factura->respuesta_mh = json_encode($jsonResponse);
             // Guardar sello de recepción para anulaciones futuras
@@ -1229,4 +1231,116 @@ class mhService
             return false;
         }
     }
-}
+
+    public function contingencia($ids, $motivo,$fInicio,$fFin,$hInicio,$hFin)
+    {
+        Log::info('Iniciando proceso de contingencia para facturas: ' . implode(', ', $ids));
+    {
+        $detalleDTE = [];
+        $now = Carbon::now();
+        $i=1;
+        foreach ($ids as $id) {
+            $factura = factura::findOrFail($id);
+            $tipoDteStr = str_pad($factura->tipo_dte, 2, '0', STR_PAD_LEFT);
+            $detalleDTE[] = [
+                "tipoDoc" => $tipoDteStr,
+                "codigoGeneracion" => $factura->codigo_generacion,
+                "noItem" => $i
+            ];
+            Log::info('Agregando factura a contingencia. ID: ' . $factura->id);
+            $i++;
+        }
+        $identificacion = [
+            'version' => 3,
+            'ambiente' => $this->dte['ambiente'],
+            'codigoGeneracion' => strtoupper(Uuid::uuid4()->toString()),
+            'fTransmision' => $now->format('Y-m-d'),
+            'hTransmision' => $now->format('H:i:s')
+        ];
+         $emisor = [
+            'nit' => $this->dte['nit'],
+            'nombre' => $this->dte['nombre'],
+            "nombreResponsable" => $this->dte['nombreResponsable'],
+            "tipoDocResponsable" => "13",
+            "numeroDocResponsable" => $this->dte['duiResponsable'],
+            "tipoEstablecimiento" => "01",
+            "codEstableMH" => null,
+            "codPuntoVenta" => null,
+            "telefono"=> $this->dte['telefono'],
+            "correo"=> $this->dte['correo']
+        ];
+         $motivoDte = [
+            "fInicio" => $fInicio ,
+            "fFin" => $fFin,
+            "hInicio" => $hInicio,
+            "hFin" => $hFin,
+            "tipoContingencia" => 1,
+            "motivoContingencia" => $motivo
+        ];
+        $dteContingencia = [
+            'identificacion' => $identificacion,
+            'emisor' => $emisor,
+            'motivo' => $motivoDte,
+            'detalleDTE' => $detalleDTE
+        ];
+        $jsonString = json_encode($dteContingencia, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $rutaJson = storage_path('signed_dtes/contingencia-' . $now->format('YmdHis') . '.json');
+        file_put_contents($rutaJson, $jsonString);
+        Log::info('JSON de contingencia guardado en: ' . $rutaJson);
+
+        // Firmar documento de contingencia
+        Log::info('Firmando documento de contingencia');
+        $jwt = $this->firmarJson($rutaJson);
+        Log::info('Documento de contingencia firmado');
+
+        // Crear wrapper para envío al MH
+        $wrapper = [
+            'ambiente' => $this->dte['ambiente'],
+            'idEnvio' => 1,
+            'version' => 2,
+            'documento' => $jwt
+        ];
+
+        // Enviar contingencia al MH
+        Log::info('Obteniendo token de autenticación');
+        $token = $this->auth();
+        $client = new \GuzzleHttp\Client();
+        Log::info('Enviando contingencia al MH. URL: ' . $this->dte['url_contingencia']);
+        
+        try {
+            // Enviar a endpoint de contingencia
+            $response = $client->post($this->dte['url_contingencia'], [
+                'headers' => [
+                    'Authorization' => $token,
+                    'Content-Type' => 'application/json'
+                ],
+                'json' => $wrapper
+            ]);
+
+            $result = json_decode($response->getBody(), true);
+            Log::info('Respuesta de contingencia DTE: ' . json_encode($result));
+            Log::info('Iniciando envio de facturas');
+            if($result['estado'] == 'RECHAZADO'){
+                Log::error('Contingencia no procesada. Estado: ' . $result['estado']);
+                return false;
+            }
+            foreach ($ids as $id) {
+                $factura = factura::findOrFail($id);
+                $this->reenviarFactura($factura->id);
+            }
+           
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
+            $responseBody = $e->getResponse() ? (string) $e->getResponse()->getBody() : 'No response body';
+            Log::error('Error al enviar contingencia DTE: ' . $e->getMessage());
+            Log::error('Respuesta completa del MH: ' . $responseBody);
+            Log::error('DTE Contingencia enviado: ' . json_encode($dteContingencia));
+            return false;
+        } catch (\Exception $e) {
+            Log::error('Error al enviar contingencia DTE: ' . $e->getMessage());
+            return false;
+        }
+    }     
+        Log::info('Contingencia procesada exitosamente para todas las facturas.');
+        return true;
+    }    
+}  

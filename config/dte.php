@@ -5,6 +5,7 @@ return [
 'url_auth'=>env('MH_URL_AUTH'),
 'url_envio'=>env('MH_URL_ENVIO'),
 'url_anulacion'=>env('MH_URL_ANULACION'),
+'url_contingencia'=>env('MH_URL_CONTINGENCIA'),
 'url_firma'=>env('MH_URL_FIRMA'),
 'nit'=>env('MH_NIT'),
 'nrc'=>env('MH_NRC'),
@@ -21,5 +22,7 @@ return [
 'tipo_moneda'=>env('MH_TIPO_MONEDA'),
 'version'=>env('MH_VERSION'),
 'numero_establecimiento'=>env('MH_NUMERO_ESTABLECIMIENTO'),
-'passwordPri'=>env('MH_PASSWORD_PRI')
+'passwordPri'=>env('MH_PASSWORD_PRI'),
+'nombreResponsable'=>env('MH_NOMBRE_RESPONSABLE'),
+'duiResponsable'=>env('MH_DUI_RESPONSABLE'),
 ];
