@@ -206,10 +206,6 @@
                         <td>{{$json->resumen->subTotal}}</td>
                     </tr>
                     <tr>
-                        <td>IVA RETENIDO</td>
-                        <td>{{$json->resumen->ivaRete1}}</td>
-                    </tr>
-                    <tr>
                         <td>RENTA RETENIDA</td>
                         <td>{{$json->resumen->reteRenta}}</td>
                     </tr>

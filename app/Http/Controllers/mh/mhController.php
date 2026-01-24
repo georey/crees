@@ -168,9 +168,9 @@ class mhController extends Controller
         return view('hacienda.facturas');
     }
 
-    public function getDataTable()
+    public function getDataTable(Request $request)
     {
-        return Datatables::of(factura::getFacturas())
+        return Datatables::of(factura::getFacturas($request->input('fecha_inicio'), $request->input('fecha_fin')))
         ->addColumn('estado', function ($row) {
             return $row->estado;
         })
@@ -260,8 +260,8 @@ class mhController extends Controller
         }
     })
         ->filterColumn('fecha_factura', function($query, $keyword) {
-                            $query->whereRaw("DATE_FORMAT(mh_factura.created_at, '%d/%m/%Y') LIKE ?", ["%{$keyword}%"]);
-                        })
+                $query->whereRaw("DATE_FORMAT(mh_factura.created_at, '%d/%m/%Y') LIKE ?", ["%{$keyword}%"]);
+        })
         ->make(true);
     }
 
@@ -272,14 +272,15 @@ class mhController extends Controller
         if ($factura->estado != estadoFactura::CERTIFICADA && $factura->estado != estadoFactura::CLIENTE) {
             return redirect('hacienda/facturas')->with('error', 'Solo se puede reenviar correo si la factura está certificada o enviada al cliente');
         }
+        $this->mhService->enviarCorreoFactura($factura);
         
-        $this->generarFacturaPDF($factura_id, true);
+        // $this->generarFacturaPDF($factura_id, true);
         
         // Cambiar estado a CLIENTE si estaba en CERTIFICADA
-        if ($factura->estado == estadoFactura::CERTIFICADA) {
-            $factura->estado = estadoFactura::CLIENTE;
-            $factura->save();
-        }
+        // if ($factura->estado == estadoFactura::CERTIFICADA) {
+        //     $factura->estado = estadoFactura::CLIENTE;
+        //     $factura->save();
+        // }
         
         return redirect('hacienda/facturas');
     }

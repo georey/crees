@@ -210,7 +210,7 @@ class mhService
             $wrapperVersion = ($tipoDte == '03') ? 3 : (int) $this->dte['version'];
 
             $body = [
-                "ambiente" => "00", // pruebas
+                "ambiente" => $this->dte['ambiente'],
                 "idEnvio" => $secuencia,
                 "version" => $wrapperVersion,
                 "tipoDte" => $tipoDte,
@@ -241,7 +241,7 @@ class mhService
         } catch (RequestException $e) {
             if ($e->hasResponse()) {
                 $body = (string) $e->getResponse()->getBody();
-                file_put_contents(storage_path('logs/response_error.log'), $body);
+                file_put_contents(storage_path('logs/response_error' . $now->format('YmdHis') . '.log'), $body);
             } else {
                 Log::error('Error al enviar Json' . $e->getMessage());
             }
@@ -316,10 +316,10 @@ class mhService
             'direccion' => $direccion_emisor,
             'telefono' => $this->dte['telefono'],
             'correo' => $this->dte['correo'],
-            "codEstableMH"=>"0001",
-            "codEstable"=>"0001",
-            "codPuntoVentaMH"=>"0001",
-            "codPuntoVenta"=>"0001"
+            "codEstableMH"=>"M001",
+            "codEstable"=>"M001",
+            "codPuntoVentaMH"=>"P001",
+            "codPuntoVenta"=>"P001"
 
         ];
 
@@ -542,7 +542,7 @@ class mhService
         return $mh_factura;
     }
 
-    protected function enviarCorreoFactura($factura)
+    public function enviarCorreoFactura($factura)
     {
         try {
             $carbon = new Carbon();
@@ -657,10 +657,10 @@ class mhService
                 'direccion' => $direccion_emisor,
                 'telefono' => $this->dte['telefono'],
                 'correo' => $this->dte['correo'],
-                "codEstableMH" => "0001",
-                "codEstable" => "0001",
-                "codPuntoVentaMH" => "0001",
-                "codPuntoVenta" => "0001"
+                "codEstableMH" => "M001",
+                "codEstable" => "M001",
+                "codPuntoVentaMH" => "P001",
+                "codPuntoVenta" => "P001"
             ];
         } else {
             // Crédito Fiscal y otros - con todos los campos
@@ -675,10 +675,10 @@ class mhService
                 'direccion' => $direccion_emisor,
                 'telefono' => $this->dte['telefono'],
                 'correo' => $this->dte['correo'],
-                "codEstableMH" => "0001",
-                "codEstable" => "0001",
-                "codPuntoVentaMH" => "0001",
-                "codPuntoVenta" => "0001"
+                "codEstableMH" => "M001",
+                "codEstable" => "M001",
+                "codPuntoVentaMH" => "P001",
+                "codPuntoVenta" => "P001"
             ];
         }
 
@@ -928,26 +928,19 @@ class mhService
         if ($tipoDte == '14') {
             // Resumen simplificado para Sujeto Excluido
             $totalCompra = round($totalPagar, 6);
+            $renta = round($totalCompra * 0.1, 2);
             $resumen = array(
                 'totalCompra' => $totalCompra,
                 'descu' => round($totalDescuento, 6),
                 'totalDescu' => round($totalDescuento, 6),
                 'subTotal' => $totalCompra,
                 'ivaRete1' => 0.00,
-                'reteRenta' => 0.00,
-                'totalPagar' => $totalCompra,
-                'totalLetras' => $this->moneyService->convertirMontoADolares($totalCompra),
+                'reteRenta' => $renta,
+                'totalPagar' => $totalCompra-$renta,
+                'totalLetras' => $this->moneyService->convertirMontoADolares($totalCompra-$renta),
                 'condicionOperacion' => 1,
-                'pagos' => array(
-                    array(
-                        'codigo' => '01',
-                        'montoPago' => $totalCompra,
-                        'referencia' => null,
-                        'plazo' => null,
-                        'periodo' => null
-                    )
-                ),
-                'observaciones' => null
+                'pagos' => null,
+                'observaciones' => ""
             );
         } else {
             // Resumen para Crédito Fiscal y Factura
@@ -1137,10 +1130,10 @@ class mhService
                 'nombre' => $this->dte['nombre'],
                 'tipoEstablecimiento' => '01',
                 'nomEstablecimiento' => $this->dte['nombre_comercial'],
-                'codEstableMH' => '0001',
-                'codEstable' => '0001',
-                'codPuntoVentaMH' => '0001',
-                'codPuntoVenta' => '0001',
+                'codEstableMH' => 'M001',
+                'codEstable' => 'M001',
+                'codPuntoVentaMH' => 'P001',
+                'codPuntoVenta' => 'P001',
                 'telefono' => $this->dte['telefono'],
                 'correo' => $this->dte['correo']
             ],
