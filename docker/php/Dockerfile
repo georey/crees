@@ -18,6 +18,8 @@ RUN apt-get update --allow-unauthenticated \
     libjpeg-dev \
     unzip \
     git \
+    libzip-dev \
+    zip \
  && docker-php-ext-configure gd --with-jpeg-dir=/usr/include/ \
  && docker-php-ext-install \
     pdo \
@@ -25,6 +27,7 @@ RUN apt-get update --allow-unauthenticated \
     mbstring \
     mcrypt \
     gd \
+    zip \
  && rm -rf /var/lib/apt/lists/*
 
 # Laravel public

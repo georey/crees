@@ -68,6 +68,7 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::get('hacienda/contingencias', 'mh\mhController@contingenciaIndex');
 	Route::post('hacienda/contingencias', 'mh\mhController@contingenciaFiltrar');
 	Route::post('hacienda/crearContingencia', 'mh\mhController@crearContingencia');
+	Route::post('hacienda/facturas/descargar_todo', 'mh\mhController@descargarTodo');
 	
 
 	Route::get('pagos/datatable', 'principal\pagoController@getDataTable');	

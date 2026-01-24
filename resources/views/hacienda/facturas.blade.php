@@ -12,19 +12,23 @@
         <input type="hidden" id="hf_message" value="return confirm('{{trans('form.confirm'). ' '. trans('form.catalog.action_type')}}')">
         <div class="clearfix"></div>
         <!-- Filtros de fecha -->
-        <div class="row" style="margin-bottom: 15px;">
-            <div class="col-md-3">
-                <label for="fecha_inicio">Fecha inicio</label>
-                <input type="text" class="form-control" id="fecha_inicio" name="fecha_inicio" autocomplete="off">
+        <form id="descargar-todo-form" method="POST" action="{{ url('hacienda/facturas/descargar_todo') }}">
+               <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <div class="row" style="margin-bottom: 15px;">
+                <div class="col-md-3">
+                    <label for="fecha_inicio">Fecha inicio</label>
+                    <input type="text" class="form-control" id="fecha_inicio" name="fecha_inicio" autocomplete="off">
+                </div>
+                <div class="col-md-3">
+                    <label for="fecha_fin">Fecha fin</label>
+                    <input type="text" class="form-control" id="fecha_fin" name="fecha_fin" autocomplete="off">
+                </div>
+                <div class="col-md-2" style="padding-top: 25px;">
+                    <button type="button" class="btn btn-primary" id="btn-filtrar">Filtrar</button>
+                    <button type="submit" class="btn btn-success" id="btn-descargar-todo" style="margin-left: 5px;">Descargar todas</button>
+                </div>
             </div>
-            <div class="col-md-3">
-                <label for="fecha_fin">Fecha fin</label>
-                <input type="text" class="form-control" id="fecha_fin" name="fecha_fin" autocomplete="off">
-            </div>
-            <div class="col-md-2" style="padding-top: 25px;">
-                <button class="btn btn-primary" id="btn-filtrar">Filtrar</button>
-            </div>
-        </div>
+        </form>
         <div class="clearfix"></div>
         @include('hacienda.permissions')
         @include('hacienda.table')
@@ -119,6 +123,11 @@
                     table.ajax.reload();
                 });
             }
+
+            // Al enviar el form de descargar todas, asegurarse que los valores estén actualizados
+            $('#btn-descargar-todo').on('click', function() {
+                // Los valores ya están en los inputs, el submit GET los enviará
+            });
         });
     </script>
 @endsection

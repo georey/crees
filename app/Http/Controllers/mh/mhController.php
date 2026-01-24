@@ -24,6 +24,7 @@ use App\Models\catalogos\mh_actividad_economica;
 use App\Models\catalogos\mh_departamento;
 use App\Models\catalogos\mh_municipio;
 use Yajra\Datatables\Datatables;
+use ZipArchive;
 
 class mhController extends Controller
 {
@@ -62,6 +63,7 @@ class mhController extends Controller
     {
         $input = array_except($request->all(), ['_method', '_token']);
         $tipoDte = $request->input('tipo_dte', '01');
+        $retiene_renta = $request->input('retiene_renta', false);
         $descripciones = $request->input('descripcion', []);
         $cantidades = $request->input('cantidad', []);
         $unidades = $request->input('unidad_medida', []);
@@ -102,7 +104,7 @@ class mhController extends Controller
             $cliente->direccion = $request->input('complemento');
             $cliente->id = null;
             
-            $mh_factura = $this->mhService->generarFacturaCustom($cliente,$descripciones,$cantidades,$precios,$tipo,$unidades,$descuento,$no_suj,$exenta,$tipoDte);
+            $mh_factura = $this->mhService->generarFacturaCustom($cliente,$descripciones,$cantidades,$precios,$tipo,$unidades,$descuento,$no_suj,$exenta,$tipoDte,$retiene_renta);
         }
         
         // Generar PDF
@@ -332,5 +334,61 @@ class mhController extends Controller
         }
         $this->mhService->contingencia($ids, $motivo, $fInicio, $fFin, $hInicio, $hFin  );
         return redirect()->back()->with('success', 'Contingencia creada para las facturas: ' . implode(', ', $ids));
+    }
+
+        /**
+     * Descargar todas las facturas en el rango de fechas
+     */
+    public function descargarTodo(Request $request)
+    {
+        $fecha_inicio = $request->input('fecha_inicio');
+        $fecha_fin = $request->input('fecha_fin');
+        // Aquí deberías obtener las facturas del rango y generar un ZIP o PDF múltiple
+        // Ejemplo: descargar PDFs individuales en un ZIP
+        $facturas = factura::getFacturas($fecha_inicio, $fecha_fin)->get();
+        if ($facturas->isEmpty()) {
+            return back()->with('error', 'No hay facturas en el rango seleccionado.');
+        }
+
+
+        $zip = new ZipArchive();
+        $zipFileName = storage_path('app/facturas_descarga_' . date('Ymd_His') . '.zip');
+        if ($zip->open($zipFileName, ZipArchive::CREATE) !== TRUE) {
+            return back()->with('error', 'No se pudo crear el archivo ZIP.');
+        }
+
+        foreach ($facturas as $factura) {
+            // Usar la función individual para generar el PDF y obtener el contenido
+            $pdfResponse = $this->generarFacturaPDFZip($factura->id);
+            if ($pdfResponse && isset($pdfResponse['content']) && isset($pdfResponse['filename'])) {
+                $zip->addFromString($pdfResponse['filename'], $pdfResponse['content']);
+            }
+        }
+            
+        $zip->close();
+
+        return response()->download($zipFileName)->deleteFileAfterSend(true);
+    }
+
+    /**
+     * Genera el PDF de una factura y retorna el contenido y nombre de archivo (para uso en ZIP)
+     */
+    protected function generarFacturaPDFZip($id)
+    {
+        $carbon = new Carbon();
+        $data['fecha'] = $carbon;
+        $factura = factura::findOrFail($id);
+        $data['factura'] = $factura;
+        $data['json'] = json_decode($factura->json) ;
+        $data["crees"] = $this->obtenerInfoEmpresa();
+        $data['montoLetras'] = $this->moneyService->convertirMontoADolares($data["json"]->resumen->totalPagar);
+        $data['destinatario'] = isset($data['json']->sujetoExcluido) ? $data['json']->sujetoExcluido : $data['json']->receptor;
+        $pdf = PDF::loadView('pdf.mh_factura', $data);
+        $pdfContent = $pdf->output();
+        $nombreArchivo = 'FACTURA_' . ($factura->cliente ? $factura->cliente->nombreCompleto() : 'CLIENTE') . '_' . $factura->id . '.pdf';
+        return [
+            'content' => $pdfContent,
+            'filename' => $nombreArchivo
+        ];
     }
 }

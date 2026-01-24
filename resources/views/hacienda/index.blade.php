@@ -37,6 +37,15 @@ Facturacion Electronica
 
 					<!-- Campos para Crédito Fiscal (03) y Sujeto Excluido (14) -->
 					<div id="receptor_manual" style="display: none;">
+						<!-- Checkbox Retiene Renta para Sujeto Excluido -->
+						<div class="form-group col-md-12" id="retiene_renta_field" style="display:none;">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" id="retiene_renta" name="retiene_renta" checked>
+									Retiene renta
+								</label>
+							</div>
+						</div>
 						<div class="form-group col-md-3">
 							<label for="nombre">Nombre</label>
 							<input type="text" class="form-control" id="nombre" name="nombre">
@@ -99,12 +108,14 @@ Facturacion Electronica
 							@endforeach
 						</select>
 					</div>
+					<div class="form-group col-md-12" id="actividad_economica_field">
 								<label for="tipo">Tipo</label>
 							<select style="width: 100%;" id="tipo" name="tipo[]" class="form-control select2 validation_required">
 								<option value="1">Bien</option>
 								<option value="2" selected>Servicio</option>
 								<option value="3">Bien y servicio</option>
 							</select>
+							</div>
 						</div>
 						@for ($i = 0; $i < 5; $i++)
 						<div class="form-row col-md-12">
@@ -181,6 +192,8 @@ Facturacion Electronica
 				$('#actividad_economica_field').show();
 				$('#cliente_id').prop('required', false);
 				$('#nombre, #apellido, #actividad_economica').prop('required', true);
+				$('#retiene_renta_field').show();
+				
 			} else {
 				// Otros tipos - mostrar campos manuales sin actividad económica
 					$('#cliente_fields').hide();
@@ -190,13 +203,13 @@ Facturacion Electronica
 					$('#nombre, #apellido').prop('required', true);
 					$('#actividad_economica').prop('required', false);
 				}
-			}
+				}
 
-			// Ejecutar al cargar la página
-			toggleReceptorFields();
+				// Ejecutar al cargar la página
+				toggleReceptorFields();
 
-			// Ejecutar cuando cambia el tipo de documento
-			$('#tipo_dte').on('change', toggleReceptorFields);
-		});
-	</script>
-@endsection
+				// Ejecutar cuando cambia el tipo de documento
+				$('#tipo_dte').on('change', toggleReceptorFields);
+			});
+		</script>
+	@endsection
