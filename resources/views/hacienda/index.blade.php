@@ -191,7 +191,8 @@ Facturacion Electronica
 				$('#nrc_field').hide();
 				$('#actividad_economica_field').show();
 				$('#cliente_id').prop('required', false);
-				$('#nombre, #apellido, #actividad_economica').prop('required', true);
+				$('#nombre, #apellido').prop('required', true);
+				$('#actividad_economica').prop('required', false);
 				$('#retiene_renta_field').show();
 				
 			} else {

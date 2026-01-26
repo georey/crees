@@ -98,7 +98,8 @@ class mhController extends Controller
             $cliente->nrc = $request->input('nrc');
             $cliente->correo = $request->input('correo');
             $cliente->telefono = $request->input('telefono');
-            $cliente->cod_actividad_economica = $request->input('actividad_economica');
+            $actividad = $request->input('actividad_economica');
+            $cliente->cod_actividad_economica = ($actividad === null || $actividad === '') ? null : $actividad;
             $cliente->departamento_codigo = $request->input('departamento');
             $cliente->municipio_codigo = $request->input('municipio');
             $cliente->direccion = $request->input('complemento');
@@ -341,6 +342,7 @@ class mhController extends Controller
      */
     public function descargarTodo(Request $request)
     {
+        set_time_limit(0);
         $fecha_inicio = $request->input('fecha_inicio');
         $fecha_fin = $request->input('fecha_fin');
         // Aquí deberías obtener las facturas del rango y generar un ZIP o PDF múltiple

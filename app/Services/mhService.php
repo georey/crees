@@ -720,8 +720,8 @@ class mhService
                 $actividadEconomica = \App\Models\catalogos\mh_actividad_economica::where('codigo', $codActividad)->first();
                 $descActividad = $actividadEconomica ? $actividadEconomica->descripcion : 'Servicios de ingenieria';
             } else {
-                $codActividad = '71102';
-                $descActividad = 'Servicios de ingenieria';
+                $codActividad = null;
+                $descActividad = null;
             }
         }
 
