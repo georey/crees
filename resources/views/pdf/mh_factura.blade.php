@@ -9,7 +9,7 @@
                             src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(100)->generate('https://admin.factura.gob.sv/consultaPublica?ambiente=01&codGen=' . $factura->codigo_generacion . '&fechaEmi=' . $factura->created_at->format('Y-m-d'))) !!} ">
                     </td>
                     <td style="text-align: center;">
-                        <img src="{{ asset('img/logo_mini_75.jpg') }}" style="width:75px;"><br>
+                        <img src="{{ $logo_mini_75_base64 }}" style="width:75px;"><br>
                     </td>
                 </tr>
                 <tr>
@@ -31,7 +31,16 @@
 
                 <thead style="width:100%;background: #A6B9C9;font-size:14px">
                     <tr>
-                        <th>DOCUMENTO TRIBUTARIO ELECTRONICO<br>FACTURA</th>
+                        <th>
+                            DOCUMENTO TRIBUTARIO ELECTRONICO<br>
+                            @if($json->identificacion->tipoDte == '03')
+                                CREDITO FISCAL
+                            @elseif($json->identificacion->tipoDte == '14')
+                                SUJETO EXCLUIDO
+                            @else
+                                FACTURA
+                            @endif
+                        </th>
                     </tr>
                 </thead>
                 <tbody style="font-size:10px">

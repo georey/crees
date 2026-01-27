@@ -144,6 +144,16 @@ class mhController extends Controller
         $data['montoLetras'] = $this->moneyService->convertirMontoADolares($data["json"]->resumen->totalPagar);
         $data['destinatario'] = isset($data['json']->sujetoExcluido) ? $data['json']->sujetoExcluido : $data['json']->receptor;
        
+        // Incrustar logo como base64 para PDF
+        $logoPath = public_path('img/logo_mini_75.jpg');
+        if (file_exists($logoPath)) {
+            $logoType = pathinfo($logoPath, PATHINFO_EXTENSION);
+            $logoData = base64_encode(file_get_contents($logoPath));
+            $data['logo_mini_75_base64'] = 'data:image/' . $logoType . ';base64,' . $logoData;
+        } else {
+            $data['logo_mini_75_base64'] = '';
+        }
+
         $pdf = PDF::loadView('pdf.mh_factura', $data);        
         if($enviar_correo){
             $transport = OAuthTransportFactory::make();
