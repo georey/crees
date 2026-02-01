@@ -25,6 +25,7 @@ use App\Models\catalogos\mh_departamento;
 use App\Models\catalogos\mh_municipio;
 use Yajra\Datatables\Datatables;
 use ZipArchive;
+use Excel;
 
 class mhController extends Controller
 {
@@ -355,31 +356,58 @@ class mhController extends Controller
         set_time_limit(0);
         $fecha_inicio = $request->input('fecha_inicio');
         $fecha_fin = $request->input('fecha_fin');
+        $tipo_descarga = $request->input('btn_submit');
         // Aquí deberías obtener las facturas del rango y generar un ZIP o PDF múltiple
         // Ejemplo: descargar PDFs individuales en un ZIP
-        $facturas = factura::getFacturas($fecha_inicio, $fecha_fin)->get();
+        $inicio = \DateTime::createFromFormat('d-m-Y', $fecha_inicio);
+        $fin = \DateTime::createFromFormat('d-m-Y', $fecha_fin);
+        $facturas = factura::whereBetween('created_at', [$inicio, $fin])->whereIn('estado',[4,5,6])->whereNotNull('sello_recepcion')->orderBy('numero_control', 'asc')  ->get();
+
         if ($facturas->isEmpty()) {
             return back()->with('error', 'No hay facturas en el rango seleccionado.');
         }
 
-
-        $zip = new ZipArchive();
-        $zipFileName = storage_path('app/facturas_descarga_' . date('Ymd_His') . '.zip');
-        if ($zip->open($zipFileName, ZipArchive::CREATE) !== TRUE) {
-            return back()->with('error', 'No se pudo crear el archivo ZIP.');
-        }
-
-        foreach ($facturas as $factura) {
-            // Usar la función individual para generar el PDF y obtener el contenido
-            $pdfResponse = $this->generarFacturaPDFZip($factura->id);
-            if ($pdfResponse && isset($pdfResponse['content']) && isset($pdfResponse['filename'])) {
-                $zip->addFromString($pdfResponse['filename'], $pdfResponse['content']);
-            }
-        }
-            
-        $zip->close();
-
-        return response()->download($zipFileName)->deleteFileAfterSend(true);
+        switch ($tipo_descarga) {
+            case 'zip':
+                $zip = new ZipArchive();
+                $zipFileName = storage_path('app/facturas_descarga_' . date('Ymd_His') . '.zip');
+                if ($zip->open($zipFileName, ZipArchive::CREATE) !== TRUE) {
+                    return back()->with('error', 'No se pudo crear el archivo ZIP.');
+                }
+                foreach ($facturas as $factura) {
+                    // Usar la función individual para generar el PDF y obtener el contenido
+                    $pdfResponse = $this->generarFacturaPDFZip($factura->id);
+                    if ($pdfResponse && isset($pdfResponse['content']) && isset($pdfResponse['filename'])) {
+                        $zip->addFromString($pdfResponse['filename'], $pdfResponse['content']);
+                    }
+                }                    
+                $zip->close();
+                return response()->download($zipFileName)->deleteFileAfterSend(true);
+            case 'xls':
+                $lastRow = count($facturas) + 2;
+                Excel::create('Reporte de facturas '.$fecha_inicio.' a '.$fecha_fin.' '.date("Ymd"), function ($excel) use($facturas,$lastRow){
+                    $excel->sheet('Facturas', function ($sheet) use($facturas,$lastRow){
+                        $sheet->setOrientation('landscape');
+                        $sheet->setCellValue('G' . $lastRow, '=SUM(G2:G' . ($lastRow - 1) . ')');
+                        $sheet->setCellValue('H' . $lastRow, '=SUM(H2:H' . ($lastRow - 1) . ')');
+                        $sheet->setCellValue('I' . $lastRow, '=SUM(I2:I' . ($lastRow - 1) . ')');
+                        $sheet->setCellValue('J' . $lastRow, '=SUM(J2:J' . ($lastRow - 1) . ')');
+                        $sheet->getStyle('G' . $lastRow)->getFont()->setBold(true);
+                        $sheet->getStyle('G' . $lastRow)->getNumberFormat()->setFormatCode('"$"#,##0.00');
+                        $sheet->getStyle('H' . $lastRow)->getFont()->setBold(true);
+                        $sheet->getStyle('H' . $lastRow)->getNumberFormat()->setFormatCode('"$"#,##0.00');
+                        $sheet->getStyle('I' . $lastRow)->getFont()->setBold(true);
+                        $sheet->getStyle('I' . $lastRow)->getNumberFormat()->setFormatCode('"$"#,##0.00');
+                        $sheet->getStyle('J' . $lastRow)->getFont()->setBold(true);
+                        $sheet->getStyle('J' . $lastRow)->getNumberFormat()->setFormatCode('"$"#,##0.00');
+                        $sheet->loadView('hacienda.tabla_facturas', ['facturas' => $facturas]);
+                    });
+                })->export('xls');
+                break;
+                return;  
+            default:
+                return back()->with('error', 'Tipo de descarga no válido.');
+        }        
     }
 
     /**
@@ -395,6 +423,14 @@ class mhController extends Controller
         $data["crees"] = $this->obtenerInfoEmpresa();
         $data['montoLetras'] = $this->moneyService->convertirMontoADolares($data["json"]->resumen->totalPagar);
         $data['destinatario'] = isset($data['json']->sujetoExcluido) ? $data['json']->sujetoExcluido : $data['json']->receptor;
+        $logoPath = public_path('img/logo_mini_75.jpg');
+        if (file_exists($logoPath)) {
+            $logoType = pathinfo($logoPath, PATHINFO_EXTENSION);
+            $logoData = base64_encode(file_get_contents($logoPath));
+            $data['logo_mini_75_base64'] = 'data:image/' . $logoType . ';base64,' . $logoData;
+        } else {
+            $data['logo_mini_75_base64'] = '';
+        }
         $pdf = PDF::loadView('pdf.mh_factura', $data);
         $pdfContent = $pdf->output();
         $nombreArchivo = 'FACTURA_' . ($factura->cliente ? $factura->cliente->nombreCompleto() : 'CLIENTE') . '_' . $factura->id . '.pdf';

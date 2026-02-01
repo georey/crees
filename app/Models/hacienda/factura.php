@@ -67,4 +67,15 @@ class factura extends Model
         }
         return $prestamo;
     }
+
+    public function getJsonDecode(){
+        return json_decode($this->json);
+    }
+
+    public function getDestinatario(){       
+        $data = $this->getJsonDecode();
+        return isset($data->sujetoExcluido) ? $data->sujetoExcluido : $data->receptor;
+    }
+
+    
 }

@@ -25,7 +25,8 @@
                 </div>
                 <div class="col-md-2" style="padding-top: 25px;">
                     <button type="button" class="btn btn-primary" id="btn-filtrar">Filtrar</button>
-                    <button type="submit" class="btn btn-success" id="btn-descargar-todo" style="margin-left: 5px;">Descargar todas</button>
+                    <button type="submit"  name="btn_submit" value="zip"  class="btn btn-success" id="btn-descargar-todo" style="margin-left: 5px;">Descargar todas</button>
+                    <button type="submit"  name="btn_submit" value="xls" class="btn btn-success" id="btn-descargar-xls" style="margin-left: 5px;">Descargar xls</button>
                 </div>
             </div>
         </form>
