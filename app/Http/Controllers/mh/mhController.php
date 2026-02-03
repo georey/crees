@@ -361,7 +361,7 @@ class mhController extends Controller
         // Ejemplo: descargar PDFs individuales en un ZIP
         $inicio = \DateTime::createFromFormat('d-m-Y', $fecha_inicio);
         $fin = \DateTime::createFromFormat('d-m-Y', $fecha_fin);
-        $facturas = factura::whereBetween('created_at', [$inicio, $fin])->whereIn('estado',[4,5,6])->whereNotNull('sello_recepcion')->orderBy('numero_control', 'asc')  ->get();
+        $facturas = factura::where('tipo_dte', 1)->whereBetween('created_at', [$inicio, $fin])->whereIn('estado',[4,5,6])->whereNotNull('sello_recepcion')->orderBy('numero_control', 'asc')  ->get();
 
         if ($facturas->isEmpty()) {
             return back()->with('error', 'No hay facturas en el rango seleccionado.');

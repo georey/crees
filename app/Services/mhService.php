@@ -546,6 +546,14 @@ class mhService
     {
         try {
             $carbon = new Carbon();
+            $logoPath = public_path('img/logo_mini_75.jpg');
+            if (file_exists($logoPath)) {
+                $logoType = pathinfo($logoPath, PATHINFO_EXTENSION);
+                $logoData = base64_encode(file_get_contents($logoPath));
+                $data['logo_mini_75_base64'] = 'data:image/' . $logoType . ';base64,' . $logoData;
+            } else {
+                $data['logo_mini_75_base64'] = '';
+            }
             $data['fecha'] = $carbon;
             $data['factura'] = $factura;
             $data['json'] = json_decode($factura->json);
