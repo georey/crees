@@ -48,7 +48,7 @@
             { data: 'codigo_generacion', name: 'codigo_generacion' },
             { 
                 data: 'id', 
-                name: 'sid',
+                name: 'id',
                 render: function(data, type, full, meta) {
                     var permisos = "";
                     var permiso = "";
