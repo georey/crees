@@ -239,10 +239,7 @@ class pagoController extends Controller
         
         // Buscar factura asociada al pago (puede estar en CERTIFICADA o CLIENTE)
         $factura = \App\Models\hacienda\factura::where('cliente_id', $pago->prestamo->cliente_id)
-            ->whereBetween('created_at', [
-                $pago->created_at->copy()->subMinutes(5),
-                $pago->created_at->copy()->addMinutes(5)
-            ])
+            ->where('pago_id', $pago_id)
             ->whereIn('estado', [
                 \App\Models\hacienda\estadoFactura::CERTIFICADA,
                 \App\Models\hacienda\estadoFactura::CLIENTE
