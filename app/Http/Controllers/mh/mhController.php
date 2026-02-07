@@ -357,8 +357,6 @@ class mhController extends Controller
         $fecha_inicio = $request->input('fecha_inicio');
         $fecha_fin = $request->input('fecha_fin');
         $tipo_descarga = $request->input('btn_submit');
-        // Aquí deberías obtener las facturas del rango y generar un ZIP o PDF múltiple
-        // Ejemplo: descargar PDFs individuales en un ZIP
         $inicio = \DateTime::createFromFormat('d-m-Y', $fecha_inicio);
         $fin = \DateTime::createFromFormat('d-m-Y', $fecha_fin);
         $facturas = factura::where('tipo_dte', 1)->whereBetween('created_at', [$inicio, $fin])->whereIn('estado',[4,5,6])->whereNotNull('sello_recepcion')->orderBy('numero_control', 'asc')  ->get();
@@ -378,9 +376,16 @@ class mhController extends Controller
                     // Usar la función individual para generar el PDF y obtener el contenido
                     $pdfResponse = $this->generarFacturaPDFZip($factura->id);
                     if ($pdfResponse && isset($pdfResponse['content']) && isset($pdfResponse['filename'])) {
+                        // Agregar PDF
                         $zip->addFromString($pdfResponse['filename'], $pdfResponse['content']);
+                        // Generar nombre para el JSON
+                        $jsonFileName = preg_replace('/\.pdf$/i', '.json', $pdfResponse['filename']);
+                        // Obtener y formatear el JSON de la factura
+                        $jsonData = $factura->json;
+                        $jsonPretty = json_encode(json_decode($jsonData), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+                        $zip->addFromString($jsonFileName, $jsonPretty);
                     }
-                }                    
+                }
                 $zip->close();
                 return response()->download($zipFileName)->deleteFileAfterSend(true);
             case 'xls':
