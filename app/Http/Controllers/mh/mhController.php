@@ -311,6 +311,25 @@ class mhController extends Controller
         return redirect('hacienda/facturas');
     }
 
+    public function anularFactura($factura_id){
+        $factura = factura::findOrFail($factura_id);
+        // Solo permitir si no está ANULADA
+        if ($factura->estado == estadoFactura::ANULADA) {
+            return redirect('hacienda/facturas')->with('error', 'La factura ya está anulada');
+        }
+
+        try {
+            $anulacionExitosa = $this->mhService->anularFactura($factura->id, 'Reversión de pago');
+            if (!$anulacionExitosa) {
+                return redirect()->back()->with('error', 'No se pudo anular la factura electrónica');
+                }
+        } catch (\Exception $e) {
+            \Log::error('Error al anular factura: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al anular factura: ' . $e->getMessage());
+        }
+        return redirect('hacienda/facturas');
+    }
+
     public function contingenciaIndex()
     {
         $fecha = date('d-m-Y');

@@ -38,6 +38,7 @@
 @endsection
 @section('scripts')
     <script type="text/javascript">
+    
         // Columnas del datatable
         var colnames = [
             { data: 'fecha_factura', name: 'fecha_factura' },
@@ -54,13 +55,29 @@
                     var permiso = "";
                     var estado = full.estado;
                     $.each($(".btn_permiso"), function (index, value){
-                        var $btn = $(this);
+                        var $btn = $(this);                        
+                       
                         var estadosPermitidos = $btn.attr('data-estados');
                         if (estadosPermitidos) {
                             var estados = estadosPermitidos.split(',');
+                            $btn.attr('data-numero-control', full.numero_control);
                             if (estados.indexOf(estado.toString()) !== -1) {
                                 permiso = $btn[0].outerHTML;
                                 permisos += permiso.replace("permiso_data_id", data).replace('class="btn_permiso', 'class="');
+                                var date = parseDateUTC(full.created_at);
+                                var hasClass = $btn.hasClass("btn_permiso_anular");
+                                var showAnular = true
+                                if(hasClass) {                                     
+                                     if (!date) {
+                                        showAnular = false;
+                                    } else if (!isWithinLast24Hours(date)) {
+                                        showAnular = false;
+                                    } 
+                                }
+                                
+                                if(!showAnular) {
+                                    $btn.css("display", "none");
+                                }
                             }
                         } else {
                             permiso = $btn[0].outerHTML;
@@ -83,6 +100,20 @@
                 return day + '-' + month + '-' + d.getFullYear();
             }
             return { first: format(first), last: format(last) };
+        }
+
+        function parseDateUTC(dateString) {       
+            const isoString = dateString.replace(" ", "T") + "Z";
+            const date = new Date(isoString);
+
+            return isNaN(date.getTime()) ? null : date;
+        }
+
+        function isWithinLast24Hours(date) {
+            const now = new Date();
+            const diff = now.getTime() - date.getTime();
+
+            return diff >= 0 && diff <= 24 * 60 * 60 * 1000;
         }
 
         $(document).ready(function() {

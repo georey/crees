@@ -63,6 +63,7 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::get('hacienda/facturas/datatable', 'mh\mhController@getDataTable');
 	Route::get('hacienda/facturas/correo/{id}', 'mh\mhController@correo');
 	Route::get('hacienda/facturas/reenvio_hacienda/{id}', 'mh\mhController@reenviarFactura');
+	Route::get('hacienda/facturas/anular/{id}', 'mh\mhController@anularFactura');
 	Route::post('hacienda/generar_factura', 'mh\mhController@generarFactura');
 	Route::get('hacienda/facturas/factura_pdf/{id}', 'mh\mhController@generarFacturaPDF');
 	Route::get('hacienda/contingencias', 'mh\mhController@contingenciaIndex');
