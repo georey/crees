@@ -77,7 +77,29 @@ class mhController extends Controller
         // Si es factura (01), usar el método original con cliente de BD
         if ($tipoDte == '01') {
             $cliente = cliente::findOrFail($input['cliente_id']);
-            $mh_factura = $this->mhService->generarFactura($cliente,$descripciones,$cantidades,$precios,$tipo,$unidades,$descuento,$no_suj,$exenta);
+            $cleared_descripciones=[];
+            $cleared_cantidades=[];
+            $cleared_unidades=[];
+            $cleared_precios=[];
+            $cleared_descuento=[];
+            $cleared_no_suj=[];
+            $cleared_exenta=[]; 
+            $cleared_tipo=[];
+            for ($i = 0; $i < count($descripciones); $i++) {
+                if(!empty(trim($descripciones[$i]))){
+                    $cleared_descripciones[] = trim($descripciones[$i]);                    
+                    $cleared_cantidades[] = floatval($cantidades[$i]);
+                    $cleared_unidades[] = intval($unidades[$i]);
+                    $cleared_precios[] = floatval($precios[$i]);
+                    $cleared_descuento[] = floatval($descuento[$i]);
+                    $cleared_no_suj[] = isset($no_suj[$i]) ? boolval($no_suj[$i]) : false;
+                    $cleared_exenta[] = isset($exenta[$i]) ? boolval($exenta[$i]) : false;
+                    $cleared_tipo[] = 1;
+                }
+                 
+            }
+           
+            $mh_factura = $this->mhService->generarFactura($cliente,$cleared_descripciones,$cleared_cantidades,$cleared_precios,$cleared_tipo,$cleared_unidades,$cleared_descuento,$cleared_no_suj,$cleared_exenta);
         } else {
             // Para crédito fiscal (03) y sujeto excluido (14), crear objeto con datos del formulario
             \Log::info('=== DATOS RECIBIDOS DEL FORMULARIO ===');
@@ -376,8 +398,8 @@ class mhController extends Controller
         $fecha_inicio = $request->input('fecha_inicio');
         $fecha_fin = $request->input('fecha_fin');
         $tipo_descarga = $request->input('btn_submit');
-        $inicio = \DateTime::createFromFormat('d-m-Y', $fecha_inicio);
-        $fin = \DateTime::createFromFormat('d-m-Y', $fecha_fin);
+        $inicio = \DateTime::createFromFormat('d-m-Y H:i:s', $fecha_inicio . ' 00:00:00');
+        $fin = \DateTime::createFromFormat('d-m-Y H:i:s', $fecha_fin  . ' 23:59:59');
         $facturas = factura::where('tipo_dte', 1)->whereBetween('created_at', [$inicio, $fin])->whereIn('estado',[4,5,6])->whereNotNull('sello_recepcion')->orderBy('numero_control', 'asc')  ->get();
 
         if ($facturas->isEmpty()) {

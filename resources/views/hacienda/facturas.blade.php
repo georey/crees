@@ -65,19 +65,22 @@
                                 permiso = $btn[0].outerHTML;
                                 permisos += permiso.replace("permiso_data_id", data).replace('class="btn_permiso', 'class="');
                                 var date = parseDateUTC(full.created_at);
+                                
                                 var hasClass = $btn.hasClass("btn_permiso_anular");
                                 var showAnular = true
-                                if(hasClass) {                                     
+                                if(hasClass) {     
+                                
                                      if (!date) {
                                         showAnular = false;
                                     } else if (!isWithinLast24Hours(date)) {
+                                
                                         showAnular = false;
                                     } 
                                 }
                                 
-                                if(!showAnular) {
-                                    $btn.css("display", "none");
-                                }
+                                // if(!showAnular) {
+                                //     $btn.css("display", "none");
+                                // }
                             }
                         } else {
                             permiso = $btn[0].outerHTML;
@@ -102,9 +105,10 @@
             return { first: format(first), last: format(last) };
         }
 
-        function parseDateUTC(dateString) {       
+        function parseDateUTC(dateString) {  
+            
             const isoString = dateString.replace(" ", "T") + "Z";
-            const date = new Date(isoString);
+            const date = new Date(dateString);
 
             return isNaN(date.getTime()) ? null : date;
         }
@@ -112,6 +116,7 @@
         function isWithinLast24Hours(date) {
             const now = new Date();
             const diff = now.getTime() - date.getTime();
+            console.log('diff', diff)
 
             return diff >= 0 && diff <= 24 * 60 * 60 * 1000;
         }
