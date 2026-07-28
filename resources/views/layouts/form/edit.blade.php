@@ -13,6 +13,16 @@
             @endif >
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <input name="_method" type="hidden" value="PUT">
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <button class="close" data-close="alert"></button>
+                        <ul class="margin-bottom-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                     @include($include)                    
             </form>
       </div>

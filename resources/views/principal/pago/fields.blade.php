@@ -85,6 +85,7 @@
 												'validations' => array(['type' => 'required']),
 												'required' => 'required'
 												))
+			<input type="checkbox" id="chk_dispensa_multa"> Pago directo a capital</input>
 		</div>
 		<div class="form-group col-md-12">
 			@include("layouts.form.input_text", array(
@@ -126,5 +127,6 @@
 	</div>
 </div>
 @section('scripts')
-	<script type="text/javascript" src="{{ asset('scripts/pagos/calculadora.js') }}?2"></script>
+	<script type="text/javascript" src="{{ asset('scripts/pagos/calculadora.js') }}?3"></script>
+	
 @endsection

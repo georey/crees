@@ -26,8 +26,8 @@ function Calculadora() {
 parseFloat(multa_pendiente);
 			//$("#cuota").val(cuotaTotal.toFixed(2));
 			$("#h3_cuota_acordada").html(cuota_acordada.toFixed(2));
-			$("#mora").val((mora+mora_pendiente).toFixed(2));
-			$("#multa").val((multa+multa_pendiente).toFixed(2));
+			$('#chk_dispensa_multa').prop('checked', false);
+			self.toggleMoraMultaInputs();
 			$("#h3_saldo_anterior").html(saldo.toFixed(2));
 			$("#h3_capital").html((cuota == 0 ? capital_pendiente : cuota - interes).toFixed(2));
 			$("#hdn_capital").val((cuota == 0 ? capital_pendiente : cuota - (interes + interes_pendiente)).toFixed(2));
@@ -126,6 +126,14 @@ if (mensaje !== "") {
 
     self.initSubmitForm = () =>{
     	$("form").submit(function(e){
+			if ($('#chk_dispensa_multa').is(':checked')) {
+				var r = confirm("Esta seguro que desea generar un pago directo a capital?");
+				if (!r) {
+					e.preventDefault();
+					return false;
+				}
+			}
+
 			if(cuotaTotal < $("#cuota").val()){
 				//alert("El monto de la cuota no puede superar el monto total del prestamo");
 				var r = confirm("Esta seguro de ingresar esta cantidad mayor al monto del prestamo?");
@@ -141,6 +149,32 @@ if (mensaje !== "") {
 			}
 			return false;
 		});
+    }
+
+    self.toggleMoraMultaInputs = () => {
+        var isDirectToCapital = $('#chk_dispensa_multa').is(':checked');
+        var moraInput = $('#mora');
+        var multaInput = $('#multa');
+
+        if (isDirectToCapital) {
+            moraInput.val('0').prop('disabled', true);
+            multaInput.val('0').prop('disabled', true);
+        } else {
+            moraInput.prop('disabled', false);
+            multaInput.prop('disabled', false);
+            var moraValue = parseFloat($('#prestamo_id option:selected').attr('data-mora')) || 0;
+            var moraPendiente = parseFloat($('#prestamo_id option:selected').attr('data-mora-pendiente')) || 0;
+            var multaValue = parseFloat($('#prestamo_id option:selected').attr('data-multa')) || 0;
+            var multaPendiente = parseFloat($('#prestamo_id option:selected').attr('data-multa-pendiente')) || 0;
+            moraInput.val((moraValue + moraPendiente).toFixed(2));
+            multaInput.val((multaValue + multaPendiente).toFixed(2));
+        }
+    }
+
+    self.initCheckbox = () => {
+        $('#chk_dispensa_multa').on('change', function() {
+            self.toggleMoraMultaInputs();
+        });
     }
 
     function init() {}
@@ -159,5 +193,6 @@ $(document).ready(function () {
     calculadora.initCookies();
     calculadora.initFecha();
     calculadora.initSubmitForm();
+    calculadora.initCheckbox();
     $('#select2-cobrador_id-container').attr('tabindex', 0);
 });

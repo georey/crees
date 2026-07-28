@@ -10,6 +10,7 @@ services:
       - ./app:/var/www/html/app
       - ./resources:/var/www/html/resources
       - ./config:/var/www/html/config
+      - ./public:/var/www/html/public
       # Volumenes para datos persistentes
       - app_storage:/var/www/html/storage
       - app_bootstrap_cache:/var/www/html/bootstrap/cache

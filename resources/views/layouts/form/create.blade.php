@@ -11,6 +11,16 @@
             <div class="alert alert-danger display-hide">
                 <button class="close" data-close="alert"></button>Verifique que todos los campos sean llenados correctamente
             </div>
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <button class="close" data-close="alert"></button>
+                    <ul class="margin-bottom-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <div class="alert alert-success display-hide">
                 <button class="close" data-close="alert"></button>Informacion ingresada correctamente
             </div>

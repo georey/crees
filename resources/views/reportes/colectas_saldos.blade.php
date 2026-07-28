@@ -3,7 +3,7 @@
 <h4 class="text-center">HOJA DE SALDOS</h4>
 <h4>ASESOR: {{$asesor->nombre or ''}} {{$asesor->apellido or ''}}</h4>
 <h4>FECHA:  {{$fecha->format('d-m-Y')}}</h4>
-<table class="table table-bordered table-striped table-medium-text">
+<table class="table table-bordered table-striped table-mini-text">
 	<thead>
 		<tr>
 			<th>Codigo</th>
@@ -63,7 +63,7 @@
 <h4>FECHA:  {{$fecha->format('d-m-Y')}}</h4>
 
 
-<table class="table table-bordered table-striped" width="100%">
+<table class="table table-bordered table-striped table-mini-text" width="100%">
 	<thead>
 		<tr>
 			<th>COD. CLIENTE</th>

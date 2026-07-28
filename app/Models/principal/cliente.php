@@ -24,7 +24,7 @@ class cliente extends Model
     ];
 
     public static $rules = [
-
+        'correo' => 'email|max:255',
     ];
 
     public function nombreCompleto()

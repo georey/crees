@@ -147,5 +147,21 @@ HOJA DE LIQUIDACION<br>
 		<td style="text-align:center!important">Cliente</td>
 	</tr>
 </table>
+@if($prestamo->fiadores->count() > 0)
+@foreach($prestamo->fiadores as $fiador)
+<br><br>
+<table width="100%">
+	<tr>
+		<td style="text-align:center!important">_________________________________</td>
+	</tr>
+	<tr>		
+		<td style="text-align:center!important">{{$fiador->nombreCompleto()}}</td>
+	</tr>
+	<tr>		
+		<td style="text-align:center!important">Fiador</td>
+	</tr>
+</table>
+@endforeach
+@endif
 </body>
 </html>

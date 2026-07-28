@@ -5,15 +5,15 @@
 }
 
 .table-mini-text {
-	 font-size: 10px;
+	 font-size: 9px;
 }
 
 .table-minixs-text {
-	 font-size: 8px;
+	 font-size: 7px;
 }
 
 .table-medium-text {
-	 font-size: 14px;
+	 font-size: 10px;
 }
 
 .table-bordered th, .table-bordered td {

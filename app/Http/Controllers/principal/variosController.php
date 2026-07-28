@@ -74,13 +74,10 @@ class variosController extends Controller
                 })->export('xls');
                 break;
             case 'pdf':
+                ini_set('memory_limit', '1024M');
+                set_time_limit(300);
                 $html = view('reportes.colectas_saldos', $data)->render();
-                $this->pdfService->generatePdf($html);
-                return $this->pdfService->generatePdf($html);
-
-                $pdf = PDF::loadView('reportes.colectas_saldos', $data);
-                //$pdf->setPaper('A4', 'landscape');
-                return $pdf->download('Reporte de colectas y saldos'.date("Ymd").'.pdf');
+                return $this->pdfService->generatePdf($html, 'Reporte de colectas y saldos'.date("Ymd").'.pdf');
                 break;
         }
     }

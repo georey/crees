@@ -232,7 +232,7 @@ class prestamo extends Model
     {
         $carbon = $this->getFechaActualSinHora();
         $proximaFecha = $this->getProximaFecha();
-        if ($this->linea_id != 1) {
+        if ($this->linea_id != 1 && $this->linea_id != 2) {
             $proximaFecha->addDays(1);
         }
         $diffInDays = $proximaFecha->diffInDays($carbon);        
