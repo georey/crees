@@ -356,9 +356,9 @@ class prestamo extends Model
     {
         $estado = $this->estado_prestamo_id;
         if($estado == 1 && $this->getVencimiento() > $this->getFechaActualSinHora())
-            $estado = 2; //Vencido
+            $estado = 1; //Activos
         if($estado == 1 && $this->getVencimiento() <= $this->getFechaActualSinHora())
-            $estado = 1; //activo
+            $estado = 2; //Vencidos
         if($this->saldoAnterior() < 0.99) 
             $estado = 3; //cancelado
         return $estado;
@@ -558,6 +558,7 @@ class prestamo extends Model
                         ->orWhere(function($query)  use ($fecha_ini, $fecha_fin){
                             $query->whereBetween('prestamos.fecha',[$fecha_ini, $fecha_fin]);
                         })
+                        ->whereNotIn('estado_prestamo_id', [4])
                         ->get();
         return $rpt;
     }

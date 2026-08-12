@@ -8,6 +8,7 @@
 		<tr>
 			<th>Codigo</th>
 			<th>Cliente</th>			
+			<th>Vencimiento</th>			
 			<th title="Dias desde el ultimo pago">DUP</th>
 			<th title="Plazo/Linea">P/L</th>
 			<th>Capital</th>
@@ -29,6 +30,7 @@
 			<tr>
 				<td>{{$prestamo->codigo}}</td>
 				<td>{{$prestamo->cliente->nombreCompleto()}}</td>
+				<td>@lang('dias.'. strtolower($prestamo->getFechaVencimiento()->format('D'))) - {{$prestamo->getFechaVencimiento()->format('d-m-Y')}}</td>
 				<td>{{$prestamo->getDias()}}</td>
 				<td>{{$prestamo->cuotas}} {{str_limit($prestamo->linea->periodo,1,"")}}</td>
 				<td class="text-right" align="right">{{number_format($saldo,2)}}</td>
@@ -63,7 +65,7 @@
 <h4>FECHA:  {{$fecha->format('d-m-Y')}}</h4>
 
 
-<table class="table table-bordered table-striped table-mini-text" width="100%">
+<table class="table table-bordered table-striped table-david-anciano-text" width="100%">
 	<thead>
 		<tr>
 			<th>COD. CLIENTE</th>

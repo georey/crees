@@ -16,6 +16,10 @@
 	 font-size: 10px;
 }
 
+.table-david-anciano-text {
+	 font-size: 14px;
+}
+
 .table-bordered th, .table-bordered td {
 	border:1px solid #ddd;
 	padding: 4px;

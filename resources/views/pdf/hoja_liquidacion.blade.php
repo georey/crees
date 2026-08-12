@@ -17,7 +17,7 @@ HOJA DE LIQUIDACION<br>
 
 </div>
 <div style="width:50%; display: inline-block; text-align:right">
-	<img src="{{ asset('img/logo_mini.jpg') }}" style="width:75px">
+	<img src="data:image/jpeg;base64,{{ base64_encode(file_get_contents(public_path('img/logo_mini.jpg'))) }}" style="width:75px">
 </div>
 @include('pdf.encabezado')
 <div class="colspan-12">
@@ -75,7 +75,7 @@ HOJA DE LIQUIDACION<br>
 		</div>		
 
 	
-<br><br>
+<br>
 <h3 class="text-center">DETALLE DE DEDUCCIONES</h3>
 <div class="div_table table-left">
 	<div class="div_tr">
@@ -130,35 +130,35 @@ HOJA DE LIQUIDACION<br>
 		<div class="div_td colspan-3">${{number_format($prestamo->monto - $prestamo->gastos->sum('monto') - $monto_liquidado,2)}}</div>
 	</div>
 </div>
-<br><br><br><br><br><br>
+<br><br><br>
 <table width="100%">
 	<tr>
 		<td style="text-align:center!important">_________________________________</td>
 		<td style="text-align:center!important">_________________________________</td>
 	</tr>
 	<tr>
-		<td style="text-align:center!important">
+		<td style="text-align:center!important; font-size: 10px!important">
 			{{strtoupper(Auth::user()->nombre . ' ' . Auth::user()->apellido)}}			
 		</td>
-		<td style="text-align:center!important">{{$prestamo->cliente->nombreCompleto()}}</td>
+		<td style="text-align:center!important; font-size: 10px!important">{{$prestamo->cliente->nombreCompleto()}}</td>
 	</tr>
 	<tr>
-		<td style="text-align:center!important">Autorizado por</td>
-		<td style="text-align:center!important">Cliente</td>
+		<td style="text-align:center!important; font-size: 10px!important">Autorizado por</td>
+		<td style="text-align:center!important; font-size: 10px!important">Cliente</td>
 	</tr>
 </table>
-@if($prestamo->fiadores->count() > 0)
+@if($prestamo->fiadores->count() > 0 && $prestamo->tipo_garantia == 2)
 @foreach($prestamo->fiadores as $fiador)
-<br><br>
+<br>
 <table width="100%">
 	<tr>
 		<td style="text-align:center!important">_________________________________</td>
 	</tr>
 	<tr>		
-		<td style="text-align:center!important">{{$fiador->nombreCompleto()}}</td>
+		<td style="text-align:center!important; font-size: 10px!important">{{$fiador->nombreCompleto()}}</td>
 	</tr>
 	<tr>		
-		<td style="text-align:center!important">Fiador</td>
+		<td style="text-align:center!important; font-size: 10px!important">Fiador</td>
 	</tr>
 </table>
 @endforeach

@@ -182,9 +182,21 @@ class prestamosController extends Controller {
                 } else if ($filtro == 'xls') {
                     $xlsdata = array();
                     foreach($info['prestamos'] as $prestamo){
+                        $estado_prestamo =$prestamo->getEstadoInfored();
+                        $dias = 0;
+                        if($estado_prestamo == 1){
+                            $fecha_ultimo_pago = Carbon::parse($prestamo->getUltimaFecha());
+                            $dias = $fecha_ultimo_pago->diffInDays($fecha_fin);
+                        }
+                        else if($estado_prestamo == 2){
+                            $fecha_ultimo_pago = Carbon::parse($prestamo->getUltimaFecha());
+                            $dias = $fecha_ultimo_pago->diffInDays($fecha_fin);
+                        }
+                        
                         $fecha = Carbon::parse($prestamo->fecha);
                         $fecha_ultimo_pago = Carbon::parse($prestamo->getUltimaFecha());
                         $fecha_nacimiento = Carbon::parse($prestamo->cliente->fecha_nacimiento);
+                        $fecha_corte = Carbon::parse($prestamo->getUltimaFecha());
                         $xlsdetail["Año"] = $fecha_ini->year;
                         $xlsdetail["mes"] = str_pad($fecha_ini->month,2,'0',STR_PAD_LEFT);
                         $xlsdetail["nombre"] = $prestamo->nombre_completo;
@@ -198,8 +210,8 @@ class prestamosController extends Controller {
                         $xlsdetail["mora"] = in_array($prestamo->estado_prestamo_id, array(2,3)) ? '=0' : number_format($prestamo->montoCuotas() + $prestamo->getMora() + $prestamo->getMulta() + $prestamo->getInteres() + $prestamo->getCapitalPendiente(),2);
                         $xlsdetail["forma_pag"] = $prestamo->linea->id_infored;
                         $xlsdetail["tipo_rel"] = 1;
-                        $xlsdetail["linea_cre"] = "COM";
-                        $xlsdetail["dias"] = $fecha->diffInDays($fecha_ultimo_pago);
+                        $xlsdetail["linea_cre"] = "COM";                        
+                        $xlsdetail["dias"] = $dias;
                         $xlsdetail["ult_pag"] = $fecha_ultimo_pago->format("d/m/Y");
                         $xlsdetail["tipo_gar"] = $prestamo->tipo_garantia == 1? "PR":"FP";
                         $xlsdetail["tipo_mon"] = "02";
