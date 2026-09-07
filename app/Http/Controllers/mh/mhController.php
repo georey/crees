@@ -65,6 +65,7 @@ class mhController extends Controller
         $input = array_except($request->all(), ['_method', '_token']);
         $tipoDte = $request->input('tipo_dte', '01');
         $retiene_renta = $request->input('retiene_renta', false);
+        $domiciliado = $request->input('domiciliado', false);
         $descripciones = $request->input('descripcion', []);
         $cantidades = $request->input('cantidad', []);
         $unidades = $request->input('unidad_medida', []);
@@ -128,7 +129,7 @@ class mhController extends Controller
             $cliente->direccion = $request->input('complemento');
             $cliente->id = null;
             
-            $mh_factura = $this->mhService->generarFacturaCustom($cliente,$descripciones,$cantidades,$precios,$tipo,$unidades,$descuento,$no_suj,$exenta,$tipoDte,$retiene_renta);
+            $mh_factura = $this->mhService->generarFacturaCustom($cliente,$descripciones,$cantidades,$precios,$tipo,$unidades,$descuento,$no_suj,$exenta,$tipoDte,$retiene_renta,$domiciliado);
         }
         
         // Generar PDF

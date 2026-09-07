@@ -608,7 +608,7 @@ class mhService
         }
     }
 
-    public function generarFacturaCustom($cliente, $descripciones, $cantidades, $precios, $tipo, $unidades, $descuento, $no_suj, $exenta, $tipoDte, $retieneRenta)
+    public function generarFacturaCustom($cliente, $descripciones, $cantidades, $precios, $tipo, $unidades, $descuento, $no_suj, $exenta, $tipoDte, $retieneRenta,$domiciliado)
     {
         Log::info('=== INICIO generarFacturaCustom ===');
         Log::info('TipoDte: ' . $tipoDte);
@@ -936,7 +936,8 @@ class mhService
         if ($tipoDte == '14') {
             // Resumen simplificado para Sujeto Excluido
             $totalCompra = round($totalPagar, 6);
-            $renta = $retieneRenta ? round($totalCompra * 0.1, 2) : 0.00;
+            $porcentajeRenta = $domiciliado == "domiciliado" ? 0.1 : 0.2;
+            $renta = $retieneRenta ? round($totalCompra * $porcentajeRenta, 2) : 0.00;
             $resumen = array(
                 'totalCompra' => $totalCompra,
                 'descu' => round($totalDescuento, 6),

@@ -45,6 +45,16 @@ Facturacion Electronica
 									Retiene renta
 								</label>
 							</div>
+								<div class="radio" id="domiciliado_group" style="display:none;">
+								<label>
+										<input type="radio" id="domiciliado" name="domiciliado" value="domiciliado" checked disabled>
+										Domiciliado
+									</label>
+									<label>
+										<input type="radio" id="extranjero" name="domiciliado" value="extranjero" disabled>
+									Extranjero
+								</label>
+							</div>
 						</div>
 						<div class="form-group col-md-3">
 							<label for="nombre">Nombre</label>
@@ -166,6 +176,14 @@ Facturacion Electronica
 	
 	<script type="text/javascript">
 		$(document).ready(function() {
+			function toggleRetieneRentaRadios() {
+				var esSujetoExcluido = $('#tipo_dte').val() == '14';
+				var activo = $('#retiene_renta').is(':checked');
+				var radios = $('input[name="domiciliado"]');
+				radios.prop('disabled', !(esSujetoExcluido && activo));
+				$('#domiciliado_group').toggle(esSujetoExcluido && activo);
+			}
+
 			// Función para mostrar/ocultar campos según tipo de documento
 			function toggleReceptorFields() {
 				var tipoDte = $('#tipo_dte').val();
@@ -176,27 +194,26 @@ Facturacion Electronica
 					$('#cliente_id').prop('required', true);
 					$('#nombre, #apellido').prop('required', false);
 					$('#actividad_economica').prop('required', false);
-			} else if (tipoDte == '03') {
-				// Crédito fiscal - mostrar campos manuales, NRC y actividad económica
-				$('#cliente_fields').hide();
-				$('#receptor_manual').show();
-				$('#nrc_field').show();
-				$('#actividad_economica_field').show();
-				$('#cliente_id').prop('required', false);
-				$('#nombre, #apellido, #actividad_economica').prop('required', true);
-			} else if (tipoDte == '14') {
-				// Sujeto excluido - mostrar campos manuales y actividad económica, ocultar NRC
-				$('#cliente_fields').hide();
-				$('#receptor_manual').show();
-				$('#nrc_field').hide();
-				$('#actividad_economica_field').show();
-				$('#cliente_id').prop('required', false);
-				$('#nombre, #apellido').prop('required', true);
-				$('#actividad_economica').prop('required', false);
-				$('#retiene_renta_field').show();
-				
-			} else {
-				// Otros tipos - mostrar campos manuales sin actividad económica
+				} else if (tipoDte == '03') {
+					// Crédito fiscal - mostrar campos manuales, NRC y actividad económica
+					$('#cliente_fields').hide();
+					$('#receptor_manual').show();
+					$('#nrc_field').show();
+					$('#actividad_economica_field').show();
+					$('#cliente_id').prop('required', false);
+					$('#nombre, #apellido, #actividad_economica').prop('required', true);
+				} else if (tipoDte == '14') {
+					// Sujeto excluido - mostrar campos manuales y actividad económica, ocultar NRC
+					$('#cliente_fields').hide();
+					$('#receptor_manual').show();
+					$('#nrc_field').hide();
+					$('#actividad_economica_field').show();
+					$('#cliente_id').prop('required', false);
+					$('#nombre, #apellido').prop('required', true);
+					$('#actividad_economica').prop('required', false);
+					$('#retiene_renta_field').show();
+				} else {
+					// Otros tipos - mostrar campos manuales sin actividad económica
 					$('#cliente_fields').hide();
 					$('#receptor_manual').show();
 					$('#actividad_economica_field').hide();
@@ -204,13 +221,21 @@ Facturacion Electronica
 					$('#nombre, #apellido').prop('required', true);
 					$('#actividad_economica').prop('required', false);
 				}
+				if (tipoDte == '14') {
+					$('#retiene_renta_field').show();
+				} else {
+					$('#retiene_renta_field').hide();
+					$('#domiciliado_group').hide();
 				}
+				toggleRetieneRentaRadios();
+			}
 
-				// Ejecutar al cargar la página
-				toggleReceptorFields();
+			// Ejecutar al cargar la página
+			toggleReceptorFields();
+			$('#retiene_renta').on('change', toggleRetieneRentaRadios);
 
-				// Ejecutar cuando cambia el tipo de documento
-				$('#tipo_dte').on('change', toggleReceptorFields);
-			});
+			// Ejecutar cuando cambia el tipo de documento
+			$('#tipo_dte').on('change', toggleReceptorFields);
+		});
 		</script>
 	@endsection
