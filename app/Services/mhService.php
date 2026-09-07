@@ -733,6 +733,10 @@ class mhService
             }
         }
 
+        if ($direccion['departamento'] === '00') {
+            $direccion['municipio'] = $direccion['departamento'];
+        }
+
         // Estructura diferente según el tipo de DTE
         if ($tipoDte == '03') {
             // Crédito Fiscal
