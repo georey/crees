@@ -184,13 +184,12 @@ class mhService
 
     public function enviarJson($json, $secuencia)
     {
+        $now = Carbon::now();
         $client = new \GuzzleHttp\Client();
-
         try {
-
             // 3️⃣ Enviar al servicio de recepción
             $token = $this->auth();
-            $now = Carbon::now();
+            
             $json_path = storage_path('logs/json/' . $now->format('YmdHis') . '.json');
             $jsonString = json_encode(
                 $json,
